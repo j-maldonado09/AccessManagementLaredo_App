@@ -1,0 +1,128 @@
+﻿html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 80px;
+}
+
+/* #region Footer styles */
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    font-size: 0.85em;
+}
+/* #endregion */
+
+/* ************************************************************************************* */
+/* #custom CSS                                                                           */
+/* ************************************************************************************* */
+.center {
+    margin: auto;
+    padding: 10px;
+    left: 50%;
+    transform: translate(-5%, 0%);
+    position: relative;
+}
+
+.center-button-css-signin {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+}
+
+.res-sketch-center-size {
+    max-width: 65%;
+    margin: auto;
+}
+
+button.custom-button.k-button {
+    width: 450px; /* Set your desired width */
+    height: 450px !important; /* Set your desired height */
+}
+
+/* Ensure the button has the desired width and height */
+.custom-button {
+    width: 450px !important; /* Set your desired width */
+    height: 450px !important; /* Set your desired height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style the text inside the button */
+.button-text {
+    margin-bottom: 10px; /* Adjust spacing between text and image */
+    font-size: 16px; /* Adjust font size as needed */
+}
+
+/* Style the image inside the button */
+.button-icon {
+    max-width: 100px; /* Set the maximum width of the image */
+    max-height: 100px; /* Set the maximum height of the image */
+}
+
+
+    /* #*************************************************************************************/
+    /* #*************************************************************************************/
+    /* #region custom Kendo UI styles */
+    #configure {
+    display: none;
+}
+
+.k-panelbar .k-content {
+    padding: 20px;
+}
+
+p .k-button {
+    margin: 0 15px 0 0;
+}
+
+.k-state-active .label {
+    font-size: 1em;
+}
+/* #endregion */
+
+@media (max-width: 767px) {
+    #responsive-panel {
+        transition: all linear .2s;
+    }
+
+    #configure {
+        display: block;
+        float: right;
+    }
+
+    .k-rpanel {
+        width: 100%;
+    }
+
+    .k-rpanel-expanded {
+        margin-top: 1rem;
+    }
+
+    .navbar-header {
+        width: 100%;
+    }
+
+    .footer {
+        height: 60px;
+    }
+
+    .k-menu .k-item,
+    .k-menu .k-link {
+        width: 100%;
+    }
+
+    .k-menu .k-link {
+        box-sizing: border-box;
+    }
+
+    .k-rpanel-expanded ul {
+        flex-direction: column;
+    }
+}

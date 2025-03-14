@@ -1,0 +1,234 @@
+﻿@using AccessManagementLaredo;
+@using AccessManagementLaredo.ViewModels;
+@* @model IEnumerable<HighwayViewModel>
+ *@
+@{
+    IEnumerable<County> county = (IEnumerable<County>)ViewData["counties"];
+    IEnumerable<HighwayPrefix> prefix = (IEnumerable<HighwayPrefix>)ViewData["prefixes"];
+}
+
+@* Header **************************************************************************************************************************************@
+<h1>
+    Catalog of Highways
+</h1>
+
+<br />
+<br />
+
+@* Dropdwon list for county selection **********************************************************************************************************@
+<div class="row">
+    <div class="form-group col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
+        <kendo-dropdownlist id="dropdownlistCounties" name="dropdownlistCounties" datavaluefield="Id" datatextfield="Name" index=0 bind-to=@county on-change="selectCounty">
+        </kendo-dropdownlist>
+    </div>
+</div>
+
+<br />
+
+@* Grid for highways ***************************************************************************************************************************@
+<kendo-grid name="gridHighways" height="550" on-edit="onEdit" on-remove="onRemove">
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="20" server-operation="true" on-error="fnShowError" >
+        <transport>
+            @* <create url="/Highway/Create" /> *@
+            <read url="/Highway/Read/1" />
+            @* <update url="/Highway/Update" /> *@
+            @* <destroy url="/Highway/Delete" /> *@
+        </transport>
+        <schema>
+            <model id="Id">
+                <fields>
+                    <field name="Id" type="number" editable="false" nullable="false"></field>
+                    <field name="PrefixId" type="number"></field>
+                    <field name="PrefixCode" type="string"></field>
+                    <field name="Number" type="String"></field>
+                </fields>
+            </model>
+        </schema>
+    </datasource>
+    <editable mode="inline" />
+    <groupable enabled="true" />
+    <sortable enabled="true" />
+    <filterable enabled="true" />
+    <pageable button-count="5" refresh="true" page-sizes="new int[] { 5, 10, 20 }">
+    </pageable>
+    <toolbar>
+        <!-- Enable the built-in grid's Toolbar commands "create", "save", and "cancel". -->
+        <toolbar-button name="create" text="Add new prefix"></toolbar-button>
+    </toolbar>
+    <columns>
+        <column field="PrefixId" title="Prefix" hidden="true" />
+        <column field="PrefixCode" title="Prefix" />
+        <column field="Number" title="Highway #" />
+        <column width="220">
+            <commands>
+                <column-command text="Edit" name="edit"></column-command>
+                <column-command text="Delete" name="destroy"></column-command>
+            </commands>
+        </column>
+    </columns>
+</kendo-grid>
+
+@* Dialog for messages **************************************************************************************************************************@
+<kendo-dialog id="messageDialog" width="400" visible="false">
+    <content></content>
+</kendo-dialog>
+
+@* **********************************************************************************************************************************************@
+@* Javascript code                                                                                                                              *@
+@* **********************************************************************************************************************************************@
+<script>
+    // Variables ********************************************************************************************************************************
+    var highwayId = 0;
+    var isNew;
+
+    // Header ***********************************************************************************************************************************
+    function dropDownTemplate(data) {
+        return "<input class='dropDownTemplate'/>";
+    }
+
+    // Convert prefix field into dropdown list when clikcing "Add new" and set functionality to save button ***********************************************
+    function onEdit(e) {
+        var prefixValue = e.model.get("PrefixId");
+        var ddt = e.container.find("input[name='PrefixCode']");
+
+        ddt.kendoDropDownList({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: '@Url.Action("GetPrefixes", "Highway")'
+                    }
+                }
+            },
+            dataTextField: "Code",
+            dataValueField: "Id",
+            optionLabel: "Select a prefix...",
+            value: prefixValue
+        });
+
+        if (e.model.isNew()) {
+            isNew = true;
+        }
+        else {
+            isNew = false;
+            highwayId = e.model.get("Id");
+        }
+
+        $(".k-grid-save-command").off().on("click", function () {
+            saveOrUpdate(e);
+        });
+    }
+
+    // Remove record when clicking "Delete" button on gird ******************************************************************************
+    function onRemove(e) {
+        var highway = {
+            Id: e.model.get("Id"),
+            CountyId: 0,
+            PrefixId: 0,
+            Number: ""
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/Highway/Delete',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(highway),
+            success: function (result) {
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                fnShowMessage(xhr.responseText, "Error");
+            },
+            complete: function () {
+            }
+        });
+    }
+
+    // Sets the county selected in the county dropdown list ***************************************************************************************
+    function selectCounty() {
+        var selectedCounty = $("#dropdownlistCounties").data("kendoDropDownList").value();
+
+        $.ajax({
+            type: 'GET',
+            url: '/Highway/Read/' + selectedCounty,
+            contentType: 'application/json; charset=utf-8',
+            data: { id: selectedCounty },
+            success: function (result) {
+                refreshGrid(result);
+
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                fnShowMessage(xhr.responseText, "Error");
+            }
+        });
+    }
+
+    // Saves (new) or updates (existing) record ***************************************************************************************************
+    function saveOrUpdate(e) {
+        var highway = {
+            Id: highwayId,
+            CountyId: parseInt($("#dropdownlistCounties").data("kendoDropDownList").value()),
+            PrefixId: parseInt(e.container.find("input[name='PrefixCode']").data("kendoDropDownList").value()),
+            Number: e.model.Number
+        }
+
+        var action;
+
+        if (isNew) {
+            action = '/Highway/Create';
+        }
+        else {
+            action = '/Highway/Update';
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: action,
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(highway),
+            success: function (result) {
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                fnShowMessage(xhr.responseText, "Error");
+            },
+            complete: function () {
+                selectCounty();
+            }
+        });
+    }
+
+    // Refresh grid with records ******************************************************************************************************************
+    function refreshGrid(result) {
+        //$('#gridHighways').data('kendoGrid').dataSource.read();
+        //$('#gridHighways').data('kendoGrid').refresh();
+        var dataSource = new kendo.data.DataSource({
+            data: result
+        });
+        $('#gridHighways').data('kendoGrid').setDataSource(dataSource);
+    }
+
+    // function onDataBound(e) {
+    //     var grid = e.sender;
+    //     var items = e.sender.items();
+
+    //     // Traverse through each of the items.
+    //     items.each(function (e) {
+    //         var dataItem = grid.dataItem(this);
+    //         var ddt = $(this).find('.dropDownTemplate');
+
+    //         //alert(dataItem.PrefixId);
+    //         // Initialize a DropDownList.
+    //         $(ddt).kendoDropDownList({
+    //             value: dataItem.PrefixId,
+    //             dataSource: {
+    //                 transport: {
+    //                     read: {
+    //                         url: '@Url.Action("GetPrefixes", "Highway")'
+    //                     }
+    //                 }
+    //             },
+    //             optionLabel: "Select a prefix...",
+    //             dataTextField: "Code",
+    //             dataValueField: "Id"
+    //         });
+    //     });
+    // }
+</script>

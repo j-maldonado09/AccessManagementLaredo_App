@@ -1,0 +1,207 @@
+﻿<br/>
+<h3>
+	Review Permit Request
+</h3>
+<br />
+
+<div id="secondBlock" hidden>
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="requestorHeader">Requestor Information</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+			<label for="firstNameLabel">First Name</label>
+			<kendo-textbox id="firstNameTextBox" name="firstNameTextBox" on-change="updateAuthorizeTextBox">
+			</kendo-textbox>
+		</div>
+		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+			<label for="lastNameLabel">Last Name</label>
+			<kendo-textbox id="lastNameTextBox" name="lastNameTextBox" on-change="updateAuthorizeTextBox">
+			</kendo-textbox>
+		</div>
+		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+			<label for="phoneNumberLabel">Phone Number</label>
+			<kendo-textbox id="phoneNumberTextBox" name="phoneNumberTextBox">
+			</kendo-textbox>
+		</div>
+	</div>
+	<div class="row pt-3">
+		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+			<label for="mailingAddressLabel">Mailing Address</label>
+			<kendo-textbox id="mailingAddressTextBox" name="mailingAddressTextBox">
+			</kendo-textbox>
+		</div>
+		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2">
+			<label for="cityLabel">City</label>
+			<kendo-textbox id="cityTextBox" name="cityTextBox">
+			</kendo-textbox>
+		</div>
+		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2">
+			<label for="stateLabel">State</label>
+			<kendo-textbox id="stateTextBox" name="stateTextBox">
+			</kendo-textbox>
+		</div>
+		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2">
+			<label for="zipCodeLabel">Zip Code</label>
+			<kendo-textbox id="zipCodeTextBox" name="zipCodeTextBox">
+			</kendo-textbox>
+		</div>
+	</div>
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="requestorHeader">Roadway Information</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-6 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+			<label for="highwayPrefixLabel">Highway Prefix</label>
+			<kendo-dropdownlist id="highwayPrefixDropdown" name="highwayPrefixDropdown" filter="FilterType.StartsWith">
+			</kendo-dropdownlist>
+		</div>
+		<div class="form-group col-6 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+			<label for="highwayNumberLabel">Highway Number</label>
+			<kendo-textbox id="highwayNumberTextBox" name="highwayNumberTextBox">
+			</kendo-textbox>
+		</div>
+	</div>
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="locationHeader">Location Information</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="row">
+			<div class="form-group col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+				<label for="latitudeLabel">Latitude</label>
+				<kendo-textbox id="latitudeTextBox" name="latitudeTextBox">
+				</kendo-textbox>
+			</div>
+			<div class="form-group col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+				<label for="longitudeLabel">Longitude</label>
+				<kendo-textbox id="longitudeTextBox" name="longitudeTextBox">
+				</kendo-textbox>
+			</div>
+		</div>
+	</div>
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="additionalHeader">Additional Information</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group">
+			<p>Is this parcel in current litigation with the State of Texas?</p>
+		</div>
+		<div class="form-group" style="display:inline">
+			<kendo-radiogroup id="litigationRadio" name="litigationRadio" radio-name="radiogroup1" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+				<kendo-radiogroup-items>
+					<kendo-radiogroup-item label="Yes" value="Yes"></kendo-radiogroup-item>
+					<kendo-radiogroup-item label="No" value="No"></kendo-radiogroup-item>
+				</kendo-radiogroup-items>
+			</kendo-radiogroup>
+		</div>
+		
+	</div>
+	
+	<div class="row pt-3">
+		<div>
+			<label>hereinafter called the Permittee, to</label>
+			<kendo-radiogroup id="constructRadio" name="constructRadio" radio-name="radiogroup2" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+				<kendo-radiogroup-items>
+					<kendo-radiogroup-item label="construct" value="construct"></kendo-radiogroup-item>
+					<kendo-radiogroup-item label="reconstruct" value="reconstruct"></kendo-radiogroup-item>
+				</kendo-radiogroup-items>
+			</kendo-radiogroup>
+		</div>
+		<div>
+			<label>a</label>
+			<kendo-dropdownlist id="constructionTypesDropdown" name="constructionTypesDropdown" filter="FilterType.StartsWith">
+			</kendo-dropdownlist>
+		</div>
+	</div>
+
+	
+	
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="otherConditionsHeader">Other Conditions</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<p>
+				In addition to Items 1 thru 11 on page 1 of this permit, the facility shall also be in accordance with the attached sketch and subject to
+				the following additional conditions stated below:
+			</p>
+		</div>
+		<div>
+			<kendo-textarea id="otherConditionsTextArea" name="otherConditionsTextArea" rows="5"></kendo-textarea>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<hr />
+		</div>
+	</div>
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="varianceDocumentationHeader">Variance Documentation Justification</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<p>
+				For a Variance request, please indicate which of the below are applicable, as required by TAC §11.52(e):
+			</p>
+		</div>
+		<div class="row">
+			<kendo-checkbox id="varianceOneCheckbox" name="varianceOneCheckbox"
+							label=" a significant negative impact to the owner's real property or its use will likely result from the denial of its request for the variance, including the loss of reasonable access to the property or undue hardship on a business located on the property."
+							checked="false">
+			</kendo-checkbox>
+		</div>
+		<div class="row">
+			<kendo-checkbox id="varianceTwoCheckbox" name="varianceTwoCheckbox" label=" an unusual condition affecting the property exists that was not caused by the property owner and justifies the request for the variance." checked="false">
+			</kendo-checkbox>
+		</div>
+		<div>
+			<p>
+				For the conditions selected above, provide written justification below. (Attach additional sheets, if needed)
+			</p>
+		</div>
+		<div>
+			<kendo-textarea id="varianceTextArea" name="varianceTextArea" rows="5">
+			</kendo-textarea>
+		</div>
+	</div>
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="forTxdotUse">For TXDOT use below:</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<p>
+				For Variance denials, please indicate which of the below conditions, as provided in TAC §11.52(e), were determined:
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<kendo-checkbox id="varianceDenialOneCheckbox" name="varianceDenialOneCheckbox"
+						label=" adversely affect the safety, design, construction, mobility, efficient operation, or maintenance of the highway; or"
+						checked="false">
+		</kendo-checkbox>
+	</div>
+	<div class="row">
+		<kendo-checkbox id="varianceDenialTwoCheckbox" name="varianceDenialTwoCheckbox"
+						label=" likely impair the ability of the state or the department to receive funds for highway construction or maintenance from the federal government."
+						checked="false">
+		</kendo-checkbox>
+	</div>
+	<br />
+	<div class="text-center">
+		<kendo-button id="firstNextButton" theme-color="ThemeColor.Primary" size="ComponentSize.Large" on-click="firstButtonNext"> &nbsp;&nbsp;&nbsp; Next &nbsp;&nbsp;&nbsp; </kendo-button>
+	</div>
+</div>

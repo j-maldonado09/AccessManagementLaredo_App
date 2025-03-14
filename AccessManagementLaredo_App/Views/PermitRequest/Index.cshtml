@@ -1,0 +1,135 @@
+﻿@using AccessManagementLaredo_App.Models;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<ApplicationUser> userManager;
+
+@{
+    var currentUser = await userManager.GetUserAsync(User);
+    var roles = userManager.GetRolesAsync(currentUser).Result;
+    string currentUserRole = roles[0];
+    string currentUserType = "";
+    if (currentUserRole == "TRAFFIC" || currentUserRole == "TPD" || currentUserRole == "AREAOFFICE")
+        currentUserType = "INTERNAL";
+    else
+        currentUserType = "EXTERNAL";
+}
+
+@* Page header *******************************************************************************************************************************@
+<br />
+<h1>
+    Permit Requests Dashboard
+</h1>
+<br />
+
+@* Button to create a new request ***************************************************************************************************************@
+@{
+    if (currentUserType == "EXTERNAL")
+    {
+                    <form method="get" asp-action="Index" asp-controller="NewRequest">
+                        <kendo-button type="submit" id="newRequestButton" theme-color="ThemeColor.Primary" size="ComponentSize.Large">&nbsp;&nbsp;&nbsp; New Request &nbsp;&nbsp;&nbsp;</kendo-button>
+                    </form>
+                    <br />
+    }
+}
+
+@* Block for Grid *******************************************************************************************************************************@
+@* <kendo-grid name="permitRequestsGrid" on-edit="onEdit" on-cancel="onPopupClose" on-data-bound="onPermitRequestDataBound" height="750">
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="20" server-operation="true" on-error="fnShowError"> *@
+<kendo-grid name="permitRequestsGrid" height="720">
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="20" server-operation="true" >
+        <transport>
+            <read url="/PermitRequest/Read" />
+            <destroy url="/PermitRequest/Delete" />
+        </transport>
+        <schema>
+            <model id="Id">
+                <fields>
+                    <field name="Id" type="number" editable="false"></field>
+                    <field name="Number" type="String"></field>
+                    <field name="RequestorFullName" type="String" editable="false"></field>
+                    <field name="DateCreated" type="Date" editable="false"></field>
+                    <field name="DateUpdated" type="Date" editable="false"></field>
+                    <field name="StatusAreaOfficeCode" type="String" editable="false"></field>
+                    <field name="StatusTrafficCode" type="String" editable="false"></field>
+                    <field name="StatusTPDCode" type="String" editable="false"></field>
+                    <field name="StatusExternalCode" type="String" editable="false"></field>
+
+                    <field name="StatusAreaOfficeName" type="String" editable="false"></field>
+                    <field name="StatusTrafficName" type="String" editable="false"></field>
+                    <field name="StatusTPDName" type="String" editable="false"></field>
+                    <field name="StatusExternalName" type="String" editable="false"></field>
+                </fields>
+            </model>
+        </schema>
+    </datasource>
+    @* <editable mode="popup" template-id="popup-editor" /> *@
+    <groupable enabled="true" />
+    <sortable enabled="true" />
+    <filterable enabled="true" />
+    <pageable button-count="5" refresh="true" page-sizes="new int[] { 5, 10, 20 }">
+    </pageable>
+    <columns>
+        <column field="Id" title="Id" hidden=true />
+        @* <column field="Number" template="#=template(data)#" title="Request Id" width="150" /> *@
+        <column field="Number" title="Request Id" width="150" />
+        <column field="RequestorFullName" title="Requestor Name" width="270" />
+        <column field="DateCreated" title="Created on" format="{0:yyyy/MM/dd}" hidden=true width="170" />
+        <column field="DateUpdated" title="Last Updated" format="{0:yyyy/MM/dd}" width="170" />
+        <column field="StatusAreaOfficeCode" title="Status Area Office" hidden=true />
+        <column field="StatusTrafficCode" title="Status Traffic" hidden=true />
+        <column field="StatusTPDCode" title="Status TPD" hidden=true />
+        <column field="StatusExternalCode" title="Status External" hidden=true />
+        @{
+            if (currentUserType == "INTERNAL")
+            {
+                            <column field="StatusAreaOfficeName" title="Status Area Office" />
+                            <column field="StatusTrafficName" title="Status Traffic" />
+                            <column field="StatusTPDName" title="Status TPD" />
+            }
+            else
+            {
+                            <column field="StatusExternalName" title="Status" />
+            }
+        }
+        <column width="135">
+            <commands>
+                <column-command text="Edit" click="editRecord"></column-command>
+                <column-command text="Log" click="viewEventLog"></column-command>
+            </commands>
+        </column>
+    </columns>
+</kendo-grid>
+
+
+@* ************************************************************************************************************************************************************ *@
+@*                                                                      Javascript code                                                                         *@
+@* ************************************************************************************************************************************************************ *@
+<script>
+    function editRecord(e) {
+        // Prevent the default edit behavior
+        e.preventDefault();
+
+        // Get the dataItem associated with the clicked button
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+
+        // Get the ID of the selected record
+        var id = dataItem.Id;
+        //alert(id);
+
+        // Redirect to the new view with the record ID
+        if ("@currentUserType" == "INTERNAL") {
+            window.location.href = '@Url.Action("PermitRequestReview", "NewRequest")' + '?id=' + id;
+        } else { 
+            window.location.href = '@Url.Action("Index", "NewRequest")' + '?id=' + id;
+        }
+    }
+
+
+    // Functions that opens the log of events for a specific permit request ***********************************************************************************
+    function viewEventLog() { 
+        alert("events");
+    }
+</script>
+
+<script id="events-template" type="text/x-kendo-template">
+
+</script>

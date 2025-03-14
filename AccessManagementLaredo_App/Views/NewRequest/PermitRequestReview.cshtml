@@ -1,0 +1,463 @@
+﻿<br />
+<h2>Review Permit Request</h2>
+<br/>
+<hr />
+@* Form 1058 *********************************************************************************************************************************** *@
+<div id="fourthBlock1058">
+	<h3>Requestor Information</h3>
+	<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+		<b class="pt-3">Name: </b>
+		<label id="reviewFirstName" ></label>
+		<label id="reviewLastName" ></label>
+		<br />
+		<b class="pt-3">Mailing Address: </b>
+		<label id="reviewAddress" ></label>
+		<br />
+		<b class="pt-3">City, State, Zip: </b>
+		<label id="reviewCity" ></label>
+		<label id="reviewState" ></label>
+		<label id="reviewZipCode" ></label>
+		<br />
+		<b class="pt-3">Phone Number: </b>
+		<label id="reviewPhone" ></label>
+		<br />
+		<br />
+		<h3>Roadway and Location Information</h3>
+		<b class="pt-3">County: </b>
+		<label id="reviewCounty" ></label>
+		<br />
+		<b class="pt-3">Roadway: </b>
+		<label id="reviewRoadwayPrefix" ></label>
+		<label id="reviewRoadwayNumber" ></label>
+		<br />
+		<b class="pt-3">Latitude: </b>
+		<label id="reviewLatitude" ></label>
+		<br />
+		<b class="pt-3">Longitude: </b>
+		<label id="reviewLongitude" ></label>
+		<br />
+		<br />
+		<h3>Additional Information</h3>
+		<b class="pt-3">Estimated construction start date: </b>
+		<label id="reviewConstructionStartDate"></label>
+		<br />
+		<b class="pt-3">Is this parcel in current litigation with the State of Texas? </b>
+		<label id="reviewLitigation"></label>
+		<br />
+		<b class="pt-3">Construct or Reconstruct: </b>
+		<label id="reviewConstructReconstruct"></label>
+		<br />
+		<b class="pt-3">Construction type: </b>
+		<label id="reviewConstructionType"></label>
+		<br />
+		<br />
+	</div>
+</div>
+
+@* Attachments ********************************************************************************************************************* *@
+<div id="attachmentsDiv">
+	<hr />
+	<h3>Attachments</h3>
+	<table class="table table-borderless pt-3" id="attachmentsTable">
+		<thead style="background-color:#353535; color:white">
+			<tr>
+				<th style="width:20%">Attachment Type</th>
+				<th style="width:30%">Attachment File</th>
+				<th style="width:50%">Comment</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- Rows will be added here dynamically -->
+		</tbody>
+	</table>
+</div>
+
+@* Form 1058 (District use ONLY) *************************************************************************************************** *@
+<div id="secondBlockDistrict">
+	<hr />
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="accessDrivewayPolicyHeader">Access Driveway Policy</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<p>
+				Title 43 Texas Administrative Code (Transportation), Chapter 11 (Design), Subchapter C (Access Connections To State Highways) and
+				the "Access Management Manual" establish policy for the granting of access and the design, materials, and construction of driveways
+				connecting to state highways. All driveway facilities must follow this policy. To the extent there is any conflict between this permit and
+				the policy, the policy shall control. If a proposed driveway does not comply with the access management standards, the owner may
+				seek a variance to a requirement contained in the access management standards by contacting the local TxDOT office.
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<hr />
+		</div>
+	</div>
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="requestContactHeader">TxDOT Driveway Permit Request Contact</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<p>
+				For a local contact for your TxDOT Driveway Permit Request or variance request, visit: http://www.txdot.gov/inside-txdot/district.html.
+				You can click on the section of the map closest to your location to find the local TxDOT office. You can also click on the drop down box
+				below the map to find the district for your county.
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<hr />
+		</div>
+	</div>
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="otherConditionsHeader">Other Conditions</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<p>
+				In addition to Items 1 thru 11 on page 1 of this permit, the facility shall also be in accordance with the attached sketch and subject to
+				the following additional conditions stated below:
+			</p>
+		</div>
+		<div>
+			<kendo-textarea id="otherConditionsTextArea" name="otherConditionsTextArea" rows="5"></kendo-textarea>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<br />
+			<hr />
+		</div>
+	</div>
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="varianceDocumentationHeader">Variance Documentation Justification</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<p>
+				For a Variance request, please indicate which of the below are applicable, as required by TAC §11.52(e):
+			</p>
+		</div>
+		<div >
+			<kendo-checkbox id="varianceOneCheckbox" name="varianceOneCheckbox" size="ComponentSize.Large"
+				label=" a significant negative impact to the owner's real property or its use will likely result from the denial of its request for the variance, including the loss of reasonable access to the property or undue hardship on a business located on the property."
+				checked="false">
+			</kendo-checkbox>
+		</div>
+		<div >
+			<kendo-checkbox id="varianceTwoCheckbox" name="varianceTwoCheckbox" size="ComponentSize.Large"
+				label=" an unusual condition affecting the property exists that was not caused by the property owner and justifies the request for the variance." 
+				checked="false">
+			</kendo-checkbox>
+		</div>
+		<div>
+			<p>
+				For the conditions selected above, provide written justification below. (Attach additional sheets, if needed)
+			</p>
+		</div>
+		<div>
+			<kendo-textarea id="varianceTextArea" name="varianceTextArea" rows="5">
+			</kendo-textarea>
+		</div>
+	</div>
+	<div class="row pt-4">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<h3 for="forTxdotUse">For TXDOT use below:</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div>
+			<p>
+				For Variance denials, please indicate which of the below conditions, as provided in TAC §11.52(e), were determined:
+			</p>
+		</div>
+	</div>
+	<div >
+		<kendo-checkbox id="varianceDenialOneCheckbox" name="varianceDenialOneCheckbox" size="ComponentSize.Large"
+			label=" adversely affect the safety, design, construction, mobility, efficient operation, or maintenance of the highway; or"
+			checked="false">
+		</kendo-checkbox>
+	</div>
+	<div >
+		<kendo-checkbox id="varianceDenialTwoCheckbox" name="varianceDenialTwoCheckbox" size="ComponentSize.Large"
+			label=" likely impair the ability of the state or the department to receive funds for highway construction or maintenance from the federal government."
+			checked="false">
+		</kendo-checkbox>
+	</div>
+	<br />
+	<hr />
+	@* <div class="text-center">
+	<kendo-button id="firstNextButton" theme-color="ThemeColor.Primary" size="ComponentSize.Large" on-click="firstButtonNext"> &nbsp;&nbsp;&nbsp; Next &nbsp;&nbsp;&nbsp; </kendo-button>
+	</div> *@
+</div>
+
+@* Residential Sketch *********************************************************************************************************************************** *@
+<div id="fourthBlockResidential">
+	<br />
+	<br />
+	<h3>Sketch Measurements</h3>
+	<div class="row pt-4" style="max-width:65%; margin:auto">
+		<img src="~/images/ResidentialSketch.png"/>
+	</div>
+	<div class="row pt-3">
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>1. Length of pipe required: </b>
+			<label id="reviewLengthPipe"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>2. Driveway width: </b>
+			<label id="reviewDrivewayWidth"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>3. Distance to center of drainage structure: </b>
+			<label id="reviewDistanceDrainage"></label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>4. Distance from edge of pavement to ROW: </b>
+			<label id="reviewDistancePavement"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>5. Radius: </b>
+			<label id="reviewRadiusOne"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>6. Radius: </b>
+			<label id="reviewRadiusTwo"></label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>7. Driveway drainage pipe: </b>
+			<label id="reviewDrivewayPipe"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>8. Drainage structure: </b>
+			<label id="reviewDrainageStructure"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>9. Set back width at gate: </b>
+			<label id="reviewSetBack"></label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>10. Width starting at ROW: </b>
+			<label id="reviewWidthROW"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>11. Throat length: </b>
+			<label id="reviewThroatLength"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+		</div>
+	</div>
+	<br />
+	<br />
+	<hr />
+@* 	<div class="row">
+		<br />
+		<br />
+		<h4>Additional comments: </h4>
+		<kendo-textarea id="commentsTextArea" name="commentsTextArea" rows="5">
+		</kendo-textarea>
+		<br />
+	</div>
+	<br /> *@
+	@* <div class="text-center pt-4">
+		<button type="button" id="secondBackButton" class="btn btn-danger" onclick="backButtonGeneral('thirdBlockResidential')"> &nbsp;&nbsp;&nbsp; Back &nbsp;&nbsp;&nbsp; </button>
+		&nbsp;
+		<kendo-button id="submitButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="buttonSubmit"> &nbsp;&nbsp;&nbsp; Submit &nbsp;&nbsp;&nbsp; </kendo-button>
+	</div> *@
+</div>
+
+@* Industrial questionnarie *********************************************************************************************************************************** *@
+<div id="fourthBlockIndustrial" hidden>
+</div>
+
+@* Energy questionnaire ***************************************************************************************************************************************** *@
+<div id="fourthBlockEnergy" hidden>
+</div>
+
+@* Block for Traffic and TPD Requirements and buttons ************************************************************************************************************* *@
+<div id="lastBlock">
+	<div>
+		<h4>Additional Revision</h4>
+		<br/>
+		<kendo-checkbox id="requiresTrafficCheckbox" size="ComponentSize.Large" label="Requires Traffic Revision" checked="false">
+		</kendo-checkbox>
+		<br/>
+		<br/>
+		<kendo-checkbox id="requiresTPDCheckbox" size="ComponentSize.Large" label="Requires TPD Revision" checked="false">
+		</kendo-checkbox>
+		<br/>
+		<br />
+		<h4>Comments</h4>
+		<kendo-textarea id="finalCommentsTextArea" rows="5">
+		</kendo-textarea>
+		<br/>
+		<br/>
+	</div>
+	<div class="text-center">
+		<kendo-button id="rejectButton" theme-color="ThemeColor.Error" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="reject"> &nbsp;&nbsp;&nbsp; Reject &nbsp;&nbsp;&nbsp; </kendo-button>
+		&nbsp;
+		<kendo-button id="approveButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="approve"> &nbsp;&nbsp;&nbsp; Approve &nbsp;&nbsp;&nbsp; </kendo-button>
+	</div>
+</div>
+
+@* ********************************************************************************************************************************************************** *@
+@*																Javascript code																				  *@
+@* ********************************************************************************************************************************************************** *@
+<script>
+	// Variables ******************************************************
+	var permitRequestId = 0;
+
+	// Document ready *******************************************************************************************************************
+	$(document).ready(function () { 
+		var urlParams = new URLSearchParams(window.location.search);
+		permitRequestId = urlParams.get('id');
+		readResidentialReview(permitRequestId);
+	});
+
+	// Reads and calls function that displays information for internal reveiew **********************************************************
+	function readResidentialReview(permitRequestId) {
+		var jsonResult;
+
+		$.ajax({
+			type: 'GET',
+			url: '/NewRequest/ReadPermitRequests',
+			contentType: 'application/json; charset=utf-8',
+			data: { id: permitRequestId },
+			success: function (result) {
+				//fnShowMessage("Notification sent", "Success");
+				jsonResult = jQuery.parseJSON(result);
+			},
+			error: function (xhr, textStatus, errorThrown) {
+				fnShowMessage(xhr.responseText, "Error");
+			},
+			complete: function () {
+				loadReviewPermitData(jsonResult);
+			}
+		});
+	}
+
+	//  *****************************************************************************************************
+	function updateResidentialReview(e) {
+
+		var reviewAction = e.sender.element.data('param');
+
+		var obj = {
+			PermitRequestId : parseInt(permitRequestId),
+			OtherConditions: $("#otherConditionsTextArea").val(),
+			VarianceOneFlag: $("#varianceOneCheckbox").prop('checked'),
+			VarianceTwoFlag: $("#varianceTwoCheckbox").prop('checked'),
+			VarianceJustification: $("#varianceTextArea").val(),
+			VarianceDenialOneFlag: $("#varianceDenialOneCheckbox").prop('checked'),
+			VarianceDenialTwoFlag: $("#varianceDenialTwoCheckbox").prop('checked'),
+			RequiresTraffic: $("#requiresTrafficCheckbox").prop('checked'),
+			RequiresTPD: $("#requiresTPDCheckbox").prop('checked'),
+			Comment: $("#finalCommentsTextArea").val(),
+			ReviewAction: reviewAction
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/NewRequest/UpdateInternalReview',
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(obj),
+			success: function (result) {
+				//fnShowMessage("Notification sent", "Success");
+			},
+			error: function (xhr, textStatus, errorThrown) {
+				fnShowMessage(xhr.responseText, "Error");
+			},
+			complete: function () {
+			}
+		});
+
+	}
+
+	// Get record information to display for internal review *************************************************************************
+	function loadReviewPermitData(jsonResult) {
+		$("#reviewFirstName").text(jsonResult[0].RequestorFirstName + ' ');
+		$("#reviewLastName").text(jsonResult[0].RequestorLastName);
+		$("#reviewAddress").text(jsonResult[0].RequestorAddress);
+		$("#reviewCity").text(jsonResult[0].RequestorCity + ', ');
+		$("#reviewState").text(jsonResult[0].RequestorState + ', ');
+		$("#reviewZipCode").text(jsonResult[0].RequestorZipCode);
+		$("#reviewPhone").text(jsonResult[0].RequestorPhoneNumber);
+		$("#reviewCounty").text(jsonResult[0].CountyName);
+		$("#reviewRoadwayPrefix").text(jsonResult[0].HighwayCode + '-');
+		$("#reviewRoadwayNumber").text(jsonResult[0].HighwayNumber);
+		$("#reviewLatitude").text(jsonResult[0].Latitude);
+		$("#reviewLongitude").text(jsonResult[0].Longitude);
+		$("#reviewConstructionStartDate").text(jsonResult[0].ConstructionStartDate);
+
+		$("#reviewLitigation").text(jsonResult[0].LitigationFlag);
+		$("#reviewConstructReconstruct").text(jsonResult[0].ConstructionFlag);
+		$("#reviewConstructionType").text(jsonResult[0].ConstructionTypeName);
+		$("#otherConditionsTextArea").data("kendoTextArea").value(jsonResult[0].OtherConditions);
+
+		$("#varianceOneCheckbox").data("kendoCheckBox").check(jsonResult[0].VarianceOneFlag);
+		$("#varianceTwoCheckbox").data("kendoCheckBox").check(jsonResult[0].VarianceTwoFlag);
+
+		$("#varianceTextArea").data("kendoTextArea").value(jsonResult[0].VarianceJustification);
+
+		$("#varianceDenialOneCheckbox").data("kendoCheckBox").check(jsonResult[0].VarianceDenialOneFlag);
+		$("#varianceDenialTwoCheckbox").data("kendoCheckBox").check(jsonResult[0].VarianceDenialTwoFlag);
+
+		$("#reviewLengthPipe").text(jsonResult[0].PipeLength);
+		$("#reviewDrivewayWidth").text(jsonResult[0].DrivewayWidth);
+		$("#reviewDistanceDrainage").text(jsonResult[0].DistanceToCenter);
+		$("#reviewDistancePavement").text(jsonResult[0].DistanceFromEdge);
+		$("#reviewRadiusOne").text(jsonResult[0].RadiusOne);
+		$("#reviewRadiusTwo").text(jsonResult[0].RadiusTwo);
+		$("#reviewDrivewayPipe").text(jsonResult[0].DrainagePipe);
+		$("#reviewDrainageStructure").text(jsonResult[0].DrainageStructure);
+		$("#reviewSetBack").text(jsonResult[0].WidthGate);
+		$("#reviewWidthROW").text(jsonResult[0].WidthROW);
+		$("#reviewThroatLength").text(jsonResult[0].ThroatLength);
+
+		$("#requiresTrafficCheckbox").data("kendoCheckBox").check(jsonResult[0].RequiresTraffic);
+		$("#requiresTPDCheckbox").data("kendoCheckBox").check(jsonResult[0].RequiresTPD);
+
+		loadPermitRequestAttachments(jsonResult[0].Attachments);
+	}
+
+	// Get attachments from permit request *************************************************************************
+	function loadPermitRequestAttachments(attachments) {
+
+		var attachmentsFolderUrl = '@Url.Content("~/files/")';
+		const tableBody = $("#attachmentsTable tbody");
+
+		for (var i = 1; i <= attachments.length; i++) {
+			var anchor = '<a href="' + attachmentsFolderUrl + attachments[i - 1].AttachmentName + '" target="_blank">' + attachments[i - 1].AttachmentName + '</a>';
+			var row = '<tr>';
+			row += '<td>' + attachments[i - 1].AttachmentTypeName + '</td>';
+			row += '<td>' + anchor + '</td>';
+			row += '<td>' + attachments[i - 1].AttachmentComment + '</td>';
+			row += '</tr>';
+
+			tableBody.append(row);
+
+			// $('#attachmentsDiv').append(
+			// 	'<a href="' + attachmentsFolderUrl + attachments[i - 1].AttachmentName + 
+			// 	'" target="_blank">' + attachments[i - 1].AttachmentName + '</a><br />');
+
+
+			
+		}
+	}
+
+</script>
