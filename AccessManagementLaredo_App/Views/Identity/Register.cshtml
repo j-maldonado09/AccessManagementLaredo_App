@@ -35,30 +35,12 @@
             </div>
             <br />
 
-            @* <div class="form-group">
-                <label style="font-weight: bold" asp-for="OrganizationType"></label>
-                <select asp-for="OrganizationType" name="OrganizationType" class="form-select" id="OrganizationType" onchange="selectDistrictOption()" >
-                    <option value="MaintenanceSection">Maintenance Section</option>
-                    <option value="District">District</option>
-                </select>
+            <div class="form-group">
+                <label style="font-weight: bold" asp-for="CompanyName"></label>
+                <input asp-for="CompanyName" class="form-control" />
+                @*<span asp-validation-for="Email" class="text-danger"></span>*@
             </div>
             <br />
-            
-            <div class="form-group">
-                <label style ="font-weight: bold" asp-for="MaintenanceSectionId"></label>
-                <select asp-for="MaintenanceSectionId" name="MaintenanceSectionId" class="form-select" id="MaintenanceSectionId" >
-                    @{
-                        if (maintenanceSections != null)
-                        {
-                            foreach (MaintenanceSection item in maintenanceSections)
-                            {
-                                <option value=@item.Id>@item.Name</option>
-                            }   
-                        }
-                    }
-                </select>
-            </div>
-            <br /> *@
 
             <div class="form-group">
                 <label style="font-weight: bold" asp-for="Email"></label>

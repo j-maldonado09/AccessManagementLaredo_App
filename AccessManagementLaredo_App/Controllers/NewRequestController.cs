@@ -28,13 +28,14 @@ namespace AccessManagementLaredo_App.Controllers
         private IdentityServices _identityServices;
         private PermitEventHelperModel _permitEventHelperModel;
 		private PermitRequestStatusHelperModel _permitRequestStatusHelperModel;
-		private IWebHostEnvironment _webHostEnvironment;
+		private ExportPDF _exportPdf;
+        private IWebHostEnvironment _webHostEnvironment;
 
 		// Controller ********************************************************************************************************************************************************************
 		public NewRequestController(IPermitRequestResidentialRepository permitRequestResidentialRepository,ICountyRepository countyRepository , IHighwayRepository highwayRepository, 
             IConstructionTypeRepository constructionTypeRepository, IPermitEventRepository permitEventRepository, IAttachmentTypeRepository attachmentTypeRepository,
             UserManager<ApplicationUser> userManager, IdentityServices identityServices, PermitEventHelperModel permitEventHelperModel, 
-			PermitRequestStatusHelperModel permitRequestStatusHelperModel, IWebHostEnvironment webHostEnvironment)
+			PermitRequestStatusHelperModel permitRequestStatusHelperModel, ExportPDF exportPDF, IWebHostEnvironment webHostEnvironment)
         {
             _permitRequestResidentialRepository = permitRequestResidentialRepository;
 			_countyRepository = countyRepository;
@@ -46,6 +47,7 @@ namespace AccessManagementLaredo_App.Controllers
             _identityServices = identityServices;
             _permitEventHelperModel = permitEventHelperModel;
 			_permitRequestStatusHelperModel = permitRequestStatusHelperModel;
+			_exportPdf = exportPDF;
 			_webHostEnvironment = webHostEnvironment;
         }
 
@@ -55,7 +57,8 @@ namespace AccessManagementLaredo_App.Controllers
 			ViewData["counties"] = GetCounties();
             ViewData["highways"] = GetHighways();
             ViewData["constructionTypes"] = GetConstructionTypes();
-            ViewData["prefixesByCounty"] = GetPrefixesByCounty();
+			ViewData["attachmentTypes"] = GetAttachmentTypes();
+			ViewData["prefixesByCounty"] = GetPrefixesByCounty();
 
             return View();
         }
@@ -117,6 +120,8 @@ namespace AccessManagementLaredo_App.Controllers
 
 			if (permitRequestInternalReviewHelperModel.ReviewAction == "reject")
                 _permitEventHelperModel.PermitEventTypeCode = "RTRN_USR";
+			else if (permitRequestInternalReviewHelperModel.ReviewAction == "review")
+				_permitEventHelperModel.PermitEventTypeCode = "REVIEWED";
 			else if (permitRequestInternalReviewHelperModel.ReviewAction == "approve")
                 _permitEventHelperModel.PermitEventTypeCode = "APPRV";
             else if (permitRequestInternalReviewHelperModel.ReviewAction == "complete")
@@ -186,36 +191,14 @@ namespace AccessManagementLaredo_App.Controllers
 			bool requiresTraffic = permitRequestViewModel[0].RequiresTraffic;
 			bool requiresTPD = permitRequestViewModel[0].RequiresTPD;
 
+
 			if (userRole == "OWNER" || userRole == "CONSULTANT")
 			{
-				if (statusExternal == "DRFT")
+				if (statusExternal == "DRFT" || statusExternal == "AWACT")
 				{
 					statusAreaOffice = "AWACT";
+					statusExternal = "UNDREV";
 				}
-				else if (statusExternal == "AWACT")
-				{
-					if (statusAreaOffice == "RETUSR")
-					{
-						statusAreaOffice = "AWACT";
-					}
-					else if (statusAreaOffice == "APPRV")
-					{
-						if (statusTraffic != "RETUSR" && statusTPD == "RETUSR")
-						{
-							statusTPD = "AWACT";
-						}
-						else if (statusTraffic == "RETUSR" && statusTPD != "RETUSR")
-						{
-							statusTraffic = "AWACT";
-						}
-						else if (statusTraffic == "RETUSR" && statusTPD == "RETUSR")
-						{
-							statusTPD = "AWACT";
-							statusTraffic = "AWACT";
-						}
-					}
-				}
-				statusExternal = "UNDREV";
 			}
 			else if (userRole == "AREAOFFICE")
 			{
@@ -224,25 +207,24 @@ namespace AccessManagementLaredo_App.Controllers
 					statusExternal = "AWACT";
 					statusAreaOffice = "RETUSR";
 				}
-				else if (action == "approve")
+				else if (action == "review")
 				{
-					statusExternal = "UNDREV";
-					statusAreaOffice = "APPRV";
+					statusAreaOffice = "UNDREV";
 
 					if (!requiresTraffic && !requiresTPD)
 					{
-						statusTraffic = "NA";
-						statusTPD = "NA";
+						//statusTraffic = "NA";
+						//statusTPD = "NA";
 					}
 					else if (!requiresTraffic && requiresTPD)
 					{
-						statusTraffic = "NA";
+						//statusTraffic = "NA";
 						statusTPD = "AWACT";
 					}
 					else if (requiresTraffic && !requiresTPD)
 					{
 						statusTraffic = "AWACT";
-						statusTPD = "NA";
+						//statusTPD = "NA";
 					}
 					else if (requiresTraffic && requiresTPD)
 					{
@@ -250,41 +232,131 @@ namespace AccessManagementLaredo_App.Controllers
 						statusTPD = "AWACT";
 					}
 				}
-				else if (action == "complete")
+				else if (action == "approve")
 				{
 					statusExternal = "APPRV";
-					statusAreaOffice = "COMPL";
-					statusTraffic = "COMPL";
-					statusTPD = "COMPL";
+					statusAreaOffice = "APPRV";
+					statusTraffic = "APPRV";
+					statusTPD = "APPRV";
 				}
 			}
 			else if (userRole == "TRAFFIC")
 			{
-				if (action == "reject")
+				if (action == "review")
 				{
-					statusExternal = "AWACT";
-					statusTraffic = "RETUSR";
+					statusTraffic = "REVIEWED";
+					//statusAreaOffice = "AWACT";
 				}
-				else if (action == "approve") 
-				{
-                    //statusExternal = "UNDREV";
-                    statusTraffic = "APPRV";
-                }
 			}
-            else if (userRole == "TPD")
-            {
-                if (action == "reject")
-                {
-                    statusExternal = "AWACT";
-                    statusTPD = "RETUSR";
-                }
-                else if (action == "approve")
-                {
-                    //statusExternal = "UNDREV";
-                    statusTPD = "APPRV";
-                }
-            }
-			
+			else if (userRole == "TPD")
+			{
+				if (action == "review")
+				{
+					statusTPD = "REVIEWED";
+					//statusAreaOffice = "AWACT";
+				}
+			}
+
+
+			//if (userRole == "OWNER" || userRole == "CONSULTANT")
+			//{
+			//	if (statusExternal == "DRFT")
+			//	{
+			//		statusAreaOffice = "AWACT";
+			//	}
+			//	else if (statusExternal == "AWACT")
+			//	{
+			//		if (statusAreaOffice == "RETUSR")
+			//		{
+			//			statusAreaOffice = "AWACT";
+			//		}
+			//		else if (statusAreaOffice == "APPRV")
+			//		{
+			//			if (statusTraffic != "RETUSR" && statusTPD == "RETUSR")
+			//			{
+			//				statusTPD = "AWACT";
+			//			}
+			//			else if (statusTraffic == "RETUSR" && statusTPD != "RETUSR")
+			//			{
+			//				statusTraffic = "AWACT";
+			//			}
+			//			else if (statusTraffic == "RETUSR" && statusTPD == "RETUSR")
+			//			{
+			//				statusTPD = "AWACT";
+			//				statusTraffic = "AWACT";
+			//			}
+			//		}
+			//	}
+			//	statusExternal = "UNDREV";
+			//}
+			//else if (userRole == "AREAOFFICE")
+			//{
+			//	if (action == "reject")
+			//	{
+			//		statusExternal = "AWACT";
+			//		statusAreaOffice = "RETUSR";
+			//	}
+			//	else if (action == "approve")
+			//	{
+			//		statusExternal = "UNDREV";
+			//		statusAreaOffice = "APPRV";
+
+			//		if (!requiresTraffic && !requiresTPD)
+			//		{
+			//			statusTraffic = "NA";
+			//			statusTPD = "NA";
+			//		}
+			//		else if (!requiresTraffic && requiresTPD)
+			//		{
+			//			statusTraffic = "NA";
+			//			statusTPD = "AWACT";
+			//		}
+			//		else if (requiresTraffic && !requiresTPD)
+			//		{
+			//			statusTraffic = "AWACT";
+			//			statusTPD = "NA";
+			//		}
+			//		else if (requiresTraffic && requiresTPD)
+			//		{
+			//			statusTraffic = "AWACT";
+			//			statusTPD = "AWACT";
+			//		}
+			//	}
+			//	else if (action == "complete")
+			//	{
+			//		statusExternal = "APPRV";
+			//		statusAreaOffice = "COMPL";
+			//		statusTraffic = "COMPL";
+			//		statusTPD = "COMPL";
+			//	}
+			//}
+			//else if (userRole == "TRAFFIC")
+			//{
+			//	if (action == "reject")
+			//	{
+			//		statusExternal = "AWACT";
+			//		statusTraffic = "RETUSR";
+			//	}
+			//	else if (action == "approve") 
+			//	{
+			//                 //statusExternal = "UNDREV";
+			//                 statusTraffic = "APPRV";
+			//             }
+			//}
+			//         else if (userRole == "TPD")
+			//         {
+			//             if (action == "reject")
+			//             {
+			//                 statusExternal = "AWACT";
+			//                 statusTPD = "RETUSR";
+			//             }
+			//             else if (action == "approve")
+			//             {
+			//                 //statusExternal = "UNDREV";
+			//                 statusTPD = "APPRV";
+			//             }
+			//         }
+
 			_permitRequestStatusHelperModel.Id = id;
 			_permitRequestStatusHelperModel.StatusExternalCode = statusExternal;
 			_permitRequestStatusHelperModel.StatusAreaOfficeCode = statusAreaOffice;
@@ -294,7 +366,7 @@ namespace AccessManagementLaredo_App.Controllers
             _permitRequestResidentialRepository.UpdateStatus(_permitRequestStatusHelperModel);
         }
 
-		// Return counties ******************************************************************************************************************
+		// Return counties **************************************************************************************************************************
 		public IEnumerable<County> GetCounties()
 		{
 			string result = _countyRepository.Read();
@@ -310,6 +382,15 @@ namespace AccessManagementLaredo_App.Controllers
 			IEnumerable<ConstructionType> constructionTypes = JsonSerializer.Deserialize<List<ConstructionType>>(result).AsEnumerable();
 			_constructionTypeRepository.DisposeDBObjects();
 			return constructionTypes;
+		}
+
+		// Return attachment types ******************************************************************************************************************
+		public IEnumerable<AttachmentType> GetAttachmentTypes()
+		{
+			string result = _attachmentTypeRepository.Read();
+			IEnumerable<AttachmentType> attachmentTypes = JsonSerializer.Deserialize<List<AttachmentType>>(result).AsEnumerable();
+			_attachmentTypeRepository.DisposeDBObjects();
+			return attachmentTypes;
 		}
 
 		// Return types of attachments ******************************************************************************************************************
@@ -388,5 +469,17 @@ namespace AccessManagementLaredo_App.Controllers
 			// Return an empty string to signify success.
 			return Content("");
 		}
-	}
+
+		// Function that generates the PDF file ********************************************************************************************************************************
+		public string ExportPdf()
+		{
+            string physicalPath = Path.Combine(_webHostEnvironment.WebRootPath);
+            string result = "";
+
+            _exportPdf.CreatePdf(physicalPath);
+
+
+            return "PermitRequest.pdf";
+        }
+    }
 }

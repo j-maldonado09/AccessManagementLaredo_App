@@ -22,10 +22,12 @@ namespace AccessManagementLaredo_App.ViewModels
         [MaxLength(30)]
         public string Role { get; set; }
 
-        //[Required(ErrorMessage = "Please enter your maintenance section")]
-        //[DataType(DataType.Text)]
-        //[Display(Name = "Maintenance Section")]
-        //public int? MaintenanceSectionId { get; set; }
+        //[Required(ErrorMessage = "Please enter an email")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Company Name")]
+        //[EmailAddress(ErrorMessage = "Invalid email")]
+        [MaxLength(100)]
+        public string CompanyName { get; set; }
 
         [Required(ErrorMessage = "Please enter an email")]
         [DataType(DataType.EmailAddress)]

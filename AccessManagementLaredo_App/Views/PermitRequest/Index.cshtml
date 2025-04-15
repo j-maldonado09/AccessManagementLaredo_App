@@ -32,8 +32,6 @@
 }
 
 @* Block for Grid *******************************************************************************************************************************@
-@* <kendo-grid name="permitRequestsGrid" on-edit="onEdit" on-cancel="onPopupClose" on-data-bound="onPermitRequestDataBound" height="750">
-    <datasource type="DataSourceTagHelperType.Ajax" page-size="20" server-operation="true" on-error="fnShowError"> *@
 <kendo-grid name="permitRequestsGrid" height="720">
     <datasource type="DataSourceTagHelperType.Ajax" page-size="20" server-operation="true" >
         <transport>
@@ -81,13 +79,13 @@
         @{
             if (currentUserType == "INTERNAL")
             {
-                            <column field="StatusAreaOfficeName" title="Status Area Office" />
-                            <column field="StatusTrafficName" title="Status Traffic" />
-                            <column field="StatusTPDName" title="Status TPD" />
+                <column field="StatusAreaOfficeName" title="Status Area Office" />
+                <column field="StatusTrafficName" title="Status Traffic" />
+                <column field="StatusTPDName" title="Status TPD" />
             }
             else
             {
-                            <column field="StatusExternalName" title="Status" />
+                <column field="StatusExternalName" title="Status" />
             }
         }
         <column width="135">
@@ -99,6 +97,8 @@
     </columns>
 </kendo-grid>
 
+@* Partial view for events log ********************************************************************************************************* *@
+<partial name="_EventsLog" />
 
 @* ************************************************************************************************************************************************************ *@
 @*                                                                      Javascript code                                                                         *@
@@ -124,9 +124,67 @@
     }
 
 
-    // Functions that opens the log of events for a specific permit request ***********************************************************************************
-    function viewEventLog() { 
-        alert("events");
+    // Function to handle the Grid button click
+    function viewEventLog(e) {
+        // Get the grid instance
+        var grid = $("#permitRequestsGrid").data("kendoGrid");
+
+        // Get the clicked row's data item
+        var dataItem = grid.dataItem($(e.currentTarget).closest("tr"));
+
+        // Extract the ID or other necessary information from the row
+        var id = dataItem.Id; 
+
+        // Call the reusable function
+        openEventsWindow('@currentUserRole', id);
+    }
+
+    function onWorkOrderDataBound(e) {
+        var grid = this;
+        grid.table.find("tr").each(function () {
+            var dataItem = grid.dataItem(this);
+
+            $("td:contains('DRAFT')").addClass("status-css-draft");
+            $("td:contains('UNDER REVIEW')").addClass("status-css-under-review");
+            $("td:contains('AWAITING ACTION')").addClass("status-css-awaiting");
+            $("td:contains('RETURNED TO USER')").addClass("status-css-returned");
+            $("td:contains('APPROVED')").addClass("status-css-approved");
+            $("td:contains('N/A')").addClass("status-css-approved");
+            $("td:contains('COMPLETE')").addClass("status-css-complete");
+
+            // // Check if edit button will be disabled
+            // // Column 6 is for status and column 8 is for edit and delete buttons
+            // if (this.cells.item(6).innerHTML == "CREATED") {
+            //     if ("@currentUserRole" == "ENGINEER" || "@currentUserRole" == "ADMIN")
+            //         this.cells.item(8).getElementsByClassName("k-grid-edit")[0].setAttribute("disabled", true);
+            //     if ("@currentUserRole" == "ADMIN")
+            //         this.cells.item(8).getElementsByClassName("k-grid-delete")[0].setAttribute("disabled", true);
+            // }
+            // else if (this.cells.item(6).innerHTML == "AREA ENGINEER") {
+            //     if ("@currentUserRole" == "USER" || "@currentUserRole" == "ADMIN") {
+            //         this.cells.item(8).getElementsByClassName("k-grid-edit")[0].setAttribute("disabled", true);
+            //         this.cells.item(8).getElementsByClassName("k-grid-delete")[0].setAttribute("disabled", true);
+            //     }
+            // }
+            // else if (this.cells.item(6).innerHTML == "REQUESTED") {
+            //     if ("@currentUserRole" == "USER" || "@currentUserRole" == "SUPERVISOR" || "@currentUserRole" == "ENGINEER")
+            //         this.cells.item(8).getElementsByClassName("k-grid-edit")[0].setAttribute("disabled", true);
+            //     if ("@currentUserRole" == "SUPERVISOR")
+            //         this.cells.item(8).getElementsByClassName("k-grid-delete")[0].setAttribute("disabled", true);
+            // }
+            // else if (this.cells.item(6).innerHTML == "APPROVED" || this.cells.item(6).innerHTML == "RECEIVED" || this.cells.item(6).innerHTML == "INSTALLED") {
+            //     if ("@currentUserRole" == "ENGINEER")
+            //         this.cells.item(8).getElementsByClassName("k-grid-edit")[0].setAttribute("disabled", true);
+            //     if ("@currentUserRole" == "USER" || "@currentUserRole" == "SUPERVISOR" || "@currentUserRole" == "ENGINEER")
+            //         this.cells.item(8).getElementsByClassName("k-grid-delete")[0].setAttribute("disabled", true);
+            // }
+
+
+            // if ("@currentUserRole" == "USER" || "@currentUserRole" == "ENGINEER")
+            //     $(".k-grid-delete").attr("disabled", true);
+
+            kendo.bind($(this), dataItem);
+        });
     }
 </script>
 

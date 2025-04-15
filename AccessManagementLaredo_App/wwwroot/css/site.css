@@ -34,6 +34,12 @@ body {
     width: 250px;
 }
 
+.center-div {
+    display: flex; /* Enables Flexbox */
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+}
+
 .res-sketch-center-size {
     max-width: 65%;
     margin: auto;
@@ -66,6 +72,42 @@ button.custom-button.k-button {
     max-height: 100px; /* Set the maximum height of the image */
 }
 
+
+.status-css-draft {
+    background-color: #5e5e5e;
+    color: white;
+    margin: auto;
+}
+
+.status-css-under-review {
+    background-color: #febd00;
+    color: white;
+    margin: auto;
+}
+
+.status-css-awaiting {
+    background-color: #fe7000;
+    color: white;
+    margin: auto;
+}
+
+.status-css-returned {
+    background-color: #cf0000;
+    color: white;
+    text-align: center;
+}
+
+.status-css-approved {
+    background-color: #00b41a;
+    color: white;
+    text-align: center;
+}
+
+.status-css-complete {
+    background-color: #007711;
+    color: white;
+    text-align: center;
+}
 
     /* #*************************************************************************************/
     /* #*************************************************************************************/

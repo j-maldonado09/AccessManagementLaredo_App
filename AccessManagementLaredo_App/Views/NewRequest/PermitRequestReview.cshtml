@@ -1,4 +1,19 @@
-﻿<br />
+﻿@using AccessManagementLaredo_App.Models;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<ApplicationUser> userManager;
+
+@{
+	var currentUser = await userManager.GetUserAsync(User);
+	var roles = userManager.GetRolesAsync(currentUser).Result;
+	string currentUserRole = roles[0];
+	string currentUserType = "";
+	if (currentUserRole == "TRAFFIC" || currentUserRole == "TPD" || currentUserRole == "AREAOFFICE")
+		currentUserType = "INTERNAL";
+	else
+		currentUserType = "EXTERNAL";
+}
+
+<br />
 <h2>Review Permit Request</h2>
 <br/>
 <hr />
@@ -265,7 +280,8 @@
 	</div>
 	<br />
 	<br />
-	<hr />
+	<hr style="height:5px; background-color:black" />
+
 @* 	<div class="row">
 		<br />
 		<br />
@@ -293,28 +309,66 @@
 @* Block for Traffic and TPD Requirements and buttons ************************************************************************************************************* *@
 <div id="lastBlock">
 	<div>
-		<h4>Additional Revision</h4>
-		<br/>
-		<kendo-checkbox id="requiresTrafficCheckbox" size="ComponentSize.Large" label="Requires Traffic Revision" checked="false">
-		</kendo-checkbox>
-		<br/>
-		<br/>
-		<kendo-checkbox id="requiresTPDCheckbox" size="ComponentSize.Large" label="Requires TPD Revision" checked="false">
-		</kendo-checkbox>
-		<br/>
+		<div>
+			<h4>Additional Revision</h4>
+			<br />
+			<h5>TxDOT-Only Comments</h5>
+			<br/>
+		</div>
+		<div id="checkboxesAdditionalRevision">
+			<kendo-checkbox id="requiresTrafficCheckbox" size="ComponentSize.Large" label="Requires Traffic Revision" checked="false">
+			</kendo-checkbox>
+			<br />
+			<br />
+			<kendo-checkbox id="requiresTPDCheckbox" size="ComponentSize.Large" label="Requires TPD Revision" checked="false">
+			</kendo-checkbox>
+			<br />
+			<br />
+		</div>
+		<div class="text-center">
+			<kendo-textarea id="txDOTCommentsTextArea" rows="5">
+			</kendo-textarea>
+			<br/>
+			<br />
+			<kendo-button id="eventLogButton" theme-color="ThemeColor.Tertiary" size="ComponentSize.Medium" on-click="viewEventLog"> &nbsp;&nbsp;&nbsp; Event Log &nbsp;&nbsp;&nbsp; </kendo-button>
+			<kendo-button id="reviewButton" theme-color="ThemeColor.Dark" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="review"> &nbsp;&nbsp;&nbsp; Review &nbsp;&nbsp;&nbsp; </kendo-button>
+			<br />
+		</div>
 		<br />
-		<h4>Comments</h4>
-		<kendo-textarea id="finalCommentsTextArea" rows="5">
-		</kendo-textarea>
-		<br/>
-		<br/>
 	</div>
-	<div class="text-center">
-		<kendo-button id="rejectButton" theme-color="ThemeColor.Error" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="reject"> &nbsp;&nbsp;&nbsp; Reject &nbsp;&nbsp;&nbsp; </kendo-button>
-		&nbsp;
-		<kendo-button id="approveButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="approve"> &nbsp;&nbsp;&nbsp; Approve &nbsp;&nbsp;&nbsp; </kendo-button>
-	</div>
+	
+	@{
+		if (currentUserRole == "AREAOFFICE")
+		{
+					<div>
+						<hr style="height:5px; background-color:black" />
+						<br />
+						<h4>Revision comments</h4>
+						<kendo-textarea id="finalCommentsTextArea" rows="5">
+						</kendo-textarea>
+						<br/>
+						<br/>
+					</div>
+					<div class="text-center">
+						<kendo-button id="rejectButton" theme-color="ThemeColor.Error" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="reject"> &nbsp;&nbsp;&nbsp; Reject &nbsp;&nbsp;&nbsp; </kendo-button>
+						&nbsp;
+						<kendo-button id="approveButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="approve"> &nbsp;&nbsp;&nbsp; Approve &nbsp;&nbsp;&nbsp; </kendo-button>
+						&nbsp;
+						<kendo-button id="exportPdfButton" theme-color="ThemeColor.Success" size="ComponentSize.Medium" on-click="createPdf" > &nbsp;&nbsp;&nbsp; Generate PDF &nbsp;&nbsp;&nbsp; </kendo-button>
+
+						</div>
+
+					@* <br />
+			<div class="text-center">
+				<kendo-button id="completeButton" theme-color="ThemeColor.Dark" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="complete"> &nbsp;&nbsp;&nbsp; Complete &nbsp;&nbsp;&nbsp; </kendo-button>
+			</div> *@
+		}
+	}
 </div>
+
+@* Partial view for events log ************************************************************************************************************************************* *@
+<partial name="_EventsLog" />
+
 
 @* ********************************************************************************************************************************************************** *@
 @*																Javascript code																				  *@
@@ -328,6 +382,13 @@
 		var urlParams = new URLSearchParams(window.location.search);
 		permitRequestId = urlParams.get('id');
 		readResidentialReview(permitRequestId);
+
+		if ("@currentUserRole" !== "AREAOFFICE") {
+			$("#checkboxesAdditionalRevision").hide();
+		}
+		else { 
+			$("#checkboxesAdditionalRevision").show();
+		}
 	});
 
 	// Reads and calls function that displays information for internal reveiew **********************************************************
@@ -356,6 +417,14 @@
 	function updateResidentialReview(e) {
 
 		var reviewAction = e.sender.element.data('param');
+		var comment;
+
+		if (reviewAction == 'review') { 
+			comment = $("#txDOTCommentsTextArea").val();
+		} 
+		else { 
+			comment = $("#finalCommentsTextArea").val();
+		}
 
 		var obj = {
 			PermitRequestId : parseInt(permitRequestId),
@@ -367,7 +436,7 @@
 			VarianceDenialTwoFlag: $("#varianceDenialTwoCheckbox").prop('checked'),
 			RequiresTraffic: $("#requiresTrafficCheckbox").prop('checked'),
 			RequiresTPD: $("#requiresTPDCheckbox").prop('checked'),
-			Comment: $("#finalCommentsTextArea").val(),
+			Comment: comment,
 			ReviewAction: reviewAction
 		};
 
@@ -383,6 +452,7 @@
 				fnShowMessage(xhr.responseText, "Error");
 			},
 			complete: function () {
+				window.location.href = '@Url.Action("Index", "PermitRequest")';
 			}
 		});
 
@@ -459,5 +529,28 @@
 			
 		}
 	}
+
+	// Function to handle the Grid button click
+	function viewEventLog(e) {
+		openEventsWindow('@currentUserRole', permitRequestId);
+	}
+
+	function createPdf() {
+		$.ajax({
+			url: '/NewRequest/ExportPdf', // URL to the controller's action
+			type: 'GET', // HTTP method
+			success: function (response) {
+				console.log(response.message); // Handle the response
+				alert(response.message); // Display the message
+			},
+			error: function (xhr, status, error) {
+				console.error("Error:", error); // Handle the error
+			},
+			complete: function () {
+				window.open('/PermitRequestPDFs/PermitRequest.pdf', '_blank');
+			}
+		});
+	}
+
 
 </script>

@@ -1,4 +1,5 @@
 ﻿@using System.Collections.Generic;
+@using System.Text.Json;
 @using AccessManagementLaredo;
 @using AccessManagementLaredo.HelperModels;
 @using AccessManagementLaredo_App.Models;
@@ -12,6 +13,11 @@
 	List<HighwayHelperModel> highways = (List<HighwayHelperModel>)ViewData["highways"];
 	// IEnumerable<Highway> highwayCode = (IEnumerable<Highway>)ViewData["highways"];
 	List<ConstructionType> constructionType = (List<ConstructionType>)ViewData["constructionTypes"];
+
+	//string attachmentType = JsonSerializer.Serialize(ViewData["attachmentTypes"]);
+	//List<AttachmentType> attachmentType = (List<AttachmentType>)ViewData["attachmentTypes"];
+
+
 	//IEnumerable<ConstructionType> constructionType = (IEnumerable<ConstructionType>)ViewData["constructionTypes"];
 }
 
@@ -25,11 +31,11 @@
 @* ********************************************************************************************************************************************************** *@
 <kendo-stepper id="stepper" name="stepper" on-activate="onActivate">
 	<steps>
-		<step label="First"></step>
-		<step label="Second"></step>
-		<step label="Third"></step>
-		<step label="Fourth"></step>
-		<step label="Fifth"></step>
+		<step label="Request Type"></step>
+		<step label="Requestor Info"></step>
+		<step label="Additional Info"></step>
+		<step label="Review Info"></step>
+		<step label="Request Submitted"></step>
 	</steps>
 </kendo-stepper>
 <br/>
@@ -179,7 +185,7 @@
 		</div>
 	</div>
 	<div class="row pt-4">
-		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+		<div class="form-group col-12 col-sm-12 col-md-8 col-lg-9 col-xl-9">
 			<label for="constructionStartDateLabel">Estimated construction start date:</label>
 		</div>
 	</div>
@@ -189,8 +195,9 @@
 			</kendo-datepicker>
 		</div>
 	</div>
+	<br />
 	<div class="row">
-		<div class="form-group">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 			<p>Is this parcel in current litigation with the State of Texas?</p>
 		</div>
 		<div class="form-group" style="display:inline">
@@ -578,6 +585,8 @@
 <div id="messageDialog">
 </div>
 
+<kendo-notification id="notificationSuccess" auto-hide-after="3000"></kendo-notification>
+
 
 @* ********************************************************************************************************************************************************** *@
 @*																Javascript code																				  *@
@@ -593,6 +602,7 @@
 	var permitRequestId = 0;
 	var permitRequestResidentialId = 0;
 	var counties = [];
+	var attachmentTypeData;
 
 	@foreach (var item in countyName)
 	{
@@ -605,6 +615,9 @@
 
 	// Document ready (when the page is loaded) *********************************************************************************************************
 	$(document).ready(function () {
+
+		attachmentTypeData = @Html.Raw(Json.Serialize(ViewData["attachmentTypes"])); // Serialize ViewData into JSON
+
 		// Get parameter value (request id) from URL
 		var urlParams = new URLSearchParams(window.location.search);
 		permitRequestId = urlParams.get('id');
@@ -632,7 +645,39 @@
 			'max-width': '60px',
 			'max-height': '60px'
 		});
+
+		// Initialize notification
+		initNotification();
 	});
+
+	  // ****************************************************************************************
+	function initNotification() { 
+		$("#notificationSuccess").kendoNotification({
+			templates: [{
+				type: "success",
+				template: '<div class="notification-success"><i class="k-icon k-i-check"></i> #= message #</div>'
+			}],
+			autoHideAfter: 3000, // Automatically hide after 3 seconds
+			position: {
+				pinned: true, // Fix the notification on the viewport
+				top: null,
+				left: null,
+				bottom: null,
+				right: null
+			},
+			stacking: "default", // Prevent overlap of notifications
+			show: function (e) {
+				// Ensure proper absolute centering
+				e.element.parent().css({
+					"position": "absolute", // Required for absolute positioning
+					"top": "50%", // Vertically center
+					"left": "50%", // Horizontally center
+					"transform": "translate(-50%, -50%)", // Offset by half its width and height
+					"margin": "0" // Reset any margin
+				});
+			}
+		});
+	}
 
 	// Function to show and hide each segment of the stepper ************************************************************************************************
 	function onActivate(e) {
@@ -856,20 +901,30 @@
 	}
 
 	// Function to create a kendo dropdown list dynamically *******************************************************************************************
+	// function createDropdown() {
+	// 	$('#left-' + cloneCount).append('<input id="document-type-' + cloneCount + '">');
+	// 	$('#document-type-' + cloneCount).kendoDropDownList({
+	// 		dataTextField: 'Name',
+	// 		dataValueField: 'Id',
+	// 		filter: 'startsWith',
+	// 		dataSource: {
+	// 			transport: {
+	// 				read: {
+	// 					url: 'NewRequest/GetAttachmentTypesAux',
+	// 					dataType: 'json'
+	// 				}
+	// 			}
+	// 		},
+	// 		value: null
+	// 	});
+	// }
 	function createDropdown() {
 		$('#left-' + cloneCount).append('<input id="document-type-' + cloneCount + '">');
 		$('#document-type-' + cloneCount).kendoDropDownList({
 			dataTextField: 'Name',
 			dataValueField: 'Id',
 			filter: 'startsWith',
-			dataSource: {
-				transport: {
-					read: {
-						url: 'NewRequest/GetAttachmentTypesAux',
-						dataType: 'json'
-					}
-				}
-			},
+			dataSource: attachmentTypeData,
 			value: null
 		});
 	}
@@ -979,7 +1034,7 @@
 		// if NO id param exists, a new record will be created
 		var combinedObj;
 		combinedObj = { ...GetPermitRequestData(), ...GetPermitRequestResidentialData() };
-		alert(JSON.stringify(combinedObj));
+		//alert(JSON.stringify(combinedObj));
 
 		$.ajax({
 			type: 'POST',
@@ -987,8 +1042,8 @@
 			contentType: 'application/json; charset=utf-8',
 			data: JSON.stringify(combinedObj),
 			success: function (result) {
-				//fnShowMessage("Notification sent", "Success");
 				permitRequestId = result.Data[0].PermitRequestId;
+				showNotification();
 			},
 			error: function (xhr, textStatus, errorThrown) {
 				fnShowMessage(xhr.responseText, "Error");
@@ -1000,14 +1055,15 @@
 	function residentialNextSecond() {
 		var combinedObj;
 		combinedObj = { ...GetPermitRequestData(), ...GetPermitRequestResidentialData() };
-		alert(JSON.stringify(combinedObj));
+		//alert(JSON.stringify(combinedObj));
 		$.ajax({
 			type: 'POST',
 			url: '/NewRequest/UpdateResidential',
 			contentType: 'application/json; charset=utf-8',
 			data: JSON.stringify(combinedObj),
 			success: function (result) {
-				//fnShowMessage("Notification sent", "Success");
+				showNotification();
+				//fnShowMessage("465465", "Error");
 			},
 			error: function (xhr, textStatus, errorThrown) {
 				fnShowMessage(xhr.responseText, "Error");
@@ -1017,6 +1073,16 @@
 			}
 		});
 	}
+
+
+	// *********************************************
+	function showNotification() {
+		var notificationSuccess = $("#notificationSuccess").data("kendoNotification");
+		notificationSuccess.show({ message: "Data successfully saved" }, "success"); // Pass the message as an object
+	}
+
+
+
 
 	//  Action performed after the sketch segment to review you information before submitting the request **********************************************************
 	function residentialReview(permitRequestId) {
@@ -1266,3 +1332,21 @@
 		}
 	}
 </script>
+
+<style>
+	.notification-success {
+		background-color: #d4edda; /* Light green background */
+		color: #155724; /* Dark green text */
+		border: 1px solid #c3e6cb; /* Green border */
+		border-radius: 4px;
+		padding: 10px;
+		display: flex;
+		align-items: center;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional shadow */
+	}
+
+		.notification-success .k-icon {
+			margin-right: 8px; /* Space between the icon and the text */
+			font-size: 20px;
+		}
+</style>

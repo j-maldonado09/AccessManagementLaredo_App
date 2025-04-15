@@ -8,6 +8,7 @@ namespace AccessManagementLaredo_App.Models
         public string ContactFirstName { get; set; }
         public string ContactLastName { get; set; }
         public string ContactRole { get; set; }
+        public string CompanyName { get; set; }
         [NotMapped]
         public string ContactFullName {
             get { return ContactFirstName + " " + ContactLastName; } 

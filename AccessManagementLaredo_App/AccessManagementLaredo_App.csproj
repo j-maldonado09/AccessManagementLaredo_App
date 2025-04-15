@@ -15,6 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.2" />
+    <PackageReference Include="QuestPDF" Version="2025.4.0" />
     <PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2024.1.130" />
   </ItemGroup>
 
@@ -41,6 +42,7 @@
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
     <Folder Include="wwwroot\files\" />
+    <Folder Include="wwwroot\PermitRequestPDFs\" />
     <Folder Include="wwwroot\SystemEvents\" />
   </ItemGroup>
 

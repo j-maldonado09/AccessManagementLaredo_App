@@ -43,13 +43,16 @@
             <div asp-validation-summary="All" class="text-danger"></div>
 
             <br />
-            <button type="submit" class="btn btn-primary center-button-css-signin">Sign in</button>
+            <div style="text-align:center">
+                <button type="submit" class="btn btn-primary" style="width:250px">Sign in</button>
+            </div>
         </form>
-        <br />
         <br />
         <p align="center">or</p>
-        <form method="get" asp-action="Register" asp-controller="Identity">
-            <button type="submit" class="btn btn-dark center-button-css-signin">Register</button>
-        </form>
+        <div style="text-align:center">
+            <form method="get" asp-action="Register" asp-controller="Identity">
+                <button type="submit" class="btn btn-dark" style="width:250px">Register</button>
+            </form>
+        </div>
     </div>
 </div>

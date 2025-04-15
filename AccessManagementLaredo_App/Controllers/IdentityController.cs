@@ -47,7 +47,8 @@ namespace AccessManagementLaredo_App.Controllers
         [Authorize(Roles = "SUPERADMIN")]
         public IActionResult Index()
         {
-            IQueryable<ApplicationUser> users = _userManager.Users.OrderBy(u => u.Email);
+            IQueryable<ApplicationUser> users = _userManager.Users.Where(u => u.ContactRole == "AREAOFFICE" || 
+                u.ContactRole == "TRAFFIC" || u.ContactRole == "TPD").OrderBy(u => u.Email);
             return View(users);
         }
 
@@ -86,7 +87,8 @@ namespace AccessManagementLaredo_App.Controllers
                     Email = model.Email,
                     ContactFirstName = model.FirstName,
                     ContactLastName = model.LastName,
-                    ContactRole = model.Role
+                    ContactRole = model.Role,
+                    CompanyName = model.CompanyName
                 };
                 IdentityResult result = await _userManager.CreateAsync(user, model.Password);
 
@@ -254,7 +256,7 @@ namespace AccessManagementLaredo_App.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                Response.Redirect("PermitRequest/Index", true);
+                Response.Redirect("/PermitRequest/Index", true);
             }
 
             await ValidateDefaultUsersAndGroups();
@@ -361,15 +363,58 @@ namespace AccessManagementLaredo_App.Controllers
         // ***************************************************************************************************
         //                                  Edit User (HttpGet)
         // ***************************************************************************************************
+        //[HttpGet]
+        //[Authorize(Roles = "SUPERADMIN")]
+        //public async Task<IActionResult> EditUser(string id)
+        //{
+        //    //ViewData["maintenanceSections"] = GetMaintenanceSections();
+        //    var currentUser = _userManager.GetUserAsync(User);
+        //    var user = await _userManager.FindByIdAsync(id);
+        //    if (user == null)
+        //    {
+        //        ModelState.AddModelError("", $"User ID not found = {id}");
+        //        return View();
+        //    }
+
+        //    var role = await _userManager.GetRolesAsync(user);
+        //    if (role.Count == 0)
+        //    {
+        //        ModelState.AddModelError("", $"The user email {user.Email} does not belong to any group.");
+        //        return View();
+        //    }
+
+        //    List<IdentityRole> unsortedGroups = _roleManager.Roles.ToList();
+        //    List<IdentityRole> sortedGroups = new List<IdentityRole>();
+        //    SetGroupsOrder(unsortedGroups, sortedGroups, "OWNER");
+        //    SetGroupsOrder(unsortedGroups, sortedGroups, "CONSULTANT");
+
+        //    EditUserRoleViewModel editUserRoleViewModel = new EditUserRoleViewModel
+        //    {
+        //        FirstName = user.ContactFirstName,
+        //        LastName = user.ContactLastName,
+        //        Role = user.ContactRole,
+        //        CompanyName = user.CompanyName,
+        //        Email = user.Email,
+        //        Group = role[0],
+        //        PreviousGroup = role[0],
+        //        //Groups = _roleManager.Roles.OrderBy(r => r.Name)
+        //        Groups = sortedGroups.AsQueryable()
+        //    };
+
+        //    return View(editUserRoleViewModel);
+        //}
+
+        // ***************************************************************************************************
+        //                                  Edit User (HttpGet)
+        // ***************************************************************************************************
         [HttpGet]
-        [Authorize(Roles = "SUPERADMIN")]
-        public async Task<IActionResult> EditUser(string id)
+        [Authorize(Roles = "OWNER, CONSULTANT")]
+        public async Task<IActionResult> EditUser()
         {
-            //ViewData["maintenanceSections"] = GetMaintenanceSections();
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                ModelState.AddModelError("", $"User ID not found = {id}");
+                ModelState.AddModelError("", $"User ID not found = {user.Id}");
                 return View();
             }
 
@@ -387,9 +432,11 @@ namespace AccessManagementLaredo_App.Controllers
 
             EditUserRoleViewModel editUserRoleViewModel = new EditUserRoleViewModel
             {
+                id = user.Id,
                 FirstName = user.ContactFirstName,
                 LastName = user.ContactLastName,
                 Role = user.ContactRole,
+                CompanyName = user.CompanyName,
                 Email = user.Email,
                 Group = role[0],
                 PreviousGroup = role[0],
@@ -463,7 +510,7 @@ namespace AccessManagementLaredo_App.Controllers
         //                                          Edit User (HttpPost)
         // ***************************************************************************************************
         [HttpPost]
-        [Authorize(Roles = "SUPERADMIN")]
+        [Authorize(Roles = "OWNER, CONSULTANT")]
         public async Task<IActionResult> EditUser(EditUserRoleViewModel model)
         {
             // Se busca y valida el usuario con el ID en cuestión.
@@ -501,9 +548,10 @@ namespace AccessManagementLaredo_App.Controllers
             user.ContactRole = model.Group;
             user.Email = model.Email;
             user.UserName = model.Email;
+            user.CompanyName = model.CompanyName;
             await _userManager.UpdateAsync(user);
 
-            return RedirectToAction("Index", "Identity");
+            return RedirectToAction("EditUser", "Identity");
         }
 
         // ***************************************************************************************************

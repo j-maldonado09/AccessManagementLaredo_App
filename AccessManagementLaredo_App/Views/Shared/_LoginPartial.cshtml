@@ -18,7 +18,13 @@
         {
              <li>
                  <a  class="nav-link text-light" asp-controller="Identity" asp-action="Index" title="Usuarios">User Management</a>
-             </li>   
+            </li>
+        }
+        else if (await UserManager.IsInRoleAsync(currentUser, "OWNER") || await UserManager.IsInRoleAsync(currentUser, "CONSULTANT"))
+        {
+            <li>
+                <a class="nav-link text-light" asp-controller="Identity" asp-action="EditUser" title="Usuarios">Account</a>
+            </li>
         }
 
         <li class="nav-item">

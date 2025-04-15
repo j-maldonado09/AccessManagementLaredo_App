@@ -14,3 +14,8 @@ function fnShowMessage(message, title) {
     dialog.title(title);
     dialog.open();
 }
+
+function fnShowNotification() {
+    var notificationSuccess = $("#notificationSuccess").data("kendoNotification");
+    notificationSuccess.show("Data successfully saved");
+}

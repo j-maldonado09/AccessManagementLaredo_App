@@ -1,14 +1,17 @@
 ﻿@using AccessManagementLaredo
+@using AccessManagementLaredo_App.Models
 @using AccessManagementLaredo_App.ViewModels
 @using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @model EditUserRoleViewModel
 
 @{
-    // List<MaintenanceSection> maintenanceSections = (List<MaintenanceSection>)ViewData["maintenanceSections"];
+    var currentUser = await UserManager.GetUserAsync(User);
 }
 
-<h1>Edit User</h1>
-
+<h1>Account Information</h1>
+<br />
 <div class="row">
     <div class="col-sm-12 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-6 offset-xl-3">
         <form method="post">
@@ -33,52 +36,16 @@
             </div>
             <br />
 
-            @* <div class="form-group">
-                <label asp-for="OrganizationType"></label>
-                <select asp-for="OrganizationType" name="OrganizationType" class="form-select" id="OrganizationType" onchange="selectDistrictOption()">
-                    @{
-                        if (Model.OrganizationType == "District")
-                        {
-                            <option value="MaintenanceSection">Maintenance Section</option>
-                            <option value="District" selected>District</option>
-                        }
-                        else 
-                        {
-                            <option value="MaintenanceSection" selected>Maintenance Section</option>
-                            <option value="District">District</option>
-                        }
-                    }
-                </select>
-                <span asp-validation-for="OrganizationType" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="CompanyName"></label>
+                <input asp-for="CompanyName" class="form-control" />
+                <span asp-validation-for="CompanyName" class="text-danger"></span>
             </div>
             <br />
 
             <div class="form-group">
-                <label asp-for="MaintenanceSectionId"></label>
-                <select asp-for="MaintenanceSectionId" name="MaintenanceSectionId" class="form-select" id="MaintenanceSectionId" >
-                    @{
-                        if (maintenanceSections != null)
-                        { 
-                            foreach (MaintenanceSection item in maintenanceSections)
-                        {
-                            if (Model.MaintenanceSectionId == item.Id)
-                            {
-                                <option selected value=@item.Id>@item.Name</option>
-                            }
-                            else
-                            {
-                                <option value=@item.Id>@item.Name</option>   
-                            }
-                        }
-                        }
-                    }
-                </select>
-            </div>
-            <br /> *@
-
-            <div class="form-group">
                 <label asp-for="Email"></label>
-                <input asp-for="Email" class="form-control" />
+                <input asp-for="Email" class="form-control" readonly/>
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <br />
@@ -108,10 +75,12 @@
             <br />
 
             <div asp-validation-summary="All" class="text-danger"></div>
-            <br />
 
             <button type="submit" class="btn btn-primary">Update</button>
-            <button type="submit" asp-action="Index" asp-controller="Identity" class="btn btn-secondary">Cancel</button>
+        </form>
+        <br/>
+        <form method="get">
+            <button type="submit" class="btn btn-secondary">Cancel</button>
         </form>
     </div>
 </div>

@@ -1,0 +1,96 @@
+﻿@using AccessManagementLaredo_App.Models;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<ApplicationUser> userManager;
+
+@{
+    var currentUser = await userManager.GetUserAsync(User);
+    var roles = userManager.GetRolesAsync(currentUser).Result;
+    string currentUserRole = roles[0];
+}
+
+@* Block for window used for log of events *********************************************************************************************@
+<kendo-window id="windowEvents"
+              title="Events Log"
+              width="80%"
+              height="auto"
+              visible="false"
+              draggable="false"
+              resizable="false"
+              modal="true"
+              position-top="10%">
+</kendo-window>
+
+@* Block for table used for log of events *********************************************************************************************@
+<div id="tableContainer" style="display: none;">
+    <table id="tableEvents" class="table table-stripped table-bordered">
+        <thead style="background-color:#353535; color:white">
+            <tr>
+                <th style="width:15%">Date Created</th>
+                <th style="width:15%">Event Type</th>
+                <th style="width:18%">User Name</th>
+                <th>Comments</th>
+            </tr>
+        </thead>
+        <tbody id="eventTableBody">
+            <!-- Rows will be dynamically populated via AJAX -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Function to handle Kendo Window opening and data population
+    function openEventsWindow(role, id) {
+        var windowEvents = $("#windowEvents").data("kendoWindow");
+        var tableHtml = $("#tableContainer").html();
+        windowEvents.content(tableHtml);
+
+        // Clear previous content in the Bootstrap table
+        $("#eventTableBody").empty();
+
+        // Use AJAX to load data dynamically
+        $.ajax({
+            type: 'GET',
+            url: '/PermitEvent/ReadPermitEvents',
+            contentType: 'application/json; charset=utf-8',
+            data: { role: '@currentUserRole', id: id},
+            success: function (result) {
+                var data = JSON.parse(result);
+                data.forEach(function (item) {
+                    $("#tableEvents tbody").append(
+                        `<tr>
+                            <td>${formatDate(item.DateCreated)}</td>
+                            <td>${item.EventTypeName}</td>
+                            <td>${item.UserName}</td>
+                            <td>${item.EventComment == null ? "" : item.EventComment }</td>
+                        </tr>`
+                    );
+                });
+
+                windowEvents.setOptions({
+                    height: $(window).height() * 0.75
+                });
+                windowEvents.center();
+                windowEvents.open();
+            },
+            error: function () {
+                alert("Failed to load data!");
+            }
+        });
+    }
+
+    function formatDate(dateString) {
+        // Convert the date string to a JavaScript Date object
+        var date = new Date(dateString);
+
+        // Extract components of the date
+        var year = date.getFullYear();
+        var month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        var day = String(date.getDate()).padStart(2, '0');
+        var hours = String(date.getHours()).padStart(2, '0');
+        var minutes = String(date.getMinutes()).padStart(2, '0');
+        var seconds = String(date.getSeconds()).padStart(2, '0');
+
+        // Combine components into the desired format
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+</script>

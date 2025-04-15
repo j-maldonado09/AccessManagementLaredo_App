@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,13 +40,15 @@ builder.Services.AddTransient<AccessManagementLaredo.ICountyRepository, AccessMa
 builder.Services.AddTransient<AccessManagementLaredo.HelperModels.PermitEventHelperModel>();
 builder.Services.AddTransient<AccessManagementLaredo.HelperModels.PermitRequestStatusHelperModel>();
 
-
+builder.Services.AddTransient<ExportPDF>();
 builder.Services.AddTransient<EMailSender>();
 builder.Services.AddTransient<IdentityServices>();
 
 builder.Services.AddTransient<DataTier.Tools>();
 builder.Services.AddSingleton<DataTier.Interfaces.IUnitOfWork, DataTier.UnitOfWorkSQLServer_MSFT>();
- 
+
+QuestPDF.Settings.License = LicenseType.Community;
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
