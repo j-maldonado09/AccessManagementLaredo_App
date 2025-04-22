@@ -31,19 +31,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AccessManagementLaredo">
-      <HintPath>..\..\..\Class Libraries\AccessManagementLaredo\AccessManagementLaredo\bin\Debug\net8.0\AccessManagementLaredo.dll</HintPath>
-    </Reference>
-    <Reference Include="DataTier">
-      <HintPath>..\..\..\Class Libraries\DataTier\DataTier\bin\Debug\net6.0\DataTier.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Data\Migrations\" />
     <Folder Include="wwwroot\files\" />
     <Folder Include="wwwroot\PermitRequestPDFs\" />
     <Folder Include="wwwroot\SystemEvents\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AccessManagementLaredo">
+      <HintPath>..\..\Access-Management-Laredo-BO\AccessManagementLaredo\bin\Debug\net8.0\AccessManagementLaredo.dll</HintPath>
+    </Reference>
+    <Reference Include="DataTier">
+      <HintPath>..\..\Access-Management-Laredo-BO\AccessManagementLaredo\bin\Debug\net8.0\DataTier.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties UseCdnSupport="True" /></VisualStudio></ProjectExtensions>
