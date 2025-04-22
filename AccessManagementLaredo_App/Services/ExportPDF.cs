@@ -152,7 +152,6 @@ namespace AccessManagementLaredo_App.Services
                                       row.AutoItem().Text("YES").FontSize(fontSize);
                                       row.ConstantItem(10);
                                       row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                      row.ConstantItem(10);
                                       row.AutoItem().Text("NO").FontSize(fontSize);
                                   });
                             column.Item()
@@ -540,7 +539,88 @@ namespace AccessManagementLaredo_App.Services
                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                      row.AutoItem().Text("$25,000").FontSize(fontSize);
                                  });
-
+                            column.Item().PaddingTop(12).Container().Border(0.5f).Padding(2).Column(col =>
+                            {
+                                col.Item()
+                                   .PaddingTop(18)
+                                   .Row(row =>
+                                   {
+                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       row.ConstantItem(20);
+                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                   });
+                                col.Item()
+                                   .PaddingTop(2)
+                                   .Row(row =>
+                                   {
+                                       row.ConstantItem(240).AlignCenter().Text("Date of Issuance of permit that crosses an access denial line").FontSize(fontSize - 2);
+                                       row.ConstantItem(20);
+                                       row.ConstantItem(240).AlignCenter().Text("District Engineer Approval (No Delegation)").FontSize(fontSize - 2);
+                                   });
+                                col.Item()
+                                   .PaddingTop(18)
+                                   .Row(row =>
+                                   {
+                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       row.ConstantItem(20);
+                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                   });
+                                col.Item()
+                                   .PaddingTop(2)
+                                   .Row(row =>
+                                   {
+                                       row.ConstantItem(240).AlignCenter().Text("Date of Issuance of permit that does not cross an access denial line").FontSize(fontSize - 2);
+                                       row.ConstantItem(20);
+                                       row.ConstantItem(240).AlignCenter().Text("District Engineer, or designee Approval").FontSize(fontSize - 2);
+                                   });
+                                col.Item()
+                                   .PaddingTop(18)
+                                   .Row(row =>
+                                   {
+                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       row.ConstantItem(20);
+                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                   });
+                                col.Item()
+                                   .PaddingTop(2)
+                                   .Row(row =>
+                                   {
+                                       row.ConstantItem(240).AlignCenter().Text("Date of Issuance as per Variance to AMM").FontSize(fontSize - 2);
+                                       row.ConstantItem(20);
+                                       row.ConstantItem(240).AlignCenter().Text("District Engineer, or designee Approval").FontSize(fontSize - 2);
+                                   });
+                                col.Item()
+                                   .PaddingTop(18)
+                                   .Row(row =>
+                                   {
+                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       row.ConstantItem(20);
+                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                   });
+                                col.Item()
+                                   .PaddingTop(2)
+                                   .Row(row =>
+                                   {
+                                       row.ConstantItem(240).AlignCenter().Text("Date of Denial").FontSize(fontSize - 2);
+                                       row.ConstantItem(20);
+                                       row.ConstantItem(240).AlignCenter().Text(" District Engineer Denial (No Delegation)").FontSize(fontSize - 2);
+                                   });
+                                col.Item()
+                                   .PaddingTop(80)
+                                   .Text("Attachments:").FontSize(fontSize).ExtraBold();
+                                col.Item()
+                                   .PaddingTop(8)
+                                   .PaddingLeft(12)
+                                   .Text("Sketch of Installation")
+                                   .FontSize(fontSize)
+                                   .ExtraBold();
+                                col.Item()
+                                   .PaddingTop(8)
+                                   .PaddingLeft(12)
+                                   .Text("All Variance Documentation")
+                                   .FontSize(fontSize)
+                                   .ExtraBold();
+                            });
                         });
                 });
 
