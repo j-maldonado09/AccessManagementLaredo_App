@@ -3,7 +3,6 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using AccessManagementLaredo.HelperModels;
-using Telerik.SvgIcons;
 
 namespace AccessManagementLaredo_App.Services
 {
@@ -126,20 +125,22 @@ namespace AccessManagementLaredo_App.Services
                                     row.AutoItem().Text(".").FontSize(fontSize);
                                 });
 
-                                col.Item().PaddingTop(2).AlignCenter().Text("USE ADDITIONAL SHEETS AS NEEDED").FontSize(fontSize - 2);
+                                col.Item().AlignCenter().Text("USE ADDITIONAL SHEETS AS NEEDED").FontSize(fontSize - 2);
                             });
                             column.Item()
                                   .PaddingTop(18)
                                   .Row(row =>
                                   {
                                       row.AutoItem().Text("Is this parcel in current litigation with the State of Texas?").FontSize(fontSize);
-                                      row.ConstantItem(5);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      row.Spacing(2);
+                                      row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      row.Spacing(2);
                                       row.AutoItem().Text("YES").FontSize(fontSize);
-                                      row.ConstantItem(10);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      row.Spacing(5);
+                                      row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      row.Spacing(2);
                                       row.AutoItem().Text("NO").FontSize(fontSize);
-                                      row.ConstantItem(10);
+                                      row.Spacing(5);
                                       row.AutoItem().Text(" (If Yes, TxDOT will coordinate with District ROW Office.)").FontSize(fontSize);
                                   });
                             column.Item()
@@ -147,12 +148,13 @@ namespace AccessManagementLaredo_App.Services
                                   .Row(row =>
                                   {
                                       row.AutoItem().Text("Is the Permittee or a family member of Permittee an employee or official of the Texas Department of Transportation?").FontSize(fontSize);
-                                      row.ConstantItem(5);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      row.Spacing(2);
+                                      row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      row.Spacing(2);
                                       row.AutoItem().Text("YES").FontSize(fontSize);
-                                      row.ConstantItem(10);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                      row.ConstantItem(10);
+                                      row.Spacing(5);
+                                      row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      row.Spacing(2);
                                       row.AutoItem().Text("NO").FontSize(fontSize);
                                   });
                             column.Item()
@@ -172,13 +174,15 @@ namespace AccessManagementLaredo_App.Services
                                   .Row(row =>
                                   {
                                       row.AutoItem().Text("interest in Permittee?").FontSize(fontSize);
-                                      row.ConstantItem(5);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      row.Spacing(2);
+                                      row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      row.Spacing(2);
                                       row.AutoItem().Text("YES").FontSize(fontSize);
-                                      row.ConstantItem(10);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      row.Spacing(5);
+                                      row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      row.Spacing(2);
                                       row.AutoItem().Text("NO").FontSize(fontSize);
-                                      row.ConstantItem(10);
+                                      row.Spacing(5);
                                       row.AutoItem().Text("(If Yes, name of employee or official").FontSize(fontSize);
                                       row.Spacing(2);
                                       row.RelativeItem().BorderBottom(0.25f).Text("").FontSize(fontSize);
@@ -305,142 +309,7 @@ namespace AccessManagementLaredo_App.Services
                     });
 
                     // Content for Page 2
-                    page.Content()
-                        .PaddingTop(12)
-                        .PaddingLeft(20)
-                        .PaddingRight(20)
-                        .Column(column =>
-                        {                        
-                            column.Item().Text("The undersigned hereby agrees to comply with the terms and conditions set forth in this permit for construction and maintenance of an access driveway on the highway right of way.").FontSize(fontSize);
-                            column.Item().Column(col =>
-                            {
-                                col.Item()
-                                   .PaddingTop(18)
-                                   .Row(row =>
-                                    {
-                                        row.AutoItem().Text("Date:").FontSize(fontSize);
-                                        row.Spacing(2);
-                                        row.ConstantItem(150).BorderBottom(0.25f).Text("").FontSize(fontSize);
-                                        row.ConstantItem(30);
-                                        row.AutoItem().Text("Signed:").FontSize(fontSize);
-                                        row.Spacing(2);
-                                        row.RelativeItem().BorderBottom(0.25f).Text("").FontSize(fontSize);
-                                    });
-                                col.Item()
-                                   .PaddingTop(2)
-                                   .Row(row =>
-                                   {
-                                       row.ConstantItem(300);
-                                       row.AutoItem().AlignRight().Text("(Property owner or owner's representative)").FontSize(fontSize-2);
-                                   });
-                            });
-                            column.Item()
-                                  .PaddingTop(40)
-                                  .AlignCenter()
-                                  .Text("Access Driveway Policy")
-                                  .ExtraBold()
-                                  .FontSize(fontSize);
-                            column.Item()
-                                  .PaddingTop(8)
-                                  .Text("Title 43 Texas Administrative Code (Transportation), Part 1 (Texas Department of Transportation) Chapter 11 (Design), Subchapter C (Access " +
-                                  "Connections To State Highways) and the \"Access Management Manual\" establish policy for the granting of access and the design, materials and " +
-                                  "construction of driveways connecting to state highways. All driveway facilities must follow this policy. To the extent there is any conflict " +
-                                  "between this permit and the policy, the policy shall control. If a proposed driveway does not comply with the access management standards, " +
-                                  "the owner may seek a variance to a requirement contained in the access management standards by contacting the local TxDOT office.")
-                                  .FontSize(fontSize);
-                            column.Item()
-                                  .PaddingTop(12)
-                                  .Text("As to driveway permits that are issued under §11.59 of Subchapter C (Access Connections To State Highways), no rights of access are conveyed " +
-                                  "by issuance of a driveway permit. Issuance of a driveway permit under this section does not convey any property right, including a right of " +
-                                  "access to the highway facility. The department, in its sole discretion, may revoke a permit issued under this section on its determination that the " +
-                                  "access location is needed for a highway purpose. Such a revocation may not be the basis for any claim of a constitutional taking of property for " +
-                                  "the loss of access to the highway facility.")
-                                  .FontSize(fontSize);
-                            column.Item()
-                                   .BorderBottom(0.25f).Text("").FontSize(fontSize);
-                            column.Item()
-                                 .PaddingTop(8)
-                                 .AlignCenter()
-                                 .Text("TxDOT Driveway Permit Request Contact")
-                                 .ExtraBold()
-                                 .FontSize(fontSize);                            
-                            column.Item()
-                                  .PaddingTop(8)
-                                  .Text(text =>
-                                  {
-                                      text.Span("For a local contact for your TxDOT Driveway Permit Request or variance request, visit: ").FontSize(fontSize);
-                                      text.Hyperlink("http://www.txdot.gov/inside-txdot/district.html", "http://www.txdot.gov/inside-txdot/district.html")
-                                          .FontSize(fontSize)
-                                          .FontColor(Colors.Blue.Darken4)
-                                          .Underline();
-                                      text.Span(". You can select the respective District, and then select the District Contacts which will include the applicable Area Engineers.").FontSize(fontSize);
-                                  });
-
-
-                            column.Item()
-                                  .BorderBottom(0.25f).Text("").FontSize(fontSize);
-                            column.Item()
-                                 .PaddingTop(8)
-                                 .AlignCenter()
-                                 .Text("Other Conditions")
-                                 .ExtraBold()
-                                 .FontSize(fontSize);
-                            column.Item()
-                                  .PaddingTop(8)
-                                  .Text("In addition to Items 1 thru 11 on page 1 of this permit, the driveway facility shall also be in accordance with the attached design sketch and " +
-                                  "subject to the following additional conditions stated below:")
-                                  .FontSize(fontSize);
-                            column.Item()
-                                  .PaddingTop(8)
-                                  .Container()
-                                  .Height(100)
-                                  .Border(0.25f);
-                            column.Item()
-                                  .BorderBottom(0.25f).Text("").FontSize(fontSize);
-                            column.Item()
-                                 .PaddingTop(8)
-                                 .AlignCenter()
-                                 .Text("Variance Documentation Justification")
-                                 .Bold()
-                                 .FontSize(fontSize+1);
-                            column.Item()
-                                  .PaddingTop(18)
-                                  .Text("(A variance to any requirement contained in the access management standards may be grnated if justified in" +
-                                  "accordance with an item below and approved by the district engineer, or the district engineer's designee.)")
-                                  .Bold()
-                                  .FontSize(fontSize+1);
-                            column.Item()
-                                  .PaddingTop(18)
-                                  .Text("For a Variance request, please indicate which of the below are applicable, as required by TAC §11.52(e):")
-                                  .FontSize(fontSize);
-                            column.Item()
-                                  .PaddingTop(8)
-                                  .Row(row =>
-                                  {
-                                      row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                      row.RelativeItem()
-                                         .Text("a significant negative impact to the owner's real property or its use will likely result from the denial of its request for the variance, " +
-                                          "including the loss of reasonable access to the property or undue hardship on a business located on the property.")
-                                         .FontSize(fontSize);                                     
-                                  });
-                            column.Item()
-                                  .Row(row =>
-                                  {
-                                      row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                      row.RelativeItem()
-                                         .Text("an unusual condition affecting the property exists that was not caused by the property owner and justifies the request for the variance.")
-                                         .FontSize(fontSize);
-                                  });
-                            column.Item()
-                                  .PaddingTop(8)
-                                  .Text("For the conditions selected above, provide written justification below. (Attach additional sheets, if needed)")
-                                  .FontSize(fontSize);
-                            column.Item()
-                                  .PaddingTop(2)
-                                  .Container()
-                                  .Height(70)
-                                  .Border(0.25f);
-                        });
+                    page.Content().Text("Content for Page 2");
                 });
 
                 // Page 3 ***************************************************
@@ -456,92 +325,7 @@ namespace AccessManagementLaredo_App.Services
                     });
 
                     // Content for Page 3
-                    page.Content()
-                        .Padding(20)
-                        .Column(column =>
-                        {
-                            column.Item()
-                                  .Text("For TXDOT use below:")
-                                  .ExtraBold()
-                                  .FontSize(fontSize);
-                            column.Item()
-                                  .Text("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-                                  .ExtraBold()
-                                  .FontSize(fontSize);
-                            column.Item()
-                                  .Text("For Variance denials, please indicate which of the below conditions, as provided in TAC §11.52(e), were determined:")
-                                  .FontSize(fontSize);
-                            column.Item()
-                                  .PaddingTop(8)
-                                  .Row(row =>
-                                  {
-                                      row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                      row.RelativeItem()
-                                         .Text("adversely affect the safety, design, construction, mobility, efficient operation, or maintenance of the highway; or")
-                                         .FontSize(fontSize);
-                                  });
-                            column.Item()
-                                  .PaddingTop(8)
-                                  .Row(row =>
-                                  {
-                                      row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                      row.RelativeItem()
-                                         .Text("likely impair the ability of the state or the department to receive funds for highway construction or maintenance from the federal government.")
-                                         .FontSize(fontSize);
-                                  });
-                            column.Item()
-                                  .PaddingTop(8)
-                                  .Text("For driveway permits to be issued under TAC §11.59:")
-                                  .FontSize(fontSize);
-                            column.Item()
-                                 .Row(row =>
-                                 {
-                                     row.AutoItem().Text("Is this driveway crossing an access denial line?").FontSize(fontSize);
-                                     row.ConstantItem(5);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);                                     
-                                     row.AutoItem().Text("YES").FontSize(fontSize);
-                                     row.ConstantItem(10);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                     row.AutoItem().Text("NO").FontSize(fontSize);
-                                 });
-                            column.Item()
-                                  .PaddingTop(8)
-                                  .Row(row =>
-                                  {
-                                     row.AutoItem().Text("(If Yes, is this a ").FontSize(fontSize);
-                                     row.ConstantItem(5);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                     row.AutoItem().Text("private driveway or a").FontSize(fontSize);
-                                     row.ConstantItem(5);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                     row.AutoItem().Text("commercial driveway?)").FontSize(fontSize);
-                                  });
-                            column.Item()
-                                 .PaddingTop(8)
-                                 .Row(row =>
-                                 {
-                                     row.AutoItem().Text("Private Driveway Fee:").FontSize(fontSize);
-                                     row.ConstantItem(5);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                     row.AutoItem().Text("$250").FontSize(fontSize);
-                                 });
-                            column.Item()
-                                 .PaddingTop(8)
-                                 .Row(row =>
-                                 {
-                                     row.AutoItem().Text("Commercial Driveway Fee:").FontSize(fontSize);
-                                     row.ConstantItem(5);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                     row.AutoItem().Text("$2,500").FontSize(fontSize);
-                                     row.ConstantItem(10);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                     row.AutoItem().Text("$10,000").FontSize(fontSize);
-                                     row.ConstantItem(10);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
-                                     row.AutoItem().Text("$25,000").FontSize(fontSize);
-                                 });
-
-                        });
+                    page.Content().Text("Content for Page 2");
                 });
 
             });
