@@ -47,8 +47,11 @@ namespace AccessManagementLaredo_App.Controllers
         [Authorize(Roles = "SUPERADMIN")]
         public IActionResult Index()
         {
-            IQueryable<ApplicationUser> users = _userManager.Users.Where(u => u.ContactRole == "AREAOFFICE" || 
-                u.ContactRole == "TRAFFIC" || u.ContactRole == "TPD").OrderBy(u => u.Email);
+            // Set users with specific roles to display in the list.
+            // The SUPERADMINS users will be displayed except the default "SuperAdmin".
+            IQueryable<ApplicationUser> users = _userManager.Users.Where(u => u.ContactRole == "GUEST" || 
+                u.ContactRole == "AREAOFFICE" || u.ContactRole == "TRAFFIC" || u.ContactRole == "TPD" || 
+                (u.ContactRole == "SUPERADMIN" && u.ContactFirstName != "SuperAdmin")).OrderBy(u => u.Email);
             return View(users);
         }
 

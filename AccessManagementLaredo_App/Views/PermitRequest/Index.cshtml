@@ -7,7 +7,7 @@
     var roles = userManager.GetRolesAsync(currentUser).Result;
     string currentUserRole = roles[0];
     string currentUserType = "";
-    if (currentUserRole == "TRAFFIC" || currentUserRole == "TPD" || currentUserRole == "AREAOFFICE")
+    if (currentUserRole == "TRAFFIC" || currentUserRole == "TPD" || currentUserRole == "AREAOFFICE" || currentUserRole == "SUPERADMIN")
         currentUserType = "INTERNAL";
     else
         currentUserType = "EXTERNAL";
@@ -32,7 +32,7 @@
 }
 
 @* Block for Grid *******************************************************************************************************************************@
-<kendo-grid name="permitRequestsGrid" height="720">
+<kendo-grid name="permitRequestsGrid" on-data-bound="onWorkOrderDataBound" height="720">
     <datasource type="DataSourceTagHelperType.Ajax" page-size="20" server-operation="true" >
         <transport>
             <read url="/PermitRequest/Read" />
@@ -42,7 +42,9 @@
             <model id="Id">
                 <fields>
                     <field name="Id" type="number" editable="false"></field>
-                    <field name="Number" type="String"></field>
+                    <field name="UserId" type="String" editable="false"></field>
+                    <field name="PermitRequestNumber" type="String"></field>
+                    <field name="RequestType" type="String" editable="false"></field>
                     <field name="RequestorFullName" type="String" editable="false"></field>
                     <field name="DateCreated" type="Date" editable="false"></field>
                     <field name="DateUpdated" type="Date" editable="false"></field>
@@ -68,14 +70,12 @@
     <columns>
         <column field="Id" title="Id" hidden=true />
         @* <column field="Number" template="#=template(data)#" title="Request Id" width="150" /> *@
-        <column field="Number" title="Request Id" width="150" />
-        <column field="RequestorFullName" title="Requestor Name" width="270" />
+        <column field="PermitRequestNumber" title="Request #" width="120" />
+        <column field="UserId" title="User Id" hidden=true />
+        <column field="RequestType" title="Request" width="120" />
+        <column field="RequestorFullName" title="Requestor Name" width="220" />
         <column field="DateCreated" title="Created on" format="{0:yyyy/MM/dd}" hidden=true width="170" />
-        <column field="DateUpdated" title="Last Updated" format="{0:yyyy/MM/dd}" width="170" />
-        <column field="StatusAreaOfficeCode" title="Status Area Office" hidden=true />
-        <column field="StatusTrafficCode" title="Status Traffic" hidden=true />
-        <column field="StatusTPDCode" title="Status TPD" hidden=true />
-        <column field="StatusExternalCode" title="Status External" hidden=true />
+        <column field="DateUpdated" title="Last Updated" format="{0:yyyy/MM/dd}" width="140" />
         @{
             if (currentUserType == "INTERNAL")
             {
@@ -113,13 +113,13 @@
 
         // Get the ID of the selected record
         var id = dataItem.Id;
-        //alert(id);
+        var reqType = dataItem.RequestType;
 
         // Redirect to the new view with the record ID
         if ("@currentUserType" == "INTERNAL") {
-            window.location.href = '@Url.Action("PermitRequestReview", "NewRequest")' + '?id=' + id;
+            window.location.href = '@Url.Action("PermitRequestReview", "NewRequest")' + '?id=' + id + '&type=' + reqType;
         } else { 
-            window.location.href = '@Url.Action("Index", "NewRequest")' + '?id=' + id;
+            window.location.href = '@Url.Action("Index", "NewRequest")' + '?id=' + id + '&type=' + reqType;
         }
     }
 
@@ -144,44 +144,27 @@
         grid.table.find("tr").each(function () {
             var dataItem = grid.dataItem(this);
 
-            $("td:contains('DRAFT')").addClass("status-css-draft");
-            $("td:contains('UNDER REVIEW')").addClass("status-css-under-review");
-            $("td:contains('AWAITING ACTION')").addClass("status-css-awaiting");
-            $("td:contains('RETURNED TO USER')").addClass("status-css-returned");
-            $("td:contains('APPROVED')").addClass("status-css-approved");
-            $("td:contains('N/A')").addClass("status-css-approved");
-            $("td:contains('COMPLETE')").addClass("status-css-complete");
+            // $("td:contains('DRAFT')").addClass("status-css-draft");
+            // $("td:contains('UNDER REVIEW')").addClass("status-css-under-review");
+            // $("td:contains('AWAITING ACTION')").addClass("status-css-awaiting");
+            // $("td:contains('RETURNED TO USER')").addClass("status-css-returned");
+            // $("td:contains('APPROVED')").addClass("status-css-approved");
+            // $("td:contains('N/A')").addClass("status-css-approved");
+            // $("td:contains('COMPLETE')").addClass("status-css-complete");
 
-            // // Check if edit button will be disabled
-            // // Column 6 is for status and column 8 is for edit and delete buttons
-            // if (this.cells.item(6).innerHTML == "CREATED") {
-            //     if ("@currentUserRole" == "ENGINEER" || "@currentUserRole" == "ADMIN")
-            //         this.cells.item(8).getElementsByClassName("k-grid-edit")[0].setAttribute("disabled", true);
-            //     if ("@currentUserRole" == "ADMIN")
-            //         this.cells.item(8).getElementsByClassName("k-grid-delete")[0].setAttribute("disabled", true);
-            // }
-            // else if (this.cells.item(6).innerHTML == "AREA ENGINEER") {
-            //     if ("@currentUserRole" == "USER" || "@currentUserRole" == "ADMIN") {
-            //         this.cells.item(8).getElementsByClassName("k-grid-edit")[0].setAttribute("disabled", true);
-            //         this.cells.item(8).getElementsByClassName("k-grid-delete")[0].setAttribute("disabled", true);
-            //     }
-            // }
-            // else if (this.cells.item(6).innerHTML == "REQUESTED") {
-            //     if ("@currentUserRole" == "USER" || "@currentUserRole" == "SUPERVISOR" || "@currentUserRole" == "ENGINEER")
-            //         this.cells.item(8).getElementsByClassName("k-grid-edit")[0].setAttribute("disabled", true);
-            //     if ("@currentUserRole" == "SUPERVISOR")
-            //         this.cells.item(8).getElementsByClassName("k-grid-delete")[0].setAttribute("disabled", true);
-            // }
-            // else if (this.cells.item(6).innerHTML == "APPROVED" || this.cells.item(6).innerHTML == "RECEIVED" || this.cells.item(6).innerHTML == "INSTALLED") {
-            //     if ("@currentUserRole" == "ENGINEER")
-            //         this.cells.item(8).getElementsByClassName("k-grid-edit")[0].setAttribute("disabled", true);
-            //     if ("@currentUserRole" == "USER" || "@currentUserRole" == "SUPERVISOR" || "@currentUserRole" == "ENGINEER")
-            //         this.cells.item(8).getElementsByClassName("k-grid-delete")[0].setAttribute("disabled", true);
-            // }
-
-
-            // if ("@currentUserRole" == "USER" || "@currentUserRole" == "ENGINEER")
-            //     $(".k-grid-delete").attr("disabled", true);
+            // Check if edit button will be disabled. 
+            // For external users, column 7 is for status and column 8 is for buttons
+            // For internal users, column 7 is for status and column 10 is for buttons
+            if ("@currentUserType" == "EXTERNAL") {
+                if (this.cells.item(7).innerHTML == "UNDER REVIEW" || this.cells.item(7).innerHTML == "APPROVED") {
+                    this.cells.item(8).getElementsByClassName("k-grid-Edit")[0].setAttribute("disabled", true);
+                }
+            }
+            else {
+                if (this.cells.item(7).innerHTML == "RETURNED TO USER") {
+                    this.cells.item(10).getElementsByClassName("k-grid-Edit")[0].setAttribute("disabled", true);
+                }
+            }
 
             kendo.bind($(this), dataItem);
         });

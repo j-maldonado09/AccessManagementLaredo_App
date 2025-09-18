@@ -7,7 +7,7 @@
 	var roles = userManager.GetRolesAsync(currentUser).Result;
 	string currentUserRole = roles[0];
 	string currentUserType = "";
-	if (currentUserRole == "TRAFFIC" || currentUserRole == "TPD" || currentUserRole == "AREAOFFICE")
+	if (currentUserRole == "TRAFFIC" || currentUserRole == "TPD" || currentUserRole == "AREAOFFICE" || currentUserRole == "SUPERADMIN")
 		currentUserType = "INTERNAL";
 	else
 		currentUserType = "EXTERNAL";
@@ -20,7 +20,7 @@
 @* Form 1058 *********************************************************************************************************************************** *@
 <div id="fourthBlock1058">
 	<h3>Requestor Information</h3>
-	<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 		<b class="pt-3">Name: </b>
 		<label id="reviewFirstName" ></label>
 		<label id="reviewLastName" ></label>
@@ -50,14 +50,35 @@
 		<br />
 		<b class="pt-3">Longitude: </b>
 		<label id="reviewLongitude" ></label>
+		<br	/>
+		<div class="form-group pt-3 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-8">
+			<div id="reviewMap" style="width: 80%; height: 330px;"></div>
+		</div>
 		<br />
 		<br />
 		<h3>Additional Information</h3>
+		<label id="reviewRepName" style="display:none;"></label>
+		<label id="reviewRepPhone" style="display:none;"></label>
 		<b class="pt-3">Estimated construction start date: </b>
 		<label id="reviewConstructionStartDate"></label>
 		<br />
 		<b class="pt-3">Is this parcel in current litigation with the State of Texas? </b>
 		<label id="reviewLitigation"></label>
+		<br />
+		<b class="pt-3">Is the Permittee or a family member of Permittee an employee or official of the Texas Department of Transportation? </b>
+		<label id="reviewFamilyMember"></label>
+		<br />
+		<b class="pt-3">&emsp;If yes, name of employee or official: </b>
+		<label id="reviewFamilyMemberName"></label>
+		<br />
+		<b class="pt-3">
+			Does an employee or official of the Texas Department of Transportation serve as an employee or officer of Permittee or own a controlling
+			interest in Permittee?
+		</b>
+		<label id="reviewOfficial"></label>
+		<br />
+		<b class="pt-3">&emsp;If yes, name of employee or official: </b>
+		<label id="reviewOfficialName"></label>
 		<br />
 		<b class="pt-3">Construct or Reconstruct: </b>
 		<label id="reviewConstructReconstruct"></label>
@@ -76,9 +97,10 @@
 	<table class="table table-borderless pt-3" id="attachmentsTable">
 		<thead style="background-color:#353535; color:white">
 			<tr>
-				<th style="width:20%">Attachment Type</th>
-				<th style="width:30%">Attachment File</th>
+				<th style="width:15%">Attachment Type</th>
+				<th style="width:25%">Attachment File</th>
 				<th style="width:50%">Comment</th>
+				<th style="width:10%">Include in Package</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -87,9 +109,135 @@
 	</table>
 </div>
 
+@* Residential Sketch *********************************************************************************************************************************** *@
+<div id="fourthBlockResidential">
+	<br />
+	<hr />
+	<br />
+	<h3>Sketch Measurements</h3>
+	<div class="row pt-4" style="max-width:65%; margin:auto">
+		<img src="~/images/ResidentialSketch.png" />
+	</div>
+	<div class="row pt-3">
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>1. Length of pipe required: </b>
+			<label id="reviewLengthPipe"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>2. Driveway width: </b>
+			<label id="reviewDrivewayWidth"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>3. Distance to center of drainage structure: </b>
+			<label id="reviewDistanceDrainage"></label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>4. Distance from edge of pavement to ROW: </b>
+			<label id="reviewDistancePavement"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>5. Radius: </b>
+			<label id="reviewRadiusOne"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>6. Radius: </b>
+			<label id="reviewRadiusTwo"></label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>7. Driveway drainage pipe: </b>
+			<label id="reviewDrivewayPipe"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>8. Drainage structure: </b>
+			<label id="reviewDrainageStructure"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>9. Set back width at gate: </b>
+			<label id="reviewSetBack"></label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>10. Width starting at ROW: </b>
+			<label id="reviewWidthROW"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<b>11. Throat length: </b>
+			<label id="reviewThroatLength"></label>
+		</div>
+		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+		</div>
+	</div>
+	<br />
+	<br />
+	<hr style="height:5px; background-color:black" />
+    <br />
+
+	@* 	<div class="row">
+		<br />
+		<br />
+		<h4>Additional comments: </h4>
+		<kendo-textarea id="commentsTextArea" name="commentsTextArea" rows="5">
+		</kendo-textarea>
+		<br />
+	</div>
+	<br /> *@
+	@* <div class="text-center pt-4">
+		<button type="button" id="secondBackButton" class="btn btn-danger" onclick="backButtonGeneral('thirdBlockResidential')"> &nbsp;&nbsp;&nbsp; Back &nbsp;&nbsp;&nbsp; </button>
+		&nbsp;
+		<kendo-button id="submitButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="buttonSubmit"> &nbsp;&nbsp;&nbsp; Submit &nbsp;&nbsp;&nbsp; </kendo-button>
+	</div> *@
+</div>
+
+@* Industrial questionnarie *********************************************************************************************************************************** *@
+<div id="fourthBlockIndustrial">
+	<br />
+	<h3>Additional Information</h3>
+	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+		<b class="pt-3">Purpose of request: </b>
+		<br />
+		<label id="reviewPurpose"></label>
+		<br />
+		<b class="pt-3">Proposed use of the driveway: </b>
+		<br />
+		<label id="reviewUseOfDriveway"></label>
+		<br />
+		<b class="pt-3">Background: </b>
+		<br />
+		<label id="reviewBackground"></label>
+		<br />
+		<b class="pt-3">Participants in the request process: </b>
+		<br />
+		<label id="reviewParticipants"></label>
+		<br />
+		<b class="pt-3">Funding Contributions: </b>
+		<br />
+		<label id="reviewFunding"></label>
+		<br />
+		<b class="pt-3">Environmental status: </b>
+		<br />
+		<label id="reviewEnvironmentalStatus"></label>
+		<br />
+		<b class="pt-3">Right of Way status: </b>
+		<br />
+		<label id="reviewROWStatus"></label>
+		<br />
+		<br />
+		<hr style="height:5px; background-color:black" />
+        <br />
+	</div>
+</div>
+
+@* Energy questionnaire ***************************************************************************************************************************************** *@
+<div id="fourthBlockEnergy">
+</div>
+
 @* Form 1058 (District use ONLY) *************************************************************************************************** *@
 <div id="secondBlockDistrict">
-	<hr />
 	<div class="row pt-4">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 			<h3 for="accessDrivewayPolicyHeader">Access Driveway Policy</h3>
@@ -191,6 +339,19 @@
 		</div>
 	</div>
 	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+			<label for="controlLabel">Control</label>
+			<kendo-textbox id="controlTextBox" name="controlTextBox">
+			</kendo-textbox>
+		</div>
+		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+			<label for="sectionLabel">Section</label>
+			<kendo-textbox id="sectionTextBox" name="sectionTextBox">
+			</kendo-textbox>
+		</div>
+	</div>
+	<br />
+	<div class="row">
 		<div>
 			<p>
 				For Variance denials, please indicate which of the below conditions, as provided in TAC §11.52(e), were determined:
@@ -211,106 +372,106 @@
 	</div>
 	<br />
 	<hr />
+
+	<div class="row">
+		<div>
+			<p>
+				For driveway permits to be issued under TAC §11.59:
+			</p>
+		</div>
+		<br />
+		<div>
+			<p>
+				Is this driveway crossing an access denial line?
+			</p>
+		</div>
+	</div>
+	<div >
+		<kendo-radiogroup id="drivewayCrossingRadio" name="drivewayCrossingRadio" radio-name="radiogroup1" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+			<kendo-radiogroup-items>
+				<kendo-radiogroup-item label="Yes" value="Yes"></kendo-radiogroup-item>
+				<kendo-radiogroup-item label="No" value="No"></kendo-radiogroup-item>
+			</kendo-radiogroup-items>
+		</kendo-radiogroup>
+	</div>
+	<br />
+	<div class="row">
+		<div>
+			<p>
+				If yes, is this a private driveway or commercial driveway?
+			</p>
+		</div>
+	</div>
+	<div >
+		<kendo-radiogroup id="drivewayTypeRadio" name="drivewayTypeRadio" radio-name="radiogroup2" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+			<kendo-radiogroup-items>
+				<kendo-radiogroup-item label="Private" value="Private"></kendo-radiogroup-item>
+				<kendo-radiogroup-item label="Commercial" value="Commercial"></kendo-radiogroup-item>
+			</kendo-radiogroup-items>
+		</kendo-radiogroup>
+	</div>
+	<br />
+	<div class="row">
+		<div>
+			<p>
+				Private Driveway Fee:
+			</p>
+		</div>
+	</div>
+	<div >
+		<kendo-radiogroup id="drivewayFeeOneRadio" name="drivewayFeeOneRadio" radio-name="radiogroup3" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+			<kendo-radiogroup-items>
+				<kendo-radiogroup-item label="$250" value="250"></kendo-radiogroup-item>
+			</kendo-radiogroup-items>
+		</kendo-radiogroup>
+	</div>
+	<br />
+	<div class="row">
+		<div>
+			<p>
+				Commercial Driveway Fee:
+			</p>
+		</div>
+	</div>
+	<div >
+		<kendo-radiogroup id="drivewayFeeTwoRadio" name="drivewayFeeTwoRadio" radio-name="radiogroup4" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+			<kendo-radiogroup-items>
+				<kendo-radiogroup-item label="$2,500" value="2500"></kendo-radiogroup-item>
+				<kendo-radiogroup-item label="$10,000" value="10000"></kendo-radiogroup-item>
+				<kendo-radiogroup-item label="$25,000" value="25000"></kendo-radiogroup-item>
+			</kendo-radiogroup-items>
+		</kendo-radiogroup>
+	</div>
+	<br />
+	<div class="row">
+		<div>
+			<p>
+				Signature:
+			</p>
+		</div>
+	</div>
+	<div >
+		<kendo-radiogroup id="issuanceRadio" name="issuanceRadio" radio-name="radiogroup5" value="1" layout="RadioGroupLayout.Vertical" label-position="RadioGroupLabelPosition.After">
+			<kendo-radiogroup-items>
+				<kendo-radiogroup-item label="Issuance of permit that crosses an access denial line" value="Issuance1"></kendo-radiogroup-item>
+				<kendo-radiogroup-item label="Issuance of permit that does not cross an access denial line" value="Issuance2"></kendo-radiogroup-item>
+				<kendo-radiogroup-item label="Issuance as per Variance to AMM" value="Issuance3"></kendo-radiogroup-item>
+				<kendo-radiogroup-item label="Denial" value="Denial"></kendo-radiogroup-item>
+			</kendo-radiogroup-items>
+		</kendo-radiogroup>
+	</div>
+	<br />
+	<hr />
 	@* <div class="text-center">
 	<kendo-button id="firstNextButton" theme-color="ThemeColor.Primary" size="ComponentSize.Large" on-click="firstButtonNext"> &nbsp;&nbsp;&nbsp; Next &nbsp;&nbsp;&nbsp; </kendo-button>
 	</div> *@
-</div>
-
-@* Residential Sketch *********************************************************************************************************************************** *@
-<div id="fourthBlockResidential">
-	<br />
-	<br />
-	<h3>Sketch Measurements</h3>
-	<div class="row pt-4" style="max-width:65%; margin:auto">
-		<img src="~/images/ResidentialSketch.png"/>
-	</div>
-	<div class="row pt-3">
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>1. Length of pipe required: </b>
-			<label id="reviewLengthPipe"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>2. Driveway width: </b>
-			<label id="reviewDrivewayWidth"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>3. Distance to center of drainage structure: </b>
-			<label id="reviewDistanceDrainage"></label>
-		</div>
-	</div>
-	<div class="row">
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>4. Distance from edge of pavement to ROW: </b>
-			<label id="reviewDistancePavement"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>5. Radius: </b>
-			<label id="reviewRadiusOne"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>6. Radius: </b>
-			<label id="reviewRadiusTwo"></label>
-		</div>
-	</div>
-	<div class="row">
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>7. Driveway drainage pipe: </b>
-			<label id="reviewDrivewayPipe"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>8. Drainage structure: </b>
-			<label id="reviewDrainageStructure"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>9. Set back width at gate: </b>
-			<label id="reviewSetBack"></label>
-		</div>
-	</div>
-	<div class="row">
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>10. Width starting at ROW: </b>
-			<label id="reviewWidthROW"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>11. Throat length: </b>
-			<label id="reviewThroatLength"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-		</div>
-	</div>
-	<br />
-	<br />
-	<hr style="height:5px; background-color:black" />
-
-@* 	<div class="row">
-		<br />
-		<br />
-		<h4>Additional comments: </h4>
-		<kendo-textarea id="commentsTextArea" name="commentsTextArea" rows="5">
-		</kendo-textarea>
-		<br />
-	</div>
-	<br /> *@
-	@* <div class="text-center pt-4">
-		<button type="button" id="secondBackButton" class="btn btn-danger" onclick="backButtonGeneral('thirdBlockResidential')"> &nbsp;&nbsp;&nbsp; Back &nbsp;&nbsp;&nbsp; </button>
-		&nbsp;
-		<kendo-button id="submitButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="buttonSubmit"> &nbsp;&nbsp;&nbsp; Submit &nbsp;&nbsp;&nbsp; </kendo-button>
-	</div> *@
-</div>
-
-@* Industrial questionnarie *********************************************************************************************************************************** *@
-<div id="fourthBlockIndustrial" hidden>
-</div>
-
-@* Energy questionnaire ***************************************************************************************************************************************** *@
-<div id="fourthBlockEnergy" hidden>
 </div>
 
 @* Block for Traffic and TPD Requirements and buttons ************************************************************************************************************* *@
 <div id="lastBlock">
 	<div>
 		<div>
-			<h4>Additional Revision</h4>
+			<h4>Additional Internal Revision</h4>
 			<br />
 			<h5>TxDOT-Only Comments</h5>
 			<br/>
@@ -338,25 +499,37 @@
 	</div>
 	
 	@{
-		if (currentUserRole == "AREAOFFICE")
+		if (currentUserRole == "AREAOFFICE" || currentUserRole == "SUPERADMIN")
 		{
-					<div>
-						<hr style="height:5px; background-color:black" />
-						<br />
-						<h4>Revision comments</h4>
-						<kendo-textarea id="finalCommentsTextArea" rows="5">
-						</kendo-textarea>
-						<br/>
-						<br/>
-					</div>
-					<div class="text-center">
-						<kendo-button id="rejectButton" theme-color="ThemeColor.Error" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="reject"> &nbsp;&nbsp;&nbsp; Reject &nbsp;&nbsp;&nbsp; </kendo-button>
-						&nbsp;
-						<kendo-button id="approveButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="approve"> &nbsp;&nbsp;&nbsp; Approve &nbsp;&nbsp;&nbsp; </kendo-button>
-						&nbsp;
-						<kendo-button id="exportPdfButton" theme-color="ThemeColor.Success" size="ComponentSize.Medium" on-click="createPdf" > &nbsp;&nbsp;&nbsp; Generate PDF &nbsp;&nbsp;&nbsp; </kendo-button>
+			<div>
+				<hr style="height:5px; background-color:black" />
+				<br />
+				<h4>Revision comments for applicant</h4>
+				<kendo-textarea id="finalCommentsTextArea" rows="5">
+				</kendo-textarea>
+				<br/>
+				<br/>
+			</div>
+			<div class="text-center">
+				<kendo-button id="rejectButton" theme-color="ThemeColor.Error" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="reject"> &nbsp;&nbsp;&nbsp; Reject &nbsp;&nbsp;&nbsp; </kendo-button>
+				&nbsp;
+				<kendo-button id="approveButton" theme-color="ThemeColor.Success" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="approve"> &nbsp;&nbsp;&nbsp; Approve &nbsp;&nbsp;&nbsp; </kendo-button>
+			</div> 
 
-						</div>
+			<div>
+				<br/>
+				<br/>
+				<hr style="height:5px; background-color:black" />
+				<br />
+				<h4>Generate Documents</h4>
+				<br/>
+			</div>
+			<div class="text-center">
+				<kendo-button id="pdfForm1058Button" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="form1058"> &nbsp;&nbsp;&nbsp; Form 1058 &nbsp;&nbsp;&nbsp; </kendo-button>
+				&nbsp;
+				@*<kendo-button id="pdfFinalPackageButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="finalPackage"> &nbsp;&nbsp;&nbsp; Final Package &nbsp;&nbsp;&nbsp; </kendo-button>*@
+				<kendo-button id="pdfFinalPackageButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" > &nbsp;&nbsp;&nbsp; Final Package &nbsp;&nbsp;&nbsp; </kendo-button>
+			</div> 
 
 					@* <br />
 			<div class="text-center">
@@ -376,30 +549,50 @@
 <script>
 	// Variables ******************************************************
 	var permitRequestId = 0;
+	var permitRequestNumber = 0;
+	var reviewAction = '';
+	var jsonResult;					// used to store Read-only data from PermitRequest
+    var currentUserRole = '@currentUserRole';
 
 	// Document ready *******************************************************************************************************************
 	$(document).ready(function () { 
 		var urlParams = new URLSearchParams(window.location.search);
 		permitRequestId = urlParams.get('id');
+		requestTypeName = urlParams.get('type');
 		readResidentialReview(permitRequestId);
+		//alert(requestTypeName);
 
-		if ("@currentUserRole" !== "AREAOFFICE") {
+        // Show or hide additional revision checkboxes based on user role
+		if (currentUserRole != "AREAOFFICE" && currentUserRole != "SUPERADMIN") {
 			$("#checkboxesAdditionalRevision").hide();
 		}
 		else { 
 			$("#checkboxesAdditionalRevision").show();
 		}
+
+		// Show or hide revision blocks based on reqauest type
+		$("#fourthBlockResidential").hide();
+		$("#fourthBlockIndustrial").hide();
+		$("#fourthBlockEnergy").hide();
+
+		if (requestTypeName == "Residential") {
+			$("#fourthBlockResidential").show();
+		}
+		else if (requestTypeName == "Commercial") {
+			$("#fourthBlockIndustrial").show();
+		}
+		else if (requestTypeName == "Energy") {
+			$("#fourthBlockEnergy").show();
+        }
 	});
 
 	// Reads and calls function that displays information for internal reveiew **********************************************************
 	function readResidentialReview(permitRequestId) {
-		var jsonResult;
-
 		$.ajax({
 			type: 'GET',
 			url: '/NewRequest/ReadPermitRequests',
 			contentType: 'application/json; charset=utf-8',
-			data: { id: permitRequestId },
+			data: { id: permitRequestId, reqType: requestTypeName },
 			success: function (result) {
 				//fnShowMessage("Notification sent", "Success");
 				jsonResult = jQuery.parseJSON(result);
@@ -415,16 +608,16 @@
 
 	//  *****************************************************************************************************
 	function updateResidentialReview(e) {
-
-		var reviewAction = e.sender.element.data('param');
+		reviewAction = e.sender.element.data('param');
+		var redirectUrl = '@Url.Action("Index", "PermitRequest")';
 		var comment;
 
-		if (reviewAction == 'review') { 
+		if (reviewAction == 'review') {
 			comment = $("#txDOTCommentsTextArea").val();
-		} 
-		else { 
-			comment = $("#finalCommentsTextArea").val();
 		}
+		else {
+			comment = $("#finalCommentsTextArea").val();
+		}	
 
 		var obj = {
 			PermitRequestId : parseInt(permitRequestId),
@@ -434,6 +627,13 @@
 			VarianceJustification: $("#varianceTextArea").val(),
 			VarianceDenialOneFlag: $("#varianceDenialOneCheckbox").prop('checked'),
 			VarianceDenialTwoFlag: $("#varianceDenialTwoCheckbox").prop('checked'),
+			Control: $("#controlTextBox").val(),
+			Section: $("#sectionTextBox").val(),
+			DrivewayCrossingFlag: $("#drivewayCrossingRadio").data("kendoRadioGroup").value(),
+			DrivewayTypeFlag: $("#drivewayTypeRadio").data("kendoRadioGroup").value(),
+			DrivewayFeeOneFlag: $("#drivewayFeeOneRadio").data("kendoRadioGroup").value(),
+			DrivewayFeeTwoFlag: $("#drivewayFeeTwoRadio").data("kendoRadioGroup").value(),
+			IssuanceFlag: $("#issuanceRadio").data("kendoRadioGroup").value(),
 			RequiresTraffic: $("#requiresTrafficCheckbox").prop('checked'),
 			RequiresTPD: $("#requiresTPDCheckbox").prop('checked'),
 			Comment: comment,
@@ -452,7 +652,12 @@
 				fnShowMessage(xhr.responseText, "Error");
 			},
 			complete: function () {
-				window.location.href = '@Url.Action("Index", "PermitRequest")';
+				if (reviewAction != 'form1058' && reviewAction != 'finalPackage') {
+					window.location.href = redirectUrl;
+				}
+				else {
+					createPdf();
+				}
 			}
 		});
 
@@ -460,6 +665,12 @@
 
 	// Get record information to display for internal review *************************************************************************
 	function loadReviewPermitData(jsonResult) {
+        permitRequestNumber = jsonResult[0].PermitRequestNumber;
+
+		var lat = parseFloat(jsonResult[0].Latitude);
+		var lng = parseFloat(jsonResult[0].Longitude);
+
+
 		$("#reviewFirstName").text(jsonResult[0].RequestorFirstName + ' ');
 		$("#reviewLastName").text(jsonResult[0].RequestorLastName);
 		$("#reviewAddress").text(jsonResult[0].RequestorAddress);
@@ -473,9 +684,15 @@
 		$("#reviewLatitude").text(jsonResult[0].Latitude);
 		$("#reviewLongitude").text(jsonResult[0].Longitude);
 		$("#reviewConstructionStartDate").text(jsonResult[0].ConstructionStartDate);
+		$("#reviewRepName").text(jsonResult[0].StateRepresentativeName);
+		$("#reviewRepPhone").text(jsonResult[0].StateRepresentativePhoneNumber);
 
 		$("#reviewLitigation").text(jsonResult[0].LitigationFlag);
-		$("#reviewConstructReconstruct").text(jsonResult[0].ConstructionFlag);
+		$("#reviewFamilyMember").text(jsonResult[0].FamilyMemberFlag);
+		$("#reviewFamilyMemberName").text(jsonResult[0].FamilyMemberName?.trim() ? jsonResult[0].FamilyMemberName : "N/A");
+		$("#reviewOfficial").text(jsonResult[0].OfficialFlag);
+		$("#reviewOfficialName").text(jsonResult[0].OfficialName?.trim() ? jsonResult[0].OfficialName : "N/A");
+		$("#reviewConstructReconstruct").text(jsonResult[0].ConstructionFlag.toUpperCase());
 		$("#reviewConstructionType").text(jsonResult[0].ConstructionTypeName);
 		$("#otherConditionsTextArea").data("kendoTextArea").value(jsonResult[0].OtherConditions);
 
@@ -487,22 +704,88 @@
 		$("#varianceDenialOneCheckbox").data("kendoCheckBox").check(jsonResult[0].VarianceDenialOneFlag);
 		$("#varianceDenialTwoCheckbox").data("kendoCheckBox").check(jsonResult[0].VarianceDenialTwoFlag);
 
-		$("#reviewLengthPipe").text(jsonResult[0].PipeLength);
-		$("#reviewDrivewayWidth").text(jsonResult[0].DrivewayWidth);
-		$("#reviewDistanceDrainage").text(jsonResult[0].DistanceToCenter);
-		$("#reviewDistancePavement").text(jsonResult[0].DistanceFromEdge);
-		$("#reviewRadiusOne").text(jsonResult[0].RadiusOne);
-		$("#reviewRadiusTwo").text(jsonResult[0].RadiusTwo);
-		$("#reviewDrivewayPipe").text(jsonResult[0].DrainagePipe);
-		$("#reviewDrainageStructure").text(jsonResult[0].DrainageStructure);
-		$("#reviewSetBack").text(jsonResult[0].WidthGate);
-		$("#reviewWidthROW").text(jsonResult[0].WidthROW);
-		$("#reviewThroatLength").text(jsonResult[0].ThroatLength);
+		$("#controlTextBox").data("kendoTextBox").value(jsonResult[0].Control);
+		$("#sectionTextBox").data("kendoTextBox").value(jsonResult[0].Section);
+
+		$("#drivewayCrossingRadio").data("kendoRadioGroup").value(jsonResult[0].DrivewayCrossingFlag);
+		$("#drivewayTypeRadio").data("kendoRadioGroup").value(jsonResult[0].DrivewayTypeFlag);
+		$("#drivewayFeeOneRadio").data("kendoRadioGroup").value(jsonResult[0].DrivewayFeeOneFlag);
+		$("#drivewayFeeTwoRadio").data("kendoRadioGroup").value(jsonResult[0].DrivewayFeeTwoFlag);
+		$("#issuanceRadio").data("kendoRadioGroup").value(jsonResult[0].IssuanceFlag);
+
+		switch (requestTypeName) {
+			case 'Residential':
+				loadReviewPermitDataResidential(jsonResult);
+				break;
+			case 'Commercial':
+				loadReviewPermitDataCommercial(jsonResult);
+				break;
+		}
+
+		// $("#reviewLengthPipe").text(jsonResult[0].PipeLength + ' ft');
+		// $("#reviewDrivewayWidth").text(jsonResult[0].DrivewayWidth + ' ft');
+		// $("#reviewDistanceDrainage").text(jsonResult[0].DistanceToCenter + ' ft');
+		// $("#reviewDistancePavement").text(jsonResult[0].DistanceFromEdge + ' ft');
+		// $("#reviewRadiusOne").text(jsonResult[0].RadiusOne + ' ft');
+		// $("#reviewRadiusTwo").text(jsonResult[0].RadiusTwo + ' ft');
+		// $("#reviewDrivewayPipe").text(jsonResult[0].DrainagePipe + ' ft');
+		// $("#reviewDrainageStructure").text(jsonResult[0].DrainageStructure + ' ft');
+		// $("#reviewSetBack").text(jsonResult[0].WidthGate + ' ft');
+		// $("#reviewWidthROW").text(jsonResult[0].WidthROW + ' ft');
+		// $("#reviewThroatLength").text(jsonResult[0].ThroatLength + ' ft');
 
 		$("#requiresTrafficCheckbox").data("kendoCheckBox").check(jsonResult[0].RequiresTraffic);
 		$("#requiresTPDCheckbox").data("kendoCheckBox").check(jsonResult[0].RequiresTPD);
 
+		$("#reviewMap").kendoMap({
+			center: [lat, lng],
+			zoom: 14,
+			layers: [{
+				type: 'tile',
+				urlTemplate: 'https://#= subdomain #.tile.openstreetmap.org/#= zoom #/#= x #/#= y #.png',
+				subdomains: ['a', 'b', 'c'],
+				attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap contributors</a>'
+			}],
+			markerDefaults: {
+				tooltip: {
+					content: "Permit Location"
+				}
+			},
+			markers: [{
+				location: [lat, lng],
+				shape: "pinTarget"
+			}]
+		});
+
 		loadPermitRequestAttachments(jsonResult[0].Attachments);
+	}
+
+	// Loads values from residential request table into the labels for information review step **************************************************************************
+	// This function gets called from the general request function to complete the fields to fill in depending on the request type
+	function loadReviewPermitDataResidential(jsonResult) {
+		$("#reviewLengthPipe").text(jsonResult[0].PipeLength + ' ft');
+		$("#reviewDrivewayWidth").text(jsonResult[0].DrivewayWidth + ' ft');
+		$("#reviewDistanceDrainage").text(jsonResult[0].DistanceToCenter + ' ft');
+		$("#reviewDistancePavement").text(jsonResult[0].DistanceFromEdge + ' ft');
+		$("#reviewRadiusOne").text(jsonResult[0].RadiusOne + ' ft');
+		$("#reviewRadiusTwo").text(jsonResult[0].RadiusTwo + ' ft');
+		$("#reviewDrivewayPipe").text(jsonResult[0].DrainagePipe + ' ft');
+		$("#reviewDrainageStructure").text(jsonResult[0].DrainageStructure + ' ft');
+		$("#reviewSetBack").text(jsonResult[0].WidthGate + ' ft');
+		$("#reviewWidthROW").text(jsonResult[0].WidthROW + ' ft');
+		$("#reviewThroatLength").text(jsonResult[0].ThroatLength + ' ft');
+	}
+
+	// Loads values from commercial request table into the labels for information review step **************************************************************************
+	// This function gets called from the general request function to complete the fields to fill in depending on the request type
+	function loadReviewPermitDataCommercial(jsonResult) {
+		$("#reviewPurpose").text(jsonResult[0].Purpose);
+		$("#reviewUseOfDriveway").text(jsonResult[0].UseDriveway);
+		$("#reviewBackground").text(jsonResult[0].Background);
+		$("#reviewParticipants").text(jsonResult[0].Participants);
+		$("#reviewFunding").text(jsonResult[0].Funding);
+		$("#reviewEnvironmentalStatus").text(jsonResult[0].EnvironmentalStatus);
+		$("#reviewROWStatus").text(jsonResult[0].ROWStatus);
 	}
 
 	// Get attachments from permit request *************************************************************************
@@ -513,10 +796,14 @@
 
 		for (var i = 1; i <= attachments.length; i++) {
 			var anchor = '<a href="' + attachmentsFolderUrl + attachments[i - 1].AttachmentName + '" target="_blank">' + attachments[i - 1].AttachmentName + '</a>';
+			var checkbox = '<input type="checkbox"' + (attachments[i - 1].IsIncluded ? 'checked' : '') + ' />';
+
+			
 			var row = '<tr>';
 			row += '<td>' + attachments[i - 1].AttachmentTypeName + '</td>';
 			row += '<td>' + anchor + '</td>';
 			row += '<td>' + attachments[i - 1].AttachmentComment + '</td>';
+			row += '<td style="text-align:center;">' + checkbox + '</td>';
 			row += '</tr>';
 
 			tableBody.append(row);
@@ -524,30 +811,101 @@
 			// $('#attachmentsDiv').append(
 			// 	'<a href="' + attachmentsFolderUrl + attachments[i - 1].AttachmentName + 
 			// 	'" target="_blank">' + attachments[i - 1].AttachmentName + '</a><br />');
-
-
-			
 		}
+	}
+
+	// Function that gets the data from the review labels ***********************************************************************************
+    // It is being used to send the data to create the PDF
+	function getPermitRequestData(){
+		var permitRequestData = {
+			PermitRequestHelperModel: {
+				PermitRequestId: parseInt(permitRequestId),
+				PermitRequestNumber: permitRequestNumber,
+				HighwayId: 0,
+				HighwayName: $("#reviewRoadwayNumber").text(),
+				SubmitDate: '0001-01-01',
+				ConstructionTypeId: 0,
+				ConstructionTypeName: $("#reviewConstructionType").text(),
+				HighwayPrefixId: 0,
+				HighwayPrefixName: $("#reviewRoadwayPrefix").text(),
+				RequestType: 'x',
+				CountyId: 0,
+				CountyName: $("#reviewCounty").text(),
+				DistrictId: 1,
+				RequestorFirstName: $("#reviewFirstName").text(),
+				RequestorLastName: $("#reviewLastName").text(),
+				RequestorAddress: $("#reviewAddress").text(),
+				RequestorCity: $("#reviewCity").text(),
+				RequestorZipCode: $("#reviewZipCode").text(),
+				RequestorState: $("#reviewState").text(),
+				RequestorPhoneNumber: $("#reviewPhone").text(),
+				Longitude: $("#reviewLongitude").text(),
+				Latitude: $("#reviewLatitude").text(),
+				ConstructionStartDate: $("#reviewConstructionStartDate").text(),
+				StateRepresentativeName: $("#reviewRepName").text(),
+				StateRepresentativePhoneNumber: $("#reviewRepPhone").text(),
+				LitigationFlag: $("#reviewLitigation").text(),
+				FamilyMemberFlag: $("#reviewFamilyMember").text(),
+				FamilyMemberName: $("#reviewFamilyMemberName").text(),
+				OfficialFlag: $("#reviewOfficial").text(),
+				OfficialName: $("#reviewOfficialName").text(),
+				ConstructionFlag: $("#reviewConstructReconstruct").text()
+            },
+			PermitRequestInternalReviewHelperModel: {
+				PermitRequestId: parseInt(permitRequestId),
+				OtherConditions: $("#otherConditionsTextArea").val(),
+				VarianceOneFlag: $("#varianceOneCheckbox").prop('checked'),
+				VarianceTwoFlag: $("#varianceTwoCheckbox").prop('checked'),
+				VarianceJustification: $("#varianceTextArea").val(),
+				VarianceDenialOneFlag: $("#varianceDenialOneCheckbox").prop('checked'),
+				VarianceDenialTwoFlag: $("#varianceDenialTwoCheckbox").prop('checked'),
+				Control: $("#controlTextBox").val(),
+				Section: $("#sectionTextBox").val(),
+				DrivewayCrossingFlag: $("#drivewayCrossingRadio").data("kendoRadioGroup").value(),
+				DrivewayTypeFlag: $("#drivewayTypeRadio").data("kendoRadioGroup").value(),
+				DrivewayFeeOneFlag: $("#drivewayFeeOneRadio").data("kendoRadioGroup").value(),
+				DrivewayFeeTwoFlag: $("#drivewayFeeTwoRadio").data("kendoRadioGroup").value(),
+				IssuanceFlag: $("#issuanceRadio").data("kendoRadioGroup").value(),
+				RequiresTraffic: $("#requiresTrafficCheckbox").prop('checked'),
+				RequiresTPD: $("#requiresTPDCheckbox").prop('checked'),
+				Comment: 'x',
+				ReviewAction: reviewAction
+            }
+		}
+
+        return permitRequestData;
 	}
 
 	// Function to handle the Grid button click
 	function viewEventLog(e) {
-		openEventsWindow('@currentUserRole', permitRequestId);
+		openEventsWindow(currentUserRole, permitRequestId);
 	}
 
+	// Function that sends information to be displayed in the Form 1058 PDF. ************************************************************************
+	// It gets called from the update function as it first has to save the current info and then print the PDF
 	function createPdf() {
+		var permitRequestData = getPermitRequestData();		// Get the permit request data
+        var fileName = '';									// Variable to hold the file name	
+
 		$.ajax({
-			url: '/NewRequest/ExportPdf', // URL to the controller's action
-			type: 'GET', // HTTP method
-			success: function (response) {
-				console.log(response.message); // Handle the response
-				alert(response.message); // Display the message
+			type: 'POST',
+			url: '/NewRequest/ExportPdf',
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(permitRequestData),
+			success: function (result) {
+                fileName = result;
 			},
 			error: function (xhr, status, error) {
-				console.error("Error:", error); // Handle the error
+				fnShowMessage(xhr.responseText, "Error");
 			},
 			complete: function () {
-				window.open('/PermitRequestPDFs/PermitRequest.pdf', '_blank');
+				if (reviewAction == 'form1058'){
+					window.open('/Documents/Forms1058/' + fileName, '_blank');
+				}
+				else if (reviewAction == 'finalPackage') {
+					window.open('/Documents/FinalPackages/' + fileName, '_blank');
+				}
+
 			}
 		});
 	}

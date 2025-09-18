@@ -17,9 +17,10 @@ namespace AccessManagementLaredo_App.Controllers
 {
     public class NewRequestController : Controller
     {
-		// variables ****************************************************************************
-        private IPermitRequestResidentialRepository _permitRequestResidentialRepository;
-		private ICountyRepository _countyRepository;
+        // variables ****************************************************************************
+        //private IPermitRequestResidentialRepository _permitRequestResidentialRepository;
+        private IPermitRequestRepository _permitRequestRepository;
+        private ICountyRepository _countyRepository;
         private IHighwayRepository _highwayRepository;
         private IConstructionTypeRepository _constructionTypeRepository;
         private IPermitEventRepository _permitEventRepository;
@@ -32,12 +33,12 @@ namespace AccessManagementLaredo_App.Controllers
         private IWebHostEnvironment _webHostEnvironment;
 
 		// Controller ********************************************************************************************************************************************************************
-		public NewRequestController(IPermitRequestResidentialRepository permitRequestResidentialRepository,ICountyRepository countyRepository , IHighwayRepository highwayRepository, 
+		public NewRequestController(IPermitRequestRepository permitRequestRepository,ICountyRepository countyRepository , IHighwayRepository highwayRepository, 
             IConstructionTypeRepository constructionTypeRepository, IPermitEventRepository permitEventRepository, IAttachmentTypeRepository attachmentTypeRepository,
             UserManager<ApplicationUser> userManager, IdentityServices identityServices, PermitEventHelperModel permitEventHelperModel, 
 			PermitRequestStatusHelperModel permitRequestStatusHelperModel, ExportPDF exportPDF, IWebHostEnvironment webHostEnvironment)
         {
-            _permitRequestResidentialRepository = permitRequestResidentialRepository;
+            _permitRequestRepository = permitRequestRepository;
 			_countyRepository = countyRepository;
             _highwayRepository = highwayRepository;
             _constructionTypeRepository = constructionTypeRepository;
@@ -75,11 +76,12 @@ namespace AccessManagementLaredo_App.Controllers
         public IActionResult CreateResidential([DataSourceRequest] DataSourceRequest request, [FromBody] PermitRequestResidentialHelperModel permitRequestResidentialHelperModel)
         {
             var user = _identityServices.GetCurrentUserByName();
-            int sequenceValue = _permitRequestResidentialRepository.Create(permitRequestResidentialHelperModel);
+            //int sequenceValue = _permitRequestResidentialRepository.Create(permitRequestResidentialHelperModel);
+            int sequenceValue = _permitRequestRepository.CreateResidential(permitRequestResidentialHelperModel);
 
-			// An event is created every time a new residential request is created
-			// First: Set values for event helper model
-			_permitEventHelperModel.DateCreated = DateTime.Now;
+            // An event is created every time a new residential request is created
+            // First: Set values for event helper model
+            _permitEventHelperModel.DateCreated = DateTime.Now;
 			_permitEventHelperModel.PermitRequestId = sequenceValue;
             _permitEventHelperModel.PermitEventTypeCode = "RQST_STRT";
             _permitEventHelperModel.UserName = user.Result.ContactFullName;
@@ -93,29 +95,76 @@ namespace AccessManagementLaredo_App.Controllers
 			//UpdateStatus(sequenceValue);
 
             permitRequestResidentialHelperModel.PermitRequestId = sequenceValue;
-            _permitRequestResidentialRepository.DisposeDBObjects();
+            _permitRequestRepository.DisposeDBObjects();
             return Json(new[] { permitRequestResidentialHelperModel }.ToDataSourceResult(request, ModelState));
         }
 
-		// Action that updates an existing residential request **********************************************************************************************************************************
-		[HttpPost]
+        // Action that creates a residential request ********************************************************************************************************************************
+        [HttpPost]
+        public IActionResult CreateCommercial([DataSourceRequest] DataSourceRequest request, [FromBody] PermitRequestCommercialHelperModel permitRequestCommercialHelperModel)
+        {
+            var user = _identityServices.GetCurrentUserByName();
+            //int sequenceValue = _permitRequestResidentialRepository.Create(permitRequestResidentialHelperModel);
+            int sequenceValue = _permitRequestRepository.CreateCommercial(permitRequestCommercialHelperModel);
+
+            // An event is created every time a new residential request is created
+            // First: Set values for event helper model
+            _permitEventHelperModel.DateCreated = DateTime.Now;
+            _permitEventHelperModel.PermitRequestId = sequenceValue;
+            _permitEventHelperModel.PermitEventTypeCode = "RQST_STRT";
+            _permitEventHelperModel.UserName = user.Result.ContactFullName;
+            _permitEventHelperModel.UserRoleName = user.Result.ContactRole;
+            _permitEventHelperModel.PermitEventComment = "";
+
+            // Second: Create event
+            _permitEventRepository.Create(_permitEventHelperModel);
+
+            // Third: Update status
+            //UpdateStatus(sequenceValue);
+
+            permitRequestCommercialHelperModel.PermitRequestId = sequenceValue;
+            _permitRequestRepository.DisposeDBObjects();
+            return Json(new[] { permitRequestCommercialHelperModel }.ToDataSourceResult(request, ModelState));
+        }
+
+        // Action that updates an existing residential request **********************************************************************************************************************************
+        [HttpPost]
 		public IActionResult UpdateResidential([DataSourceRequest] DataSourceRequest request, [FromBody] PermitRequestResidentialHelperModel permitRequestResidentialHelperModel)
 		{
-			_permitRequestResidentialRepository.Update(permitRequestResidentialHelperModel, (int)permitRequestResidentialHelperModel.PermitRequestId);
-			_permitRequestResidentialRepository.DisposeDBObjects();
+            //_permitRequestRepository.Update(permitRequestResidentialHelperModel, (int)permitRequestResidentialHelperModel.PermitRequestId);
+            _permitRequestRepository.UpdateResidential(permitRequestResidentialHelperModel, (int)permitRequestResidentialHelperModel.PermitRequestId);
+            _permitRequestRepository.DisposeDBObjects();
 			return Json(new[] { permitRequestResidentialHelperModel }.ToDataSourceResult(request, ModelState));
 		}
+
+        // Action that updates an existing commercial request **********************************************************************************************************************************
+        [HttpPost]
+        public IActionResult UpdateCommercial([DataSourceRequest] DataSourceRequest request, [FromBody] PermitRequestCommercialHelperModel permitRequestCommercialHelperModel)
+        {
+            //_permitRequestRepository.Update(permitRequestResidentialHelperModel, (int)permitRequestResidentialHelperModel.PermitRequestId);
+            _permitRequestRepository.UpdateCommercial(permitRequestCommercialHelperModel, (int)permitRequestCommercialHelperModel.PermitRequestId);
+            _permitRequestRepository.DisposeDBObjects();
+            return Json(new[] { permitRequestCommercialHelperModel }.ToDataSourceResult(request, ModelState));
+        }
 
         // Action that updates the internal revision section of a permit request ******************************************************************************************************
         [HttpPost]
         public void UpdateInternalReview([FromBody] PermitRequestInternalReviewHelperModel permitRequestInternalReviewHelperModel)
         {
             var user = _identityServices.GetCurrentUserByName();
-            _permitRequestResidentialRepository.UpdateInternalSection(permitRequestInternalReviewHelperModel, (int)permitRequestInternalReviewHelperModel.PermitRequestId);
+            _permitRequestRepository.UpdateInternalSection(permitRequestInternalReviewHelperModel, (int)permitRequestInternalReviewHelperModel.PermitRequestId);
 
-			// An event is created every time an internal user reviews (approve/reject) a permit rquest
-			// First: Set values for event helper model
-			_permitEventHelperModel.DateCreated = DateTime.Now;
+            // An event is created every time an internal user reviews (approve/reject) a permit request
+            // If reviewAction is "pdf", no event is created and no status is updated.
+			if (permitRequestInternalReviewHelperModel.ReviewAction == "form1058" || permitRequestInternalReviewHelperModel.ReviewAction == "finalPackage")
+			{
+				_permitRequestRepository.DisposeDBObjects();
+				return;
+			}
+
+            // If reviewAction is not "pdf", then an event is created and the status of the request is updated.
+            // First: Set values for event helper model
+            _permitEventHelperModel.DateCreated = DateTime.Now;
 			_permitEventHelperModel.PermitRequestId = permitRequestInternalReviewHelperModel.PermitRequestId;
 
 			if (permitRequestInternalReviewHelperModel.ReviewAction == "reject")
@@ -137,15 +186,15 @@ namespace AccessManagementLaredo_App.Controllers
 			// Third: Update status
 			UpdateStatus((int)permitRequestInternalReviewHelperModel.PermitRequestId, permitRequestInternalReviewHelperModel.ReviewAction);
 
-			_permitRequestResidentialRepository.DisposeDBObjects();
+			_permitRequestRepository.DisposeDBObjects();
             //return Json(new[] { permitRequestResidentialHelperModel }.ToDataSourceResult(request, ModelState));
         }
 
         // Action that reads a permit request *************************************************************************************************************************************************
-        public JsonResult ReadPermitRequests(int id)
+        public JsonResult ReadPermitRequests(int id, string reqType)
 		{
-			string result = _permitRequestResidentialRepository.ReadPermitRequests(id);
-			_permitRequestResidentialRepository.DisposeDBObjects();
+			string result = _permitRequestRepository.ReadPermitRequests(id, reqType);
+			_permitRequestRepository.DisposeDBObjects();
 			return Json(result);
 		}
 
@@ -178,7 +227,7 @@ namespace AccessManagementLaredo_App.Controllers
 			// Check if methods that call This method get the current user. If so, then UpdateStatus can receive the user as an argument
 			var user = _identityServices.GetCurrentUserByName();
 
-			var result = _permitRequestResidentialRepository.Read(id);
+			var result = _permitRequestRepository.Read(id);
 			List<PermitRequestViewModel> permitRequestViewModel = JsonSerializer.Deserialize<List<PermitRequestViewModel>>(result);
 
 			//int requestId = permitRequestViewModel[0].Id;
@@ -200,7 +249,7 @@ namespace AccessManagementLaredo_App.Controllers
 					statusExternal = "UNDREV";
 				}
 			}
-			else if (userRole == "AREAOFFICE")
+			else if (userRole == "AREAOFFICE" || userRole == "SUPERADMIN")
 			{
 				if (action == "reject")
 				{
@@ -363,7 +412,7 @@ namespace AccessManagementLaredo_App.Controllers
 			_permitRequestStatusHelperModel.StatusTrafficCode = statusTraffic;
 			_permitRequestStatusHelperModel.StatusTPDCode = statusTPD;
 
-            _permitRequestResidentialRepository.UpdateStatus(_permitRequestStatusHelperModel);
+            _permitRequestRepository.UpdateStatus(_permitRequestStatusHelperModel);
         }
 
 		// Return counties **************************************************************************************************************************
@@ -419,6 +468,22 @@ namespace AccessManagementLaredo_App.Controllers
 			return highways;
 		}
 
+		// Generate the PDF file for form 1058 ******************************************************************************************
+		public string ExportPdf([FromBody] PermitRequestCompositeHelperModel permitRequestCompositeHelperModel)
+		{
+			string physicalPath = Path.Combine(_webHostEnvironment.WebRootPath);
+			string fileNameStart = "";
+
+            _exportPdf.CreatePdf(permitRequestCompositeHelperModel, physicalPath);
+
+			if (permitRequestCompositeHelperModel.PermitRequestInternalReviewHelperModel.ReviewAction == "form1058")
+				fileNameStart = "Form1058_";
+			else if (permitRequestCompositeHelperModel.PermitRequestInternalReviewHelperModel.ReviewAction == "finalPackage")
+				fileNameStart = "FinalDoc_";
+
+            return fileNameStart + permitRequestCompositeHelperModel.PermitRequestHelperModel.PermitRequestNumber + ".pdf";
+        }
+
 		// Saves the file that was uploaded with the kendo upload control ************************************************************************************
 		public async Task<ActionResult> SaveUploadedFile(IEnumerable<IFormFile> files)
 		{
@@ -469,17 +534,5 @@ namespace AccessManagementLaredo_App.Controllers
 			// Return an empty string to signify success.
 			return Content("");
 		}
-
-		// Function that generates the PDF file ********************************************************************************************************************************
-		public string ExportPdf()
-		{
-            string physicalPath = Path.Combine(_webHostEnvironment.WebRootPath);
-            string result = "";
-
-            _exportPdf.CreatePdf(physicalPath);
-
-
-            return "PermitRequest.pdf";
-        }
     }
 }

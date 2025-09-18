@@ -41,7 +41,9 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+    <Folder Include="wwwroot\Documents\FinalPackages\" />
     <Folder Include="wwwroot\files\" />
+    <Folder Include="wwwroot\Documents\Forms1058\" />
     <Folder Include="wwwroot\PermitRequestPDFs\" />
     <Folder Include="wwwroot\SystemEvents\" />
   </ItemGroup>

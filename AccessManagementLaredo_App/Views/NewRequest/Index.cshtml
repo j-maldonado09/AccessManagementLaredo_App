@@ -3,22 +3,18 @@
 @using AccessManagementLaredo;
 @using AccessManagementLaredo.HelperModels;
 @using AccessManagementLaredo_App.Models;
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> userManager;
 @model AccessManagementLaredo.HelperModels.PermitRequestResidentialHelperModel;
 @addTagHelper *, Kendo.Mvc
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
+	var currentUser = await userManager.GetUserAsync(User);
 	List<County> countyName = (List<County>)ViewData["counties"];
 	List<PrefixByCountyHelperModel> prefixesByCounty = (List<PrefixByCountyHelperModel>)ViewData["prefixesByCounty"];
 	List<HighwayHelperModel> highways = (List<HighwayHelperModel>)ViewData["highways"];
-	// IEnumerable<Highway> highwayCode = (IEnumerable<Highway>)ViewData["highways"];
 	List<ConstructionType> constructionType = (List<ConstructionType>)ViewData["constructionTypes"];
-
-	//string attachmentType = JsonSerializer.Serialize(ViewData["attachmentTypes"]);
-	//List<AttachmentType> attachmentType = (List<AttachmentType>)ViewData["attachmentTypes"];
-
-
-	//IEnumerable<ConstructionType> constructionType = (IEnumerable<ConstructionType>)ViewData["constructionTypes"];
 }
 
 @* Header *************************************************************************************************************************************************** *@
@@ -35,6 +31,7 @@
 		<step label="Requestor Info"></step>
 		<step label="Additional Info"></step>
 		<step label="Review Info"></step>
+		@* <step label="Acknowledgement"></step> *@
 		<step label="Request Submitted"></step>
 	</steps>
 </kendo-stepper>
@@ -49,17 +46,20 @@
 	</div>
 	<div class="row pt-4">
 		<div class="form-group col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-			<kendo-button id="residentialButton" class="custom-button" theme-color="ThemeColor.Primary"  on-click="selectRequestType"> Residential Request 
+			<kendo-button id="residentialButton" class="custom-button" theme-color="ThemeColor.Primary"  on-click="selectRequestType"> 
+				Residential Request 
 				<img id="residentialIcon" src="~/images/residential_icon.png" alt="Residential Icon" />
 			</kendo-button>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-			<kendo-button id="industrialButton" class="custom-button" theme-color="ThemeColor.Primary" size="ComponentSize.Large" on-click="selectRequestType"> Commercial Industrial Request
-				<img id="industrialIcon" src="~/images/industrial_icon.png" alt="Industrial Icon" />
+			<kendo-button id="commercialButton" class="custom-button" theme-color="ThemeColor.Primary" on-click="selectRequestType">
+				Commercial Industrial Request
+				<img id="commercialIcon" src="~/images/industrial_icon.png" alt="Industrial Icon" />
 			</kendo-button>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
-			<kendo-button id="energyButton" class="custom-button" theme-color="ThemeColor.Primary" size="ComponentSize.Large" on-click="selectRequestType"> Commercial Energy Sector Request
+			<kendo-button id="energyButton" class="custom-button" theme-color="ThemeColor.Primary" size="ComponentSize.Large" > 
+				Commercial Energy Sector Request
 				<img id="energyIcon" src="~/images/energy_icon.png" alt="Energy Icon" />
 			</kendo-button>
 		</div>
@@ -122,7 +122,7 @@
 	<div class="row">
 		<div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
 			<label for="countyLabel">County</label>
-			<kendo-dropdownlist id="countyDropdown" name="countyDropdown" datatextfield="Name" datavaluefield="Id" on-data-bound="fillTextboxes" on-change="fillTextboxes" bind-to=@countyName index=-1 filter="FilterType.StartsWith">
+			<kendo-dropdownlist id="countyDropdown" name="countyDropdown" datatextfield="Name" datavaluefield="Id" data-county-number-field="Number" on-data-bound="fillTextboxes" on-change="fillTextboxes" bind-to=@countyName index=-1 filter="FilterType.StartsWith">
 			</kendo-dropdownlist>
 		</div>
 		<div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
@@ -143,7 +143,7 @@
 	</div>
 	<div class="row">
 		<div class="form-group pt-3 col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-			<kendo-map id="map-1" name="map-1" center="new double[] { 27.5473, -99.4842 }" zoom="11" on-click="onClickMap" style="height:400px">
+			<kendo-map id="map-1" name="map-1" center="new double[] { 27.5473, -99.4887 }" zoom="11" style="height:400px">
 				<layer-defaults>
 					<map-marker>
 						<tooltip>
@@ -184,7 +184,7 @@
 			<h3 for="additionalHeader">Additional Information</h3>
 		</div>
 	</div>
-	<div class="row pt-4">
+	<div class="row pt-3">
 		<div class="form-group col-12 col-sm-12 col-md-8 col-lg-9 col-xl-9">
 			<label for="constructionStartDateLabel">Estimated construction start date:</label>
 		</div>
@@ -195,12 +195,13 @@
 			</kendo-datepicker>
 		</div>
 	</div>
-	<br />
-	<div class="row">
+	<div class="row pt-3">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 			<p>Is this parcel in current litigation with the State of Texas?</p>
 		</div>
-		<div class="form-group" style="display:inline">
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 			<kendo-radiogroup id="litigationRadio" name="litigationRadio" radio-name="radiogroup1" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
 				<kendo-radiogroup-items>
 					<kendo-radiogroup-item label="Yes" value="Yes"></kendo-radiogroup-item>
@@ -210,13 +211,62 @@
 		</div>
 	</div>
 	<div class="row pt-3">
-		<label>The Texas Department of Transportation, hereinafter called the State, hereby authorizes</label>
-		<div style="width:250px; white-space:nowrap">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<p>Is the Permittee or a family member of Permittee an employee or official of the Texas Department of Transportation?</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<kendo-radiogroup id="familyMemberRadio" name="familyMemberRadio" radio-name="radiogroup3" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+				<kendo-radiogroup-items>
+					<kendo-radiogroup-item label="Yes" value="Yes"></kendo-radiogroup-item>
+					<kendo-radiogroup-item label="No" value="No"></kendo-radiogroup-item>
+				</kendo-radiogroup-items>
+			</kendo-radiogroup>
+		</div>
+	</div>
+	<div class="row pt-3">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<label for="familyMemberNameLabel">If yes, name of employee or official</label>
+			<kendo-textbox id="familyMemberNameTextBox" name="familyMemberNameTextBox">
+			</kendo-textbox>
+		</div>
+	</div>
+	<div class="row pt-3">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<p>
+				Does an employee or official of the Texas Department of Transportation serve as an employee or officer of Permittee or own a controlling
+				interest in Permittee?
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<kendo-radiogroup id="officialRadio" name="officialRadio" radio-name="radiogroup4" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+				<kendo-radiogroup-items>
+					<kendo-radiogroup-item label="Yes" value="Yes"></kendo-radiogroup-item>
+					<kendo-radiogroup-item label="No" value="No"></kendo-radiogroup-item>
+				</kendo-radiogroup-items>
+			</kendo-radiogroup>
+		</div>
+	</div>
+	<div class="row pt-3">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<label for="officialNameLabel">If yes, name of employee or official</label>
+			<kendo-textbox id="officialNameTextBox" name="officialNameTextBox">
+			</kendo-textbox>
+		</div>
+	</div>
+	<div class="row pt-3">
+		@* <label>The Texas Department of Transportation, hereinafter called the State, hereby authorizes</label> *@
+		<div style="width:250px; white-space:nowrap; display:none">
 			<kendo-textbox id="authorizesTextBox" name="authorizesTextBox" readonly="true">
 			</kendo-textbox>
 		</div>
-		<div>
-			<label>hereinafter called the Permittee, to</label>
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<p>Will you construct or reconstruct?</p>
+		</div>
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 			<kendo-radiogroup id="constructRadio" name="constructRadio" radio-name="radiogroup2" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
 				<kendo-radiogroup-items>
 					<kendo-radiogroup-item label="construct" value="construct"></kendo-radiogroup-item>
@@ -224,16 +274,18 @@
 				</kendo-radiogroup-items>
 			</kendo-radiogroup>
 		</div>
-		<div>
-			<label>a</label>
-			<kendo-dropdownlist id="constructionTypesDropdown" name="constructionTypesDropdown" datatextfield="Name" datavaluefield="Id" bind-to=@constructionType index=0 filter="FilterType.StartsWith">
-			</kendo-dropdownlist>
-		</div>
 	</div>
-
-	<div class="row">
+	<div class=" pt-3">
+		<label>Type of construction to construct/resconstruct:</label>
+	</div>
+	<div class=" pt-3 form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+		<kendo-dropdownlist id="constructionTypesDropdown" name="constructionTypesDropdown" datatextfield="Name" datavaluefield="Id" bind-to=@constructionType index=0 filter="FilterType.StartsWith">
+		</kendo-dropdownlist>
+	</div>
+	<div class="pt-4 row">
 		<div>
-			<p>This permit is subject to the Access Driveway Policy described on page 2 and the following:</p>
+			<h5>This permit is subject to the Access Driveway Policy and the following</h5>
+            <br />
 			<p>
 				1. The undersigned hereby agrees to comply with the terms and conditions set forth in this permit for construction and maintenance of
 				an access driveway on the state highway right of way.
@@ -276,13 +328,26 @@
 			<p>
 				10. The Permittee will contact the State’s representative
 			</p>
-			<kendo-textbox id="stateRepNameTextBox" name="stateRepNameTextBox" readonly="true">
+			<div class="d-flex flex-wrap align-items-center gap-2">
+				<!-- First textbox: Full width on small screens -->
+				<div class="form-group flex-grow-1" style="min-width: 350px; max-width:500px">
+					<kendo-textbox id="stateRepNameTextBox" name="stateRepNameTextBox" readonly="true" width="100%"></kendo-textbox>
+				</div>
+
+				<!-- Group "telephone" + textbox so they wrap together -->
+				<div class="d-flex align-items-center gap-2 flex-shrink-0" style="min-width: 250px;">
+					<p class="mb-0">telephone</p>
+					<kendo-textbox id="stateRepPhoneTextBox" name="stateRepPhoneTextBox" readonly="true" width="200"></kendo-textbox>
+				</div>
+			</div>
+			<br />
+			@* <kendo-textbox id="stateRepNameTextBox" name="stateRepNameTextBox" readonly="true">
 			</kendo-textbox>
 			<p>
 				telephone
 			</p>
 			<kendo-textbox id="stateRepPhoneTextBox" name="stateRepPhoneTextBox" readonly="true" width="300">
-			</kendo-textbox>
+			</kendo-textbox> *@
 			<p>
 				at least twenty-four (24) hours prior to beginning the work authorized by this permit.
 			</p>
@@ -304,7 +369,17 @@
 @* Third block - Residential ********************************************************************************************************************************* *@
 <div id="thirdBlockResidential" hidden>
 	<div class="text-center pt-4">
-		<h2>Upload your Files</h2>
+		<h2>Supporting documentation</h2>
+	</div>
+	<div class="pt-1">
+		<h6>
+			Please upload supporting documents that describe the driveway, including measurements and setbacks,
+			or provide measurements based on the predefined sketch below.
+		</h6>
+	</div>
+	<br/>
+	<div class="text-center pt-4">
+		<h3>Upload your Files</h3>
 	</div>
 	<div id="files-upload-container" class="row pt-4">
 		@* Block(s) for files upload will be added via Jquery dinamically *@
@@ -313,13 +388,13 @@
 		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-11 col-xl-11">
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-1 col-xl-1">
-			<kendo-button theme-color="ThemeColor.Primary" name="addButton" on-click="addSegment"> + </kendo-button>
+			<kendo-button theme-color="ThemeColor.Primary" id="addButton" name="addButton" on-click="addSegment"> + </kendo-button>
 		</div>
 	</div>
 
 	<div class="text-center pt-4">
-		<h2>Or</h2>
-		<h2>use our predefined sketch</h2>
+		<h3>Or</h3>
+		<h3>Provide Measurements (feet) Based on our Predefined sketch</h3>
 	</div>
 
 	<div class="row pt-4">
@@ -392,15 +467,134 @@
 	</div>
 	<br />
 	<div class="text-center">
-		<button type="button" id="firstBackButton" class="btn btn-danger" onclick="backButtonGeneral('secondBlock')"> &nbsp;&nbsp;&nbsp; Back &nbsp;&nbsp;&nbsp; </button>
+		<button type="button" id="firstBackButtonResidential" class="btn btn-danger" onclick="backButtonGeneral('secondBlock')"> &nbsp;&nbsp;&nbsp; Back &nbsp;&nbsp;&nbsp; </button>
 		&nbsp;
-		<kendo-button id="secondNextButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="secondButtonNext"> &nbsp;&nbsp;&nbsp; Next &nbsp;&nbsp;&nbsp; </kendo-button>
+		<kendo-button id="secondNextButtonResidential" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="secondButtonNext"> &nbsp;&nbsp;&nbsp; Next &nbsp;&nbsp;&nbsp; </kendo-button>
 	</div>
 </div>
 
 @* Third block - Industrial ******************************************************************************************************************************* *@
 <div id="thirdBlockIndustrial" hidden>
-	<h5>Commerical Industrial</h5>
+	<div class="text-center pt-4">
+		<h2>Supporting documentation</h2>
+	</div>
+	<div class="pt-1">
+		<h6>
+			Please upload supporting documents that describe the driveway, including measurements and setbacks,
+			or provide measurements based on the predefined sketch below.
+		</h6>
+	</div>
+	<br />
+	<div class="text-center pt-4">
+		<h3>Upload your Files</h3>
+	</div>
+	<div id="files-upload-container2" class="row pt-4">
+		@* Block(s) for files upload will be added via Jquery dinamically *@
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-11 col-xl-11">
+		</div>
+		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-1 col-xl-1">
+			<kendo-button theme-color="ThemeColor.Primary" id="addButton2" name="addButton2" on-click="addSegment"> + </kendo-button>
+		</div>
+	</div>
+	<div class="text-center pt-4">
+		<h3>Please provide the following information</h3>
+	</div>
+    <br />
+	<div class="row pt-3">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<b> Purpose of Request: </b>
+			<p> Explain the need for the access driveway </p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<kendo-textarea id="purposeTextArea" rows="3">
+			</kendo-textarea>
+		</div>
+	</div>
+	<br />
+	<div class="row pt-3">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<b> Proposed use of the driveway: </b>
+			<p> operations, facilities, frequency of access use </p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<kendo-textarea id="useTextArea" rows="3">
+			</kendo-textarea>
+		</div>
+	</div>
+	<br />
+	<div class="row pt-3">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<b> Background: </b>
+			<p> Dated chronology of previous correspondence, meetings, or discussions about driveway access </p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<kendo-textarea id="backgroundTextArea" rows="3">
+			</kendo-textarea>
+		</div>
+	</div>
+	<br />
+	<div class="row pt-3">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<b> Participants in the request process: </b>
+			<p> Including city, county, developers, consultants, legal counsiel, etc. </p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<kendo-textarea id="participantsTextArea" rows="3">
+			</kendo-textarea>
+		</div>
+	</div>
+	<br />
+	<div class="row pt-3">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<b> Funding contributions: </b>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<kendo-textarea id="fundingTextArea" rows="3">
+			</kendo-textarea>
+		</div>
+	</div>
+	<br />
+	<div class="row pt-3">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<b> Environmental status: </b>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<kendo-textarea id="environmentalStatusTextArea" rows="3">
+			</kendo-textarea>
+		</div>
+	</div>
+	<br />
+	<div class="row pt-3">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<b> Right of Way Status: </b>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+			<kendo-textarea id="rowStatusTextArea" rows="3">
+			</kendo-textarea>
+		</div>
+	</div>
+	<br />
+	<div class="text-center">
+		<button type="button" id="firstBackButtonCommercial" class="btn btn-danger" onclick="backButtonGeneral('secondBlock')"> &nbsp;&nbsp;&nbsp; Back &nbsp;&nbsp;&nbsp; </button>
+		&nbsp;
+		<kendo-button id="secondNextButtonCommercial" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="secondButtonNext"> &nbsp;&nbsp;&nbsp; Next &nbsp;&nbsp;&nbsp; </kendo-button>
+	</div>
 </div>
 
 @* Third block - Energy *********************************************************************************************************************************** *@
@@ -416,7 +610,7 @@
 	<hr />
 	<br />
 	<h3>Requestor Information</h3>
-	<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 		<b class="pt-3">Name: </b>
 		<label id="reviewFirstName" ></label>
 		<label id="reviewLastName" ></label>
@@ -451,8 +645,24 @@
 		<h3>Additional Information</h3>
 		<b class="pt-3">Estimated construction start date: </b>
 		<label id="reviewConstructionStartDate"></label>
+		<br/>
 		<b class="pt-3">Is this parcel in current litigation with the State of Texas? </b>
 		<label id="reviewLitigation"></label>
+		<br />
+		<b class="pt-3">Is the Permittee or a family member of Permittee an employee or official of the Texas Department of Transportation? </b>
+		<label id="reviewFamilyMember"></label>
+		<br />
+		<b class="pt-3">&emsp;If yes, name of employee or official: </b>
+		<label id="reviewFamilyMemberName"></label>
+		<br />
+		<b class="pt-3">
+			Does an employee or official of the Texas Department of Transportation serve as an employee or officer of Permittee or own a controlling
+			interest in Permittee?
+		</b>
+		<label id="reviewOfficial"></label>
+		<br />
+		<b class="pt-3">&emsp;If yes, name of employee or official: </b>
+		<label id="reviewOfficialName"></label>
 		<br />
 		<b class="pt-3">Construct or Reconstruct: </b>
 		<label id="reviewConstructReconstruct"></label>
@@ -539,14 +749,52 @@
 	</div>
 	<br />
 	<div class="text-center pt-4">
-		<button type="button" id="secondBackButton" class="btn btn-danger" onclick="backButtonGeneral('thirdBlockResidential')"> &nbsp;&nbsp;&nbsp; Back &nbsp;&nbsp;&nbsp; </button>
+		<button type="button" id="secondBackButtonResidential" class="btn btn-danger" onclick="backButtonGeneral('thirdBlockResidential')"> &nbsp;&nbsp;&nbsp; Back &nbsp;&nbsp;&nbsp; </button>
 		&nbsp;
-		<kendo-button id="submitButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="buttonSubmit"> &nbsp;&nbsp;&nbsp; Submit &nbsp;&nbsp;&nbsp; </kendo-button>
+		<kendo-button id="submitButtonResidential" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="buttonSubmit"> &nbsp;&nbsp;&nbsp; Submit &nbsp;&nbsp;&nbsp; </kendo-button>
 	</div>
 </div>
 
 @* Fourth block - Industrial Review ***************************************************************************************************************************** *@
 <div id="fourthBlockIndustrial" hidden>
+	<br />
+	<h3>Additional Information</h3>
+	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+		<b class="pt-3">Purpose of request: </b>
+        <br />
+		<label id="reviewPurpose"></label>
+		<br />
+		<b class="pt-3">Proposed use of the driveway: </b>
+        <br />
+		<label id="reviewUseOfDriveway"></label>
+		<br />
+		<b class="pt-3">Background: </b>
+		<br />
+		<label id="reviewBackground"></label>
+		<br />
+		<b class="pt-3">Participants in the request process: </b>
+        <br />
+		<label id="reviewParticipants"></label>
+		<br />
+		<b class="pt-3">Funding Contributions: </b>
+        <br />
+		<label id="reviewFunding"></label>
+		<br />
+		<b class="pt-3">Environmental status: </b>
+		<br />
+		<label id="reviewEnvironmentalStatus"></label>
+		<br />
+		<b class="pt-3">Right of Way status: </b>
+		<br />
+		<label id="reviewROWStatus"></label>
+		<br />
+		<br />
+		<div class="text-center pt-4">
+			<button type="button" id="secondBackButtonCommercial" class="btn btn-danger" onclick="backButtonGeneral('thirdBlockIndustrial')"> &nbsp;&nbsp;&nbsp; Back &nbsp;&nbsp;&nbsp; </button>
+			&nbsp;
+			<kendo-button id="submitButtonCommercial" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="buttonSubmit"> &nbsp;&nbsp;&nbsp; Submit &nbsp;&nbsp;&nbsp; </kendo-button>
+		</div>
+	</div>
 </div>
 
 @* Fourth block - Energy Review *************************************************************************************************************************** *@
@@ -564,8 +812,11 @@
 			You can track your application in the “Requests” tab.
 		</h4>
 		<h4>
-			Your reference number is xxx-xxxx
+			Your reference number is
 		</h4>
+		<h4 id="headerRequestNumber">
+		</h4>
+		<br />
 		<br />
 		<h5>
 			Please allow x business days for review of your application.
@@ -576,7 +827,7 @@
 		<br />
 		<br />
 		<form method="get" asp-action="Index" asp-controller="PermitRequest">
-			<kendo-button type="submit" id="finishButton" theme-color="ThemeColor.Primary" size="ComponentSize.Large">&nbsp;&nbsp;&nbsp; Finish &nbsp;&nbsp;&nbsp;</kendo-button>
+			<kendo-button type="submit" id="finishButton" theme-color="ThemeColor.Primary" size="ComponentSize.Large">&nbsp;&nbsp;&nbsp; Return to Home &nbsp;&nbsp;&nbsp;</kendo-button>
 		</form>
 	</div>
 </div>
@@ -601,6 +852,7 @@
 	var requestTypeName = '';
 	var permitRequestId = 0;
 	var permitRequestResidentialId = 0;
+    var permitRequestCommercialId = 0;
 	var counties = [];
 	var attachmentTypeData;
 
@@ -618,9 +870,10 @@
 
 		attachmentTypeData = @Html.Raw(Json.Serialize(ViewData["attachmentTypes"])); // Serialize ViewData into JSON
 
-		// Get parameter value (request id) from URL
+		// Get parameter values (request id and request type) from URL
 		var urlParams = new URLSearchParams(window.location.search);
 		permitRequestId = urlParams.get('id');
+        requestTypeName = urlParams.get('type');
 		// If id param is null it means that the "New Request" button was pressed
 		// If there is an id param it means the "Edit" button on a row was pressed
 		if (permitRequestId != null) {
@@ -628,6 +881,7 @@
 			showCurrentStep('secondBlock');
 		} else { 
 			permitRequestId = 0;
+			requestTypeName = '';
 		}
 
 		// Apply custom styles to the button using jQuery
@@ -646,11 +900,47 @@
 			'max-height': '60px'
 		});
 
-		// Initialize notification
+		// Initialize notification and map
 		initNotification();
+		initMap();
 	});
 
-	  // ****************************************************************************************
+	// Initialize map **************************************************************************
+	function initMap(){
+		var map = $("#map-1").data("kendoMap");
+
+		if (map) {
+			map.setOptions({
+				center: [27.5473, -99.4887],
+				zoom: 11,
+				click: function (e) {
+					var latField = $('#latitudeTextBox').data("kendoTextBox");
+					var lngField = $('#longitudeTextBox').data("kendoTextBox");
+					var location = e.location;
+
+					if (latField && lngField) {
+						latField.value(location.lat.toFixed(6));
+						latField.trigger("change");
+
+						lngField.value(location.lng.toFixed(6));
+						lngField.trigger("change");
+					}
+
+					map.markers.clear();
+					map.markers.add({
+						location: [location.lat, location.lng],
+						tooltip: {
+							content: "Selected Location"
+						}
+					});
+				}
+			});
+
+			setTimeout(() => map.resize(), 100);
+		}
+	}
+
+	// ****************************************************************************************
 	function initNotification() { 
 		$("#notificationSuccess").kendoNotification({
 			templates: [{
@@ -812,14 +1102,15 @@
 		if (requestTypeButtonId == 'residentialButton') {
 			requestTypeName = 'Residential';
 		}
-		else if (requestTypeButtonId == 'industrialButton') {
-			requestTypeName = 'Industrial';
+		else if (requestTypeButtonId == 'commercialButton') {
+			requestTypeName = 'Commercial';
 		}
 		else if (requestTypeButtonId == 'energyButton') {
 			requestTypeName = 'Energy';
 		}
 
 		showCurrentStep('secondBlock');
+        initMap(); // Initialize map when the request type is selected
 	}
 
 	// Function that updates the value of the 'authorizes' textbox with the name entered on the first textboxes *************************************************************
@@ -863,8 +1154,11 @@
 		cloneCount++;
 
 		// Begin by creating and setting the properties of the container
-		$('#files-upload-container').append('<div id="files-form-' + cloneCount + '"></div>');
-        //$('#sign-form-' + cloneCount).append('<hr/ style="height:5px;background-color:black">');
+        // First check to which container (from which block) the segment is being added
+		let containerId = requestTypeName === 'Residential' ? '#files-upload-container' : '#files-upload-container2'
+		$(containerId).append('<div id="files-form-' + cloneCount + '"></div>');
+
+		// Then continue adding the properties
         $('#files-form-' + cloneCount).append('<div id="padding-y-' + cloneCount + '" class="row py-3"></div>');
 
 		$('#padding-y-' + cloneCount).append('<div id="left-' + cloneCount + '" class="form-group col-12 col-sm-12 col-md-6 col-lg-3 col-xl-3"></div>');
@@ -900,24 +1194,6 @@
 		});
 	}
 
-	// Function to create a kendo dropdown list dynamically *******************************************************************************************
-	// function createDropdown() {
-	// 	$('#left-' + cloneCount).append('<input id="document-type-' + cloneCount + '">');
-	// 	$('#document-type-' + cloneCount).kendoDropDownList({
-	// 		dataTextField: 'Name',
-	// 		dataValueField: 'Id',
-	// 		filter: 'startsWith',
-	// 		dataSource: {
-	// 			transport: {
-	// 				read: {
-	// 					url: 'NewRequest/GetAttachmentTypesAux',
-	// 					dataType: 'json'
-	// 				}
-	// 			}
-	// 		},
-	// 		value: null
-	// 	});
-	// }
 	function createDropdown() {
 		$('#left-' + cloneCount).append('<input id="document-type-' + cloneCount + '">');
 		$('#document-type-' + cloneCount).kendoDropDownList({
@@ -1007,6 +1283,12 @@
 			if (cloneCount == 0)
 				addSegment(null);
 		}
+		else if (requestTypeName == 'Commercial') {
+			commercialNextFirst();
+			showCurrentStep('thirdBlockIndustrial');
+			if (cloneCount == 0)
+				addSegment(null);
+		}
 	}
 
 	// Calls a function when clicking the "Next" button of the third block (specific for each request type) ***************************************************
@@ -1015,6 +1297,10 @@
 			residentialNextSecond();
 			showCurrentStep('fourthBlockResidential');
 		}
+		else if (requestTypeName == 'Commercial') {
+			commercialNextSecond();
+			showCurrentStep('fourthBlockIndustrial');
+		}
 	}
 
 	// Calls a function when clicking the "Next" button of the third block (specific for each request type) ***************************************************
@@ -1022,7 +1308,7 @@
 		showCurrentStep(blockName);
 	}
 
-	// Action that will be performed when clicking the "Next" button of the first segment **********************************************************************
+	// Action that will be performed when clicking the "Next" button of the first (residential) segment **********************************************************************
 	function residentialNextFirst() { 
 
 		// if id param exists, the record will be updated instead of created
@@ -1051,7 +1337,36 @@
 		});
 	}
 
-	// Action that will be performed when clicking the "Next" button of the second segment *************************************************************************
+	// Action that will be performed when clicking the "Next" button of the first (commercial) segment **********************************************************************
+	function commercialNextFirst() {
+
+		// if id param exists, the record will be updated instead of created
+		if (permitRequestId != 0) {
+			commercialNextSecond();
+			return;
+		}
+
+		// if NO id param exists, a new record will be created
+		var combinedObj;
+		combinedObj = { ...GetPermitRequestData(), ...GetPermitRequestCommercialData() };
+		//alert(JSON.stringify(combinedObj));
+
+		$.ajax({
+			type: 'POST',
+			url: '/NewRequest/CreateCommercial',
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(combinedObj),
+			success: function (result) {
+				permitRequestId = result.Data[0].PermitRequestId;
+				showNotification();
+			},
+			error: function (xhr, textStatus, errorThrown) {
+				fnShowMessage(xhr.responseText, "Error");
+			}
+		});
+	}
+
+	// Action that will be performed when clicking the "Next" button of the second (residential) segment *************************************************************************
 	function residentialNextSecond() {
 		var combinedObj;
 		combinedObj = { ...GetPermitRequestData(), ...GetPermitRequestResidentialData() };
@@ -1074,6 +1389,28 @@
 		});
 	}
 
+	// Action that will be performed when clicking the "Next" button of the second (commercial) segment *************************************************************************
+	function commercialNextSecond() {
+		var combinedObj;
+		combinedObj = { ...GetPermitRequestData(), ...GetPermitRequestCommercialData() };
+		//alert(JSON.stringify(combinedObj));
+		$.ajax({
+			type: 'POST',
+			url: '/NewRequest/UpdateCommercial',
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(combinedObj),
+			success: function (result) {
+				showNotification();
+				//fnShowMessage("465465", "Error");
+			},
+			error: function (xhr, textStatus, errorThrown) {
+				fnShowMessage(xhr.responseText, "Error");
+			},
+			complete: function () {
+				residentialReview(permitRequestId);
+			}
+		});
+	}
 
 	// *********************************************
 	function showNotification() {
@@ -1081,10 +1418,7 @@
 		notificationSuccess.show({ message: "Data successfully saved" }, "success"); // Pass the message as an object
 	}
 
-
-
-
-	//  Action performed after the sketch segment to review you information before submitting the request **********************************************************
+	// Action performed after the sketch segment to review you information before submitting the request **********************************************************
 	function residentialReview(permitRequestId) {
 		var jsonResult;
 
@@ -1092,7 +1426,7 @@
 			type: 'GET',
 			url: '/NewRequest/ReadPermitRequests',
 			contentType: 'application/json; charset=utf-8',
-			data: { id: permitRequestId },
+			data: { id: permitRequestId, reqType: requestTypeName },
 			success: function (result) {
 				//fnShowMessage("Notification sent", "Success");
 				jsonResult = jQuery.parseJSON(result);
@@ -1126,7 +1460,8 @@
 	}
 
 	// Loads values from permit request table into the labels for information review step **************************************************************************
-	function loadReviewPermitData(jsonResult) {
+    // This function also calls the specific function for each request type to load the specific data
+    function loadReviewPermitData(jsonResult) {
 		$("#reviewFirstName").text(jsonResult[0].RequestorFirstName + ' ');
 		$("#reviewLastName").text(jsonResult[0].RequestorLastName);
 		$("#reviewAddress").text(jsonResult[0].RequestorAddress);
@@ -1141,26 +1476,52 @@
 		$("#reviewLongitude").text(jsonResult[0].Longitude);
 		$("#reviewConstructionStartDate").text(jsonResult[0].ConstructionStartDate);
 		$("#reviewLitigation").text(jsonResult[0].LitigationFlag);
+        $("#reviewFamilyMember").text(jsonResult[0].FamilyMemberFlag);
+        //$("#reviewFamilyMemberName").text(jsonResult[0].FamilyMemberName);
+		$("#reviewFamilyMemberName").text(jsonResult[0].FamilyMemberName?.trim() ? jsonResult[0].FamilyMemberName : "N/A");
+        $("#reviewOfficial").text(jsonResult[0].OfficialFlag);
+        //$("#reviewOfficialName").text(jsonResult[0].OfficialName);
+		$("#reviewOfficialName").text(jsonResult[0].OfficialName?.trim() ? jsonResult[0].OfficialName : "N/A");
 		$("#reviewConstructReconstruct").text(jsonResult[0].ConstructionFlag);
 		$("#reviewConstructionType").text(jsonResult[0].ConstructionTypeName);
-		//$("#reviewOtherConditions").text(jsonResult[0].OtherConditions);
-		
-		//jsonResult[0].VarianceOneFlag = '0' ? $("#reviewVarianceOne").text('No') : $("#reviewVarianceOne").text('Yes');
-		//jsonResult[0].VarianceTwoFlag = '0' ? $("#reviewVarianceTwo").text('No') : $("#reviewVarianceTwo").text('Yes');
-		
-		//$("#reviewJustification").text(jsonResult[0].VarianceJustification);
+		$("#headerRequestNumber").text(jsonResult[0].PermitRequestNumber);
 
-		$("#reviewLengthPipe").text(jsonResult[0].PipeLength);
-		$("#reviewDrivewayWidth").text(jsonResult[0].DrivewayWidth);
-		$("#reviewDistanceDrainage").text(jsonResult[0].DistanceToCenter);
-		$("#reviewDistancePavement").text(jsonResult[0].DistanceFromEdge);
-		$("#reviewRadiusOne").text(jsonResult[0].RadiusOne);
-		$("#reviewRadiusTwo").text(jsonResult[0].RadiusTwo);
-		$("#reviewDrivewayPipe").text(jsonResult[0].DrainagePipe);
-		$("#reviewDrainageStructure").text(jsonResult[0].DrainageStructure);
-		$("#reviewSetBack").text(jsonResult[0].WidthGate);
-		$("#reviewWidthROW").text(jsonResult[0].WidthROW);
-		$("#reviewThroatLength").text(jsonResult[0].ThroatLength);
+		switch (requestTypeName) {
+			case 'Residential':
+				loadReviewPermitDataResidential(jsonResult);
+				break;
+			case 'Commercial':
+				loadReviewPermitDataCommercial(jsonResult);
+				break;
+		}
+	}
+
+	// Loads values from residential request table into the labels for information review step **************************************************************************
+	// This function gets called from the general request function to complete the fields to fill in depending on the request type
+	function loadReviewPermitDataResidential(jsonResult) {
+		$("#reviewLengthPipe").text(jsonResult[0].PipeLength + ' ft');
+		$("#reviewDrivewayWidth").text(jsonResult[0].DrivewayWidth + ' ft');
+		$("#reviewDistanceDrainage").text(jsonResult[0].DistanceToCenter + ' ft');
+		$("#reviewDistancePavement").text(jsonResult[0].DistanceFromEdge + ' ft');
+		$("#reviewRadiusOne").text(jsonResult[0].RadiusOne + ' ft');
+		$("#reviewRadiusTwo").text(jsonResult[0].RadiusTwo + ' ft');
+		$("#reviewDrivewayPipe").text(jsonResult[0].DrainagePipe + ' ft');
+		$("#reviewDrainageStructure").text(jsonResult[0].DrainageStructure + ' ft');
+		$("#reviewSetBack").text(jsonResult[0].WidthGate + ' ft');
+		$("#reviewWidthROW").text(jsonResult[0].WidthROW + ' ft');
+		$("#reviewThroatLength").text(jsonResult[0].ThroatLength + ' ft');
+	}
+
+	// Loads values from commercial request table into the labels for information review step **************************************************************************
+	// This function gets called from the general request function to complete the fields to fill in depending on the request type
+	function loadReviewPermitDataCommercial(jsonResult) {
+		$("#reviewPurpose").text(jsonResult[0].Purpose);
+		$("#reviewUseOfDriveway").text(jsonResult[0].UseDriveway);
+		$("#reviewBackground").text(jsonResult[0].Background);
+		$("#reviewParticipants").text(jsonResult[0].Participants);
+		$("#reviewFunding").text(jsonResult[0].Funding);
+		$("#reviewEnvironmentalStatus").text(jsonResult[0].EnvironmentalStatus);
+		$("#reviewROWStatus").text(jsonResult[0].ROWStatus);
 	}
 
 	// Get values from controls in request form to send them for creating or updating *************************************************************
@@ -1173,14 +1534,22 @@
 		var year = currentDate.getFullYear();
 		var formattedDate = year + '-' + month + '-' + day;
 
+		var countyDropDown = $("#countyDropdown").data("kendoDropDownList");
+		var selectedCounty = countyDropDown.dataItem();
+
 		var permitRequest = {
 			PermitRequestId: parseInt(permitRequestId),
+			PermitRequestNumber: `${String(selectedCounty.Number).padStart(3, '0')}-${String(permitRequestId).padStart(5, '0')}`,
 			HighwayId: parseInt($("#highwayNumberDropdown").val()),
+			HighwayName: $("#highwayNumberDropdown").data("kendoDropDownList").text(),
 			SubmitDate: formattedDate,
 			ConstructionTypeId: parseInt($("#constructionTypesDropdown").val()),
+			ConstructionTypeName: $("#constructionTypesDropdown").data("kendoDropDownList").text(),
 			HighwayPrefixId: parseInt($("#highwayPrefixDropdown").val()),
+			HighwayPrefixName: $("#highwayPrefixDropdown").data("kendoDropDownList").text(),
 			RequestType: requestTypeName,
 			CountyId: parseInt($("#countyDropdown").val()),
+			CountyName: $("#countyDropdown").data("kendoDropDownList").text(),
 			DistrictId: 1,
 			RequestorFirstName: $("#firstNameTextBox").val(),
 			RequestorLastName: $("#lastNameTextBox").val(),
@@ -1193,17 +1562,14 @@
 			Latitude: $("#latitudeTextBox").val(),
 			ConstructionStartDate: new Date($("#constructionStartDateDatePicker").val()),
 			LitigationFlag: $("#litigationRadio").data("kendoRadioGroup").value(),
+			FamilyMemberFlag: $("#familyMemberRadio").data("kendoRadioGroup").value(),
+			FamilyMemberName: $("#familyMemberNameTextBox").val(),
+			OfficialFlag: $("#officialRadio").data("kendoRadioGroup").value(),
+			OfficialName: $("#officialNameTextBox").val(),
 			ConstructionFlag: $("#constructRadio").data("kendoRadioGroup").value(),
 			StateRepresentativeName: $("#stateRepNameTextBox").val(),
 			StateRepresentativePhoneNumber: $("#stateRepPhoneTextBox").val(),
-			// OtherConditions: null,
-			// VarianceOneFlag: false,
-			// VarianceTwoFlag: false,
-			// VarianceJustification: null,
-			// VarianceDenialOneFlag: false,
-			// VarianceDenialTwoFlag: false,
-			// RequiresTraffic: false,
-			// RequiresTPD: false,
+			UserId: "@currentUser.Id",
 			Attachments: []
 		}
 
@@ -1221,7 +1587,8 @@
 					permitRequest.Attachments.push({
 						Name: fileName,
 						AttachmentTypeId: $("#document-type-" + i).val(),
-						Comment: $("#comment-" + i).val() != '' ? $("#comment-" + i).val() : null
+						Comment: $("#comment-" + i).val() != '' ? $("#comment-" + i).val() : null,
+						IsIncluded: false
 					});
 				}
 			}
@@ -1230,7 +1597,7 @@
 		return permitRequest;
 	}
 
-	// Get values from controls in request form to send them for creating or updating ****************************************************************************
+	// Get values from controls in request form (from residential section) to send them for creating or updating ****************************************************************************
 	function GetPermitRequestResidentialData() { 
 		var permitRequestResidential = {
 			PermitRequestResidentialId: permitRequestResidentialId,
@@ -1244,10 +1611,26 @@
 			DrainageStructure: $("#drainageStructureTextbox").val(),
 			WidthGate: $("#setBackTextbox").val(),
 			WidthROW: $("#widthROWTextbox").val(),
-			ThroatLength: $("#throatLengthTextbox").val(),
+			ThroatLength: $("#throatLengthTextbox").val()
 		};
 		//alert(JSON.stringify(permitRequestResidential));
 		return permitRequestResidential;
+	}
+
+	// Get values from controls in request form (from commercial section) to send them for creating or updating ****************************************************************************
+	function GetPermitRequestCommercialData() {
+		var permitRequestCommercial = {
+			PermitRequestCommercialId: permitRequestCommercialId,
+			Purpose: $("#purposeTextArea").val(),
+			UseDriveway: $("#useTextArea").val(),
+			Background: $("#backgroundTextArea").val(),
+			Participants: $("#participantsTextArea").val(),
+			Funding: $("#fundingTextArea").val(),
+			EnvironmentalStatus: $("#environmentalStatusTextArea").val(),
+			ROWStatus: $("#rowStatusTextArea").val(),
+		};
+		//alert(JSON.stringify(permitRequestResidential));
+		return permitRequestCommercial;
 	}
 
 	// Function that loads the existing permit request record (used for external user edit) ********************************************************************
@@ -1258,7 +1641,7 @@
 			type: 'GET',
 			url: '/NewRequest/ReadPermitRequests',
 			contentType: 'application/json; charset=utf-8',
-			data: { id: permitRequestId },
+			data: { id: permitRequestId, reqType: requestTypeName},
 			success: function (result) {
 				//fnShowMessage("Notification sent", "Success");
 				jsonResult = jQuery.parseJSON(result);
@@ -1272,7 +1655,8 @@
 		});
 	}
 
-	// Function that loads the data of an existing permit request record (used for external user edit) ***********************************************************
+	// Function that loads the general data of an existing permit request record (used for external user edit) ***********************************************************
+    // Within this function, the specific request type data function is also called
 	function loadPermitRequestData(jsonResult) {
 		requestTypeName = jsonResult[0].RequestType;
 		$("#highwayNumberDropdown").data("kendoDropDownList").value(jsonResult[0].HighwayId);
@@ -1290,10 +1674,31 @@
 		$("#latitudeTextBox").data("kendoTextBox").value(jsonResult[0].Latitude);
 		$("#constructionStartDateDatePicker").data("kendoDatePicker").value(jsonResult[0].ConstructionStartDate);
 		$("#litigationRadio").data("kendoRadioGroup").value(jsonResult[0].LitigationFlag);
+        $("#familyMemberRadio").data("kendoRadioGroup").value(jsonResult[0].FamilyMemberFlag);
+        $("#familyMemberNameTextBox").data("kendoTextBox").value(jsonResult[0].FamilyMemberName);
+        $("#officialRadio").data("kendoRadioGroup").value(jsonResult[0].OfficialFlag);
+        $("#officialNameTextBox").data("kendoTextBox").value(jsonResult[0].OfficialName);
 		$("#authorizesTextBox").data("kendoTextBox").value(jsonResult[0].RequestorFirstName + " " + jsonResult[0].RequestorLastName);
 		$("#constructRadio").data("kendoRadioGroup").value(jsonResult[0].ConstructionFlag);
 		$("#stateRepNameTextBox").data("kendoTextBox").value(jsonResult[0].StateRepresentativeName);
 		$("#stateRepPhoneTextBox").data("kendoTextBox").value(jsonResult[0].StateRepresentativePhoneNumber);
+		
+		switch (requestTypeName) {
+			case 'Residential':
+                loadPermitRequestDataResidential(jsonResult);
+                break;
+            case 'Commercial':
+				loadPermitRequestDataCommercial(jsonResult);
+                break;
+		}
+		
+		// Get attachments
+		loadPermitRequestAttachments(jsonResult[0].Attachments);
+	}
+
+	// Function that loads the residential data of an existing permit request record (used for external user edit) ***********************************************************
+	// This function gets called from the general request data based on the request type
+	function loadPermitRequestDataResidential(jsonResult) {
 		$("#lengthPipeTextbox").data("kendoTextBox").value(jsonResult[0].PipeLength);
 		$("#drivewayWidthTextbox").data("kendoTextBox").value(jsonResult[0].DrivewayWidth);
 		$("#distanceDrainageTextbox").data("kendoTextBox").value(jsonResult[0].DistanceToCenter);
@@ -1305,9 +1710,18 @@
 		$("#setBackTextbox").data("kendoTextBox").value(jsonResult[0].WidthGate);
 		$("#widthROWTextbox").data("kendoTextBox").value(jsonResult[0].WidthROW);
 		$("#throatLengthTextbox").data("kendoTextBox").value(jsonResult[0].ThroatLength);
-		
-		// Get attachments
-		loadPermitRequestAttachments(jsonResult[0].Attachments);
+	}
+
+	// Function that loads the commercial data of an existing permit request record (used for external user edit) ***********************************************************
+	// This function gets called from the general request data based on the request type
+	function loadPermitRequestDataCommercial(jsonResult) {
+		$("#purposeTextArea").data("kendoTextArea").value(jsonResult[0].Purpose);
+		$("#useTextArea").data("kendoTextArea").value(jsonResult[0].UseDriveway);
+		$("#backgroundTextArea").data("kendoTextArea").value(jsonResult[0].Background);
+		$("#participantsTextArea").data("kendoTextArea").value(jsonResult[0].Participants);
+		$("#fundingTextArea").data("kendoTextArea").value(jsonResult[0].Funding);
+		$("#environmentalStatusTextArea").data("kendoTextArea").value(jsonResult[0].EnvironmentalStatus);
+		$("#rowStatusTextArea").data("kendoTextArea").value(jsonResult[0].ROWStatus);
 	}
 
 	// Function that loads the attachments of an existing permit request record (used for external user edit) ***********************************************************
@@ -1335,18 +1749,18 @@
 
 <style>
 	.notification-success {
-		background-color: #d4edda; /* Light green background */
-		color: #155724; /* Dark green text */
-		border: 1px solid #c3e6cb; /* Green border */
+		background-color: #d4edda;		/* Light green background */
+		color: #155724;				/* Dark green text */
+		border: 1px solid #c3e6cb;		/* Green border */
 		border-radius: 4px;
 		padding: 10px;
 		display: flex;
 		align-items: center;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional shadow */
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);	/* Optional shadow */
 	}
 
 		.notification-success .k-icon {
-			margin-right: 8px; /* Space between the icon and the text */
+			margin-right: 8px;						/* Space between the icon and the text */
 			font-size: 20px;
 		}
 </style>

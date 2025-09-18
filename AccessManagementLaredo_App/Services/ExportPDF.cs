@@ -4,17 +4,32 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using AccessManagementLaredo.HelperModels;
 using Telerik.SvgIcons;
+using AccessManagementLaredo;
+using System.Text.Json;
 
 namespace AccessManagementLaredo_App.Services
 {
     public class ExportPDF
     {
-        public void CreatePdf(string physicalPath)
+        private IAttachmentRepository _attachmentRepository;
+        private IPermitRequestRepository _permitRequestResidentialRepository;
+
+        public ExportPDF(IAttachmentRepository attachmentRepository, IPermitRequestRepository permitRequestResidentialRepository)
         {
-            string fileName = Path.Combine(physicalPath, "PermitRequestPDFs", "PermitRequest.pdf");
+            _attachmentRepository = attachmentRepository;
+            _permitRequestResidentialRepository = permitRequestResidentialRepository;
+        }
+        public void CreatePdf(PermitRequestCompositeHelperModel permitRequestCompositeHelperModel, string physicalPath)
+        {
             float narrowBorder = 0.50f;
             float thickBorder = 1f;
             float fontSize = 8.5f;
+            var helperModel = permitRequestCompositeHelperModel.PermitRequestHelperModel;
+            var helperModelInternal = permitRequestCompositeHelperModel.PermitRequestInternalReviewHelperModel;
+            string fileName1058 = Path.Combine(physicalPath, "Documents", "Forms1058", "Form1058_" + helperModel.PermitRequestNumber + ".pdf");
+            string fileNameFinal = Path.Combine(physicalPath, "Documents", "FinalPackages", "FinalDoc_" + helperModel.PermitRequestNumber + ".pdf");
+            string districtEngeneerName = "Rafael Guzman";
+            string currentDate = DateTime.Now.ToString("MM/dd/yyyy");
 
             var document = Document.Create(container =>
             {
@@ -56,25 +71,25 @@ namespace AccessManagementLaredo_App.Services
                                       table.Cell().Row(3).Column(1).ColumnSpan(2).BorderVertical(thickBorder).BorderBottom(narrowBorder).AlignCenter().AlignMiddle().Text("REQUESTOR").FontSize(fontSize);
                                       table.Cell().Row(3).Column(3).BorderVertical(thickBorder).BorderBottom(narrowBorder).AlignCenter().AlignMiddle().Text("provide GPS Lat./Long.").Bold().FontSize(fontSize);
                                       table.Cell().Row(3).Column(4).BorderBottom(narrowBorder).BorderRight(narrowBorder).AlignCenter().AlignMiddle().Text("HWY NAME").Bold().FontSize(fontSize);
-                                      table.Cell().Row(3).Column(5).BorderBottom(narrowBorder).BorderRight(thickBorder).AlignCenter().AlignMiddle().Text("");
+                                      table.Cell().Row(3).Column(5).BorderBottom(narrowBorder).BorderRight(thickBorder).AlignLeft().AlignMiddle().Text(" " + helperModel.HighwayPrefixName + helperModel.HighwayName).FontSize(fontSize);
                                       table.Cell().Row(4).Column(1).BorderLeft(thickBorder).BorderBottom(narrowBorder).BorderRight(narrowBorder).Text("");
                                       table.Cell().Row(4).Column(2).BorderBottom(narrowBorder).Text("");
-                                      table.Cell().Row(4).Column(3).BorderVertical(thickBorder).BorderBottom(thickBorder).Text("").FontSize(fontSize);
+                                      table.Cell().Row(4).Column(3).BorderVertical(thickBorder).BorderBottom(thickBorder).AlignCenter().Text(" " + helperModel.Latitude + ", " + helperModel.Longitude).FontSize(fontSize);
                                       table.Cell().Row(4).Column(4).ColumnSpan(2).BorderBottom(narrowBorder).BorderRight(thickBorder).AlignCenter().AlignMiddle().Text("FOR TxDOT'S USE").Bold().FontSize(fontSize);
                                       table.Cell().Row(5).RowSpan(2).Column(1).BorderBottom(narrowBorder).BorderRight(narrowBorder).BorderLeft(thickBorder).AlignRight().AlignBottom().PaddingRight(4).Text("NAME").FontSize(fontSize);
-                                      table.Cell().Row(5).RowSpan(2).Column(2).ColumnSpan(2).BorderBottom(narrowBorder).AlignLeft().AlignMiddle().PaddingLeft(4).Text("").FontSize(fontSize);
+                                      table.Cell().Row(5).RowSpan(2).Column(2).ColumnSpan(2).BorderBottom(narrowBorder).AlignLeft().AlignBottom().PaddingLeft(4).Text(" " + helperModel.RequestorFirstName + helperModel.RequestorLastName).FontSize(fontSize);
                                       table.Cell().Row(5).Column(4).BorderLeft(thickBorder).BorderBottom(narrowBorder).BorderRight(narrowBorder).AlignCenter().Text("CONTROL").Bold().FontSize(fontSize);
-                                      table.Cell().Row(5).Column(5).BorderBottom(narrowBorder).BorderRight(thickBorder).AlignCenter().Text("").FontSize(fontSize);
+                                      table.Cell().Row(5).Column(5).BorderBottom(narrowBorder).BorderRight(thickBorder).AlignCenter().Text(" " + helperModelInternal.Control).FontSize(fontSize);
                                       table.Cell().Row(6).Column(4).BorderLeft(thickBorder).BorderBottom(thickBorder).BorderRight(narrowBorder).AlignCenter().Text("SECTION").Bold().FontSize(fontSize);
-                                      table.Cell().Row(6).Column(5).BorderBottom(thickBorder).BorderRight(thickBorder).AlignCenter().Text("").FontSize(fontSize);
+                                      table.Cell().Row(6).Column(5).BorderBottom(thickBorder).BorderRight(thickBorder).AlignCenter().Text(" " + helperModelInternal.Section).FontSize(fontSize);
                                       table.Cell().Row(7).Column(1).BorderLeft(thickBorder).BorderBottom(narrowBorder).BorderRight(narrowBorder).AlignRight().PaddingRight(4).Text("MAILING ADDRESS").FontSize(fontSize);
-                                      table.Cell().Row(7).Column(2).ColumnSpan(4).BorderBottom(narrowBorder).BorderRight(thickBorder).AlignLeft().PaddingLeft(4).Text("").FontSize(fontSize);
+                                      table.Cell().Row(7).Column(2).ColumnSpan(4).BorderBottom(narrowBorder).BorderRight(thickBorder).AlignLeft().PaddingLeft(4).Text(" " + helperModel.RequestorAddress).FontSize(fontSize);
                                       table.Cell().Row(8).Column(1).BorderLeft(thickBorder).BorderBottom(narrowBorder).BorderRight(narrowBorder).AlignRight().PaddingRight(4).Text("CITY, STATE, ZIP").FontSize(fontSize);
-                                      table.Cell().Row(8).Column(2).ColumnSpan(4).BorderBottom(narrowBorder).BorderRight(thickBorder).AlignLeft().PaddingLeft(4).Text("").FontSize(fontSize);
+                                      table.Cell().Row(8).Column(2).ColumnSpan(4).BorderBottom(narrowBorder).BorderRight(thickBorder).AlignLeft().PaddingLeft(4).Text(" " + helperModel.RequestorCity + helperModel.RequestorState + helperModel.RequestorZipCode).FontSize(fontSize);
                                       table.Cell().Row(9).Column(1).BorderLeft(thickBorder).BorderBottom(thickBorder).BorderRight(narrowBorder).AlignRight().PaddingRight(4).Text("PHONE NUMBER").FontSize(fontSize);
-                                      table.Cell().Row(9).Column(2).ColumnSpan(4).BorderRight(thickBorder).BorderBottom(thickBorder).AlignLeft().PaddingLeft(4).Text("").FontSize(fontSize);
+                                      table.Cell().Row(9).Column(2).ColumnSpan(4).BorderRight(thickBorder).BorderBottom(thickBorder).AlignLeft().PaddingLeft(4).Text(" " + helperModel.RequestorPhoneNumber).FontSize(fontSize);
                                       table.Cell().Row(10).Column(1).BorderLeft(thickBorder).BorderBottom(thickBorder).BorderRight(narrowBorder).AlignRight().PaddingRight(4).Text("EMAIL ADDRESS").FontSize(fontSize);
-                                      table.Cell().Row(10).Column(2).ColumnSpan(4).BorderRight(thickBorder).BorderBottom(thickBorder).AlignLeft().PaddingLeft(4).Text("").FontSize(fontSize);
+                                      table.Cell().Row(10).Column(2).ColumnSpan(4).BorderRight(thickBorder).BorderBottom(thickBorder).AlignLeft().PaddingLeft(4).Text(" ").FontSize(fontSize);
                                       table.Cell().Row(11).Column(1).ColumnSpan(5).BorderVertical(thickBorder).BorderBottom(thickBorder).Padding(5).Text("* LOCATION OR COORDINATES AT INTERSECTION OF DRIVEWAY CENTERLINE WITH ABUTTING ROADWAY").Bold().FontSize(fontSize - 1);
                                   });
                             column.Item()
@@ -83,7 +98,7 @@ namespace AccessManagementLaredo_App.Services
                                   {
                                       row.AutoItem().Text("The Texas Department of Transportation, hereinafter called the State, hereby authorizes").FontSize(fontSize);
                                       row.Spacing(2);
-                                      row.RelativeItem().BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                      row.RelativeItem().BorderBottom(0.25f).Text(" " + helperModel.RequestorFirstName + helperModel.RequestorLastName).FontSize(fontSize);
                                       row.Spacing(2);
                                       row.AutoItem().Text(",").FontSize(fontSize);
                                   });
@@ -92,15 +107,21 @@ namespace AccessManagementLaredo_App.Services
                                   {
                                       row.AutoItem().Text("hereinafter called the Permittee (i.e., property owner)").FontSize(fontSize);
                                       row.Spacing(2);
-                                      row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModel.ConstructionFlag == "CONSTRUCT")
+                                          row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.Spacing(2);
                                       row.AutoItem().Text("construct /").FontSize(fontSize);
                                       row.Spacing(2);
-                                      row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModel.ConstructionFlag == "RECONSTRUCT")
+                                          row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.AutoItem().Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.Spacing(2);
                                       row.AutoItem().Text("reconstruct a").FontSize(fontSize);
                                       row.Spacing(2);
-                                      row.RelativeItem().BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                      row.RelativeItem().BorderBottom(0.25f).Text(" " + helperModel.ConstructionTypeName).FontSize(fontSize);
                                       row.Spacing(2);
                                       row.AutoItem().Text("(residential, convenience ").FontSize(fontSize);
                                   });
@@ -109,11 +130,11 @@ namespace AccessManagementLaredo_App.Services
                                   {
                                       row.AutoItem().Text("store, retail mall, farm, etc.) access driveway on the highway right of way abutting highway number").FontSize(fontSize);
                                       row.Spacing(2);
-                                      row.RelativeItem().BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                      row.RelativeItem().BorderBottom(0.25f).Text(" " + helperModel.HighwayPrefixName + helperModel.HighwayName).FontSize(fontSize);
                                       row.Spacing(2);
                                       row.AutoItem().Text("in").FontSize(fontSize);
                                       row.Spacing(2);
-                                      row.RelativeItem().BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                      row.RelativeItem().BorderBottom(0.25f).Text(" " + helperModel.CountyName).FontSize(fontSize);
                                   });
                             column.Item().Column(col =>
                             {
@@ -134,10 +155,16 @@ namespace AccessManagementLaredo_App.Services
                                   {
                                       row.AutoItem().Text("Is this parcel in current litigation with the State of Texas?").FontSize(fontSize);
                                       row.ConstantItem(5);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModel.LitigationFlag == "Yes")
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.AutoItem().Text("YES").FontSize(fontSize);
                                       row.ConstantItem(10);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModel.LitigationFlag == "No")
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.AutoItem().Text("NO").FontSize(fontSize);
                                       row.ConstantItem(10);
                                       row.AutoItem().Text(" (If Yes, TxDOT will coordinate with District ROW Office.)").FontSize(fontSize);
@@ -148,10 +175,16 @@ namespace AccessManagementLaredo_App.Services
                                   {
                                       row.AutoItem().Text("Is the Permittee or a family member of Permittee an employee or official of the Texas Department of Transportation?").FontSize(fontSize);
                                       row.ConstantItem(5);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModel.FamilyMemberFlag == "Yes")
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.AutoItem().Text("YES").FontSize(fontSize);
                                       row.ConstantItem(10);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModel.FamilyMemberFlag == "No")
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.AutoItem().Text("NO").FontSize(fontSize);
                                   });
                             column.Item()
@@ -159,7 +192,7 @@ namespace AccessManagementLaredo_App.Services
                                   {
                                       row.AutoItem().Text("(If Yes, name of employee or official").FontSize(fontSize);
                                       row.Spacing(2);
-                                      row.RelativeItem().BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                      row.RelativeItem().BorderBottom(0.25f).Text(" " + helperModel.FamilyMemberName).FontSize(fontSize);
                                   });
                             column.Item()
                                   .PaddingTop(18)
@@ -172,15 +205,21 @@ namespace AccessManagementLaredo_App.Services
                                   {
                                       row.AutoItem().Text("interest in Permittee?").FontSize(fontSize);
                                       row.ConstantItem(5);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModel.OfficialFlag == "Yes")
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.AutoItem().Text("YES").FontSize(fontSize);
                                       row.ConstantItem(10);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModel.OfficialFlag == "No")
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.AutoItem().Text("NO").FontSize(fontSize);
                                       row.ConstantItem(10);
                                       row.AutoItem().Text("(If Yes, name of employee or official").FontSize(fontSize);
                                       row.Spacing(2);
-                                      row.RelativeItem().BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                      row.RelativeItem().BorderBottom(0.25f).Text(" " + helperModel.OfficialName).FontSize(fontSize);
                                   });
                             column.Item()
                                   .PaddingTop(18)
@@ -267,17 +306,17 @@ namespace AccessManagementLaredo_App.Services
                                       row.ConstantItem(15).Text("10.").FontSize(fontSize);
                                       row.AutoItem().Text("The Permittee will contact the State’s representative").FontSize(fontSize);
                                       row.Spacing(2);
-                                      row.RelativeItem().BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                      row.RelativeItem().BorderBottom(0.25f).Text(" " + helperModel.StateRepresentativeName).FontSize(fontSize);
                                   });
                             column.Item()
                                   .Row(row =>
                                   {
                                       row.ConstantItem(15).Text(" ").FontSize(fontSize);
-                                      row.AutoItem().Text("telephone, (").FontSize(fontSize);
-                                      row.RelativeItem(0.25f).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                      row.AutoItem().Text("telephone, (" + helperModel.StateRepresentativePhoneNumber.Substring(0, 3)).FontSize(fontSize);
+                                      //row.RelativeItem(0.25f).BorderBottom(0.25f).Text(" " + helperModel.StateRepresentativePhoneNumber).FontSize(fontSize);
                                       row.AutoItem().Text(")").FontSize(fontSize);
                                       row.Spacing(2);
-                                      row.RelativeItem().BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                      row.RelativeItem().BorderBottom(0.25f).Text(helperModel.StateRepresentativePhoneNumber.Substring(3)).FontSize(fontSize);
                                       row.AutoItem().Text(", at least twenty-four (24) hours prior to beginning the work authorized by this permit.").FontSize(fontSize);
                                   });
                             column.Item()
@@ -393,9 +432,9 @@ namespace AccessManagementLaredo_App.Services
                                   .PaddingTop(8)
                                   .Container()
                                   .Height(100)
-                                  .Border(0.25f);
-                            column.Item()
-                                  .BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                  .Border(0.25f)
+                                  .Padding(8)
+                                  .Text(helperModelInternal.OtherConditions).FontSize(fontSize);
                             column.Item()
                                  .PaddingTop(8)
                                  .AlignCenter()
@@ -416,7 +455,10 @@ namespace AccessManagementLaredo_App.Services
                                   .PaddingTop(8)
                                   .Row(row =>
                                   {
-                                      row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModelInternal.VarianceOneFlag)
+                                          row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.RelativeItem()
                                          .Text("a significant negative impact to the owner's real property or its use will likely result from the denial of its request for the variance, " +
                                           "including the loss of reasonable access to the property or undue hardship on a business located on the property.")
@@ -425,7 +467,10 @@ namespace AccessManagementLaredo_App.Services
                             column.Item()
                                   .Row(row =>
                                   {
-                                      row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModelInternal.VarianceTwoFlag)
+                                          row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x ").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.RelativeItem()
                                          .Text("an unusual condition affecting the property exists that was not caused by the property owner and justifies the request for the variance.")
                                          .FontSize(fontSize);
@@ -438,7 +483,9 @@ namespace AccessManagementLaredo_App.Services
                                   .PaddingTop(2)
                                   .Container()
                                   .Height(70)
-                                  .Border(0.25f);
+                                  .Border(0.25f)
+                                  .Padding(8)
+                                  .Text(helperModelInternal.VarianceJustification).FontSize(fontSize);
                         });
                 });
 
@@ -474,7 +521,10 @@ namespace AccessManagementLaredo_App.Services
                                   .PaddingTop(8)
                                   .Row(row =>
                                   {
-                                      row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModelInternal.VarianceDenialOneFlag)
+                                          row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x ").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.RelativeItem()
                                          .Text("adversely affect the safety, design, construction, mobility, efficient operation, or maintenance of the highway; or")
                                          .FontSize(fontSize);
@@ -483,10 +533,13 @@ namespace AccessManagementLaredo_App.Services
                                   .PaddingTop(8)
                                   .Row(row =>
                                   {
-                                      row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModelInternal.VarianceDenialTwoFlag)
+                                          row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(15).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.RelativeItem()
-                                         .Text("likely impair the ability of the state or the department to receive funds for highway construction or maintenance from the federal government.")
-                                         .FontSize(fontSize);
+                                             .Text("likely impair the ability of the state or the department to receive funds for highway construction or maintenance from the federal government.")
+                                             .FontSize(fontSize);
                                   });
                             column.Item()
                                   .PaddingTop(8)
@@ -497,10 +550,16 @@ namespace AccessManagementLaredo_App.Services
                                  {
                                      row.AutoItem().Text("Is this driveway crossing an access denial line?").FontSize(fontSize);
                                      row.ConstantItem(5);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                     if (helperModelInternal.DrivewayCrossingFlag == "Yes")
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                     else
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                      row.AutoItem().Text("YES").FontSize(fontSize);
                                      row.ConstantItem(10);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                     if (helperModelInternal.DrivewayCrossingFlag == "No")
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                     else
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                      row.AutoItem().Text("NO").FontSize(fontSize);
                                  });
                             column.Item()
@@ -509,10 +568,16 @@ namespace AccessManagementLaredo_App.Services
                                   {
                                       row.AutoItem().Text("(If Yes, is this a ").FontSize(fontSize);
                                       row.ConstantItem(5);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModelInternal.DrivewayTypeFlag == "Private")
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.AutoItem().Text("private driveway or a").FontSize(fontSize);
                                       row.ConstantItem(5);
-                                      row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                      if (helperModelInternal.DrivewayTypeFlag == "Commercial")
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                      else
+                                          row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                       row.AutoItem().Text("commercial driveway?)").FontSize(fontSize);
                                   });
                             column.Item()
@@ -521,7 +586,10 @@ namespace AccessManagementLaredo_App.Services
                                  {
                                      row.AutoItem().Text("Private Driveway Fee:").FontSize(fontSize);
                                      row.ConstantItem(5);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                     if (helperModelInternal.DrivewayFeeOneFlag == "250")
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                     else
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                      row.AutoItem().Text("$250").FontSize(fontSize);
                                  });
                             column.Item()
@@ -530,13 +598,22 @@ namespace AccessManagementLaredo_App.Services
                                  {
                                      row.AutoItem().Text("Commercial Driveway Fee:").FontSize(fontSize);
                                      row.ConstantItem(5);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                     if (helperModelInternal.DrivewayFeeTwoFlag == "2500")
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                     else
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                      row.AutoItem().Text("$2,500").FontSize(fontSize);
                                      row.ConstantItem(10);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                     if (helperModelInternal.DrivewayFeeTwoFlag == "10000")
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                     else
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                      row.AutoItem().Text("$10,000").FontSize(fontSize);
                                      row.ConstantItem(10);
-                                     row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
+                                     if (helperModelInternal.DrivewayFeeTwoFlag == "25000")
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f).AlignCenter().AlignMiddle().Text("x").Bold().AlignCenter().FontSize(6.5f);
+                                     else
+                                         row.ConstantItem(10).Container().AlignMiddle().Width(8).Height(8).Border(0.25f);
                                      row.AutoItem().Text("$25,000").FontSize(fontSize);
                                  });
                             column.Item().PaddingTop(12).Container().Border(0.5f).Padding(2).Column(col =>
@@ -545,9 +622,15 @@ namespace AccessManagementLaredo_App.Services
                                    .PaddingTop(18)
                                    .Row(row =>
                                    {
-                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       if (helperModelInternal.IssuanceFlag == "Issuance1")
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("   " + currentDate).FontSize(fontSize);
+                                       else
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
                                        row.ConstantItem(20);
-                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       if (helperModelInternal.IssuanceFlag == "Issuance1")
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("   " + districtEngeneerName).FontSize(fontSize);
+                                       else
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
                                    });
                                 col.Item()
                                    .PaddingTop(2)
@@ -561,9 +644,15 @@ namespace AccessManagementLaredo_App.Services
                                    .PaddingTop(18)
                                    .Row(row =>
                                    {
-                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       if (helperModelInternal.IssuanceFlag == "Issuance2")
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("   " + currentDate).FontSize(fontSize);
+                                       else
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
                                        row.ConstantItem(20);
-                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       if (helperModelInternal.IssuanceFlag == "Issuance2")
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("   " + districtEngeneerName).FontSize(fontSize);
+                                       else
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
                                    });
                                 col.Item()
                                    .PaddingTop(2)
@@ -577,9 +666,15 @@ namespace AccessManagementLaredo_App.Services
                                    .PaddingTop(18)
                                    .Row(row =>
                                    {
-                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       if (helperModelInternal.IssuanceFlag == "Issuance3")
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("   " + currentDate).FontSize(fontSize);
+                                       else
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
                                        row.ConstantItem(20);
-                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       if (helperModelInternal.IssuanceFlag == "Issuance3")
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("   " + districtEngeneerName).FontSize(fontSize);
+                                       else
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
                                    });
                                 col.Item()
                                    .PaddingTop(2)
@@ -593,9 +688,15 @@ namespace AccessManagementLaredo_App.Services
                                    .PaddingTop(18)
                                    .Row(row =>
                                    {
-                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       if (helperModelInternal.IssuanceFlag == "Denial")
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("   " + currentDate).FontSize(fontSize);
+                                       else
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
                                        row.ConstantItem(20);
-                                       row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
+                                       if (helperModelInternal.IssuanceFlag == "Denial")
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("   " + districtEngeneerName).FontSize(fontSize);
+                                       else
+                                           row.ConstantItem(240).BorderBottom(0.25f).Text("").FontSize(fontSize);
                                    });
                                 col.Item()
                                    .PaddingTop(2)
@@ -626,7 +727,119 @@ namespace AccessManagementLaredo_App.Services
 
             });
 
-            document.GeneratePdf(fileName);
+            // Determine the file to be generated based on the review action (which button was clicked)
+            if (helperModelInternal.ReviewAction == "finalPackage")
+            {
+                // Call function that checks if sketch will be included
+                Document sketch = GenerateSketch(helperModel.PermitRequestId, physicalPath);
+
+                // Merge both docs
+                var mergedDocument = Document
+                    .Merge(
+                        document,
+                        sketch
+                    )
+                    .UseOriginalPageNumbers(); // or UseContinuousPageNumbers()
+
+                mergedDocument.GeneratePdf(fileNameFinal);
+            }
+            else if (helperModelInternal.ReviewAction == "form1058")
+            {
+                // Generate the document without merging
+                document.GeneratePdf(fileName1058);
+            }
+
+        }
+
+        // Function that decides which type of sketch will be included in the PDF ***************************************************
+        private Document GenerateSketch(int id, string physicalPath)
+        {
+            Document defaultSketch = null;
+            string result = _attachmentRepository.ReadByRequestAndTypeIds(id, 1);
+            List<Attachment> attachments = JsonSerializer.Deserialize<List<Attachment>>(result);
+            
+            if (attachments.Count > 0)
+            {
+                // Merge attachments
+            }
+            else
+            { 
+                defaultSketch = GenerateDefaultSketch(id, physicalPath);
+            }
+
+            return defaultSketch;
+        }
+
+        // Generate default sketch *************************************************************************************************
+        private Document GenerateDefaultSketch(int id, string physicalPath)
+        {
+            string result = _permitRequestResidentialRepository.ReadResidentialSketchByPermitRequestId(id);
+            List<PermitRequestResidentialHelperModel> sketches = JsonSerializer.Deserialize<List<PermitRequestResidentialHelperModel>>(result);
+
+            float fontSize = 11f;
+
+            var document = Document.Create(container =>
+            {
+                // Page 1 
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(20);
+
+                    // Header for Page 1
+                    page.Header().Element(header =>
+                    {
+                        header.Text("Residential Sketch").FontSize(20).AlignCenter();
+                    });
+
+                    // Content for Page 1
+                    page.Content()
+                        .PaddingTop(12)
+                        .PaddingLeft(20)
+                        .PaddingRight(20)
+                        .Column(column =>
+                        {
+                            column.Item().Image(Path.Combine(physicalPath, "images", "ResidentialSketch.png"));
+                            column.Item().PaddingVertical(10).Text("Measurements").AlignCenter().Bold().FontSize(16);
+                            column.Item()
+                                  .PaddingVertical(8)
+                                  .Row(row =>
+                                  {
+                                      row.RelativeItem().Text("1. Length of pipe: " + sketches[0].PipeLength + " ft").FontSize(fontSize);
+                                      row.RelativeItem().Text("2. Driveway width: " + sketches[0].DrivewayWidth + " ft").FontSize(fontSize);
+                                      row.RelativeItem().Text("3. Dist. to center: " + sketches[0].DistanceToCenter + " ft").FontSize(fontSize);
+                                  });
+                            column.Item()
+                                 .PaddingVertical(8)
+                                 .Row(row =>
+                                 {
+                                     row.RelativeItem().Text("4. Dist. edge to ROW: " + sketches[0].DistanceFromEdge + " ft").FontSize(fontSize);
+                                     row.RelativeItem().Text("5. Radius: " + sketches[0].RadiusOne + " ft").FontSize(fontSize);
+                                     row.RelativeItem().Text("6. Radius: " + sketches[0].RadiusTwo + " ft").FontSize(fontSize);
+                                 });
+                            column.Item()
+                                 .PaddingVertical(8)
+                                 .Row(row =>
+                                 {
+                                     row.RelativeItem().Text("7. Driveway drainage pipe: " + sketches[0].DrainagePipe + " ft").FontSize(fontSize);
+                                     row.RelativeItem().Text("8. Drainage structure: " + sketches[0].DrainageStructure + " ft").FontSize(fontSize);
+                                     row.RelativeItem().Text("9. Set back width at gate: " + sketches[0].WidthGate + " ft").FontSize(fontSize);
+                                 });
+                            column.Item()
+                                 .PaddingVertical(8)
+                                 .Row(row =>
+                                 {
+                                     row.RelativeItem().Text("10. Width starting at ROW: " + sketches[0].WidthROW + " ft").FontSize(fontSize);
+                                     row.RelativeItem(2).Text("11. Throat length: " + sketches[0].ThroatLength + " ft").FontSize(fontSize);
+                                 });
+
+                        });
+
+
+                });
+            });
+
+            return document;
         }
     }
 }

@@ -30,11 +30,13 @@ builder.Services.AddKendo();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<Microsoft.Data.SqlClient.SqlConnection>();
 
-builder.Services.AddTransient<AccessManagementLaredo.IPermitRequestResidentialRepository, AccessManagementLaredo.PermitRequestResidentialRepository>();
+//builder.Services.AddTransient<AccessManagementLaredo.IPermitRequestResidentialRepository, AccessManagementLaredo.PermitRequestResidentialRepository>();
+builder.Services.AddTransient<AccessManagementLaredo.IPermitRequestRepository, AccessManagementLaredo.PermitRequestRepository>();
 builder.Services.AddTransient<AccessManagementLaredo.IHighwayRepository, AccessManagementLaredo.HighwayRepository>();
 builder.Services.AddTransient<AccessManagementLaredo.IHighwayPrefixRepository, AccessManagementLaredo.HighwayPrefixRepository>();
 builder.Services.AddTransient<AccessManagementLaredo.IConstructionTypeRepository, AccessManagementLaredo.ConstructionTypeRepository>();
 builder.Services.AddTransient<AccessManagementLaredo.IPermitEventRepository, AccessManagementLaredo.PermitEventRepository>();
+builder.Services.AddTransient<AccessManagementLaredo.IAttachmentRepository, AccessManagementLaredo.AttachmentRepository>();
 builder.Services.AddTransient<AccessManagementLaredo.IAttachmentTypeRepository, AccessManagementLaredo.AttachmentTypeRepository>();
 builder.Services.AddTransient<AccessManagementLaredo.ICountyRepository, AccessManagementLaredo.CountyRepository>();
 builder.Services.AddTransient<AccessManagementLaredo.HelperModels.PermitEventHelperModel>();
