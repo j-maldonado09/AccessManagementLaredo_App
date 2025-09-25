@@ -10,8 +10,6 @@ namespace AccessManagementLaredo_App.Services
         public void CreatePdf(PermitRequestCompositeHelperModel permitRequestCompositeHelperModel, string physicalPath)
         {
             float fontSize = 8.5f;
-            var helperModel = permitRequestCompositeHelperModel.PermitRequestHelperModel;
-            var helperModelInternal = permitRequestCompositeHelperModel.PermitRequestInternalReviewHelperModel;
             string fileName = Path.Combine(physicalPath, "Documents", "Form 2534 Commercial Questionnaire.pdf");
 
             var document = Document.Create(container =>
@@ -269,7 +267,6 @@ namespace AccessManagementLaredo_App.Services
                 });
             });         
             document.GeneratePdf(fileName);
-
         }
     }
 }
