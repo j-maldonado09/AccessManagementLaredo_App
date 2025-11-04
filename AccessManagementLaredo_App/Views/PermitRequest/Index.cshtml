@@ -144,24 +144,50 @@
         grid.table.find("tr").each(function () {
             var dataItem = grid.dataItem(this);
 
-            // $("td:contains('DRAFT')").addClass("status-css-draft");
-            // $("td:contains('UNDER REVIEW')").addClass("status-css-under-review");
-            // $("td:contains('AWAITING ACTION')").addClass("status-css-awaiting");
-            // $("td:contains('RETURNED TO USER')").addClass("status-css-returned");
-            // $("td:contains('APPROVED')").addClass("status-css-approved");
-            // $("td:contains('N/A')").addClass("status-css-approved");
-            // $("td:contains('COMPLETE')").addClass("status-css-complete");
+            // Apply status styling to columns 7, 8, and 9
+            [7, 8, 9].forEach(function (colIndex) {
+                var cell = this.cells.item(colIndex);
+                if (!cell) return;
 
-            // Check if edit button will be disabled. 
-            // For external users, column 7 is for status and column 8 is for buttons
-            // For internal users, column 7 is for status and column 10 is for buttons
+                var statusText = cell.innerText.trim();
+                var cssClass = "";
+
+                switch (statusText) {
+                    case "DRAFT":
+                        cssClass = "status-css-draft";
+                        break;
+                    case "UNDER REVIEW":
+                        cssClass = "status-css-under-review";
+                        break;
+                    case "AWAITING ACTION":
+                        cssClass = "status-css-awaiting";
+                        break;
+                    case "RETURNED TO USER":
+                        cssClass = "status-css-returned";
+                        break;
+                    case "APPROVED":
+                    case "REVIEWED":
+                    case "N/A":
+                        cssClass = "status-css-approved";
+                        break;
+                    case "COMPLETE":
+                        cssClass = "status-css-complete";
+                        break;
+                }
+
+                if (cssClass) {
+                    cell.innerHTML = `<span class="${cssClass}">${statusText}</span>`;
+                }
+            }, this); // bind `this` to the row context
+
+            // Disable edit button logic
+            var status7 = this.cells.item(7)?.innerText.trim();
             if ("@currentUserType" == "EXTERNAL") {
-                if (this.cells.item(7).innerHTML == "UNDER REVIEW" || this.cells.item(7).innerHTML == "APPROVED") {
+                if (status7 === "UNDER REVIEW" || status7 === "APPROVED") {
                     this.cells.item(8).getElementsByClassName("k-grid-Edit")[0].setAttribute("disabled", true);
                 }
-            }
-            else {
-                if (this.cells.item(7).innerHTML == "RETURNED TO USER") {
+            } else {
+                if (status7 === "RETURNED TO USER") {
                     this.cells.item(10).getElementsByClassName("k-grid-Edit")[0].setAttribute("disabled", true);
                 }
             }

@@ -19,6 +19,12 @@ body {
 /* ************************************************************************************* */
 /* #custom CSS                                                                           */
 /* ************************************************************************************* */
+
+.test-style {
+    background-color: yellow !important;
+    color: red !important;
+}
+
 .center {
     margin: auto;
     padding: 10px;
@@ -72,41 +78,42 @@ button.custom-button.k-button {
     max-height: 100px; /* Set the maximum height of the image */
 }
 
+.status-css-draft,
+.status-css-under-review,
+.status-css-awaiting,
+.status-css-returned,
+.status-css-approved,
+.status-css-complete {
+    background-color: inherit; /* fallback */
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    /*font-weight: bold;*/
+    display: inline-block;
+}
 
 .status-css-draft {
     background-color: #5e5e5e;
-    color: white;
-    margin: auto;
 }
 
 .status-css-under-review {
     background-color: #febd00;
-    color: white;
-    margin: auto;
 }
 
 .status-css-awaiting {
     background-color: #fe7000;
-    color: white;
-    margin: auto;
 }
 
 .status-css-returned {
     background-color: #cf0000;
-    color: white;
-    text-align: center;
 }
 
 .status-css-approved {
     background-color: #00b41a;
-    color: white;
-    text-align: center;
 }
 
 .status-css-complete {
     background-color: #007711;
-    color: white;
-    text-align: center;
 }
 
     /* #*************************************************************************************/
