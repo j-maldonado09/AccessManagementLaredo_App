@@ -97,7 +97,9 @@
 	<table class="table table-borderless pt-3" id="attachmentsTable">
 		<thead style="background-color:#353535; color:white">
 			<tr>
+				<th style="display:none">ID</th>
 				<th style="width:15%">Attachment Type</th>
+				<th style="display:none">Attachment Type ID</th>
 				<th style="width:25%">Attachment File</th>
 				<th style="width:50%">Comment</th>
 				<th style="width:10%">Include in Package</th>
@@ -804,7 +806,9 @@
 
 			
 			var row = '<tr>';
+			row += '<td style="display:none;">' + attachments[i-1].AttachmentId + '</td>';
 			row += '<td>' + attachments[i - 1].AttachmentTypeName + '</td>';
+			row += '<td style="display:none;">' + attachments[i-1].AttachmentTypeId + '</td>';
 			row += '<td>' + anchor + '</td>';
 			row += '<td>' + attachments[i - 1].AttachmentComment + '</td>';
 			
