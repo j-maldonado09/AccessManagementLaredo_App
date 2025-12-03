@@ -109,6 +109,12 @@
 			<!-- Rows will be added here dynamically -->
 		</tbody>
 	</table>
+	<br />
+	<div id="saveAttachmentsButtonDiv" class="text-center" style="display:none">
+		<kendo-button id="saveAttachmentsButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="saveAttachments">
+			&nbsp;&nbsp;&nbsp; Save &nbsp;&nbsp;&nbsp;
+		</kendo-button>
+	</div>
 </div>
 
 @* Residential Sketch *********************************************************************************************************************************** *@
@@ -800,9 +806,13 @@
 		var attachmentsFolderUrl = '@Url.Content("~/files/")';
 		const tableBody = $("#attachmentsTable tbody");
 
+		//show save button only if attachments are present
+		if(attachments && attachments.length > 0){
+			$("#saveAttachmentsButtonDiv").show();
+		}
 		for (var i = 1; i <= attachments.length; i++) {
 			var anchor = '<a href="' + attachmentsFolderUrl + attachments[i - 1].AttachmentName + '" target="_blank">' + attachments[i - 1].AttachmentName + '</a>';
-			var checkbox = '<input type="checkbox"' + (attachments[i - 1].IsIncluded ? 'checked' : '') + ' />';
+			var checkbox = '<input type="checkbox"' + (attachments[i - 1].AttachmentIsIncluded ? 'checked' : '') + ' />';
 
 			
 			var row = '<tr>';
@@ -923,5 +933,30 @@
 		});
 	}
 
+	//Function to save attachment selections
+	function saveAttachments(e){
+		var attachmentsData = [];
+
+		$("#attachmentsTable tbody tr").each(function(){
+			var attachmentId = $(this).find("td:eq(0)").text();
+			var attachmentType = $(this).find("td:eq(1)").text();
+			var attachmentTypeId = $(this).find("td:eq(2)").text();
+			var comment = $(this).find("td:eq(4)").text();
+			var isIncluded = $(this).find("input[type='checkbox']").prop("checked") || false;
+			attachmentsData.push({
+				Id: parseInt(attachmentId),
+				Name: attachmentType,
+				AttachmentTypeId: parseInt(attachmentTypeId),
+				Comment: comment,
+				IsIncluded: isIncluded
+			});
+		});
+		$.ajax({
+			type: 'POST',
+			url: '/NewRequest/SaveAttachments',
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(attachmentsData)			
+		});
+	}
 
 </script>

@@ -31,12 +31,14 @@ namespace AccessManagementLaredo_App.Controllers
 		private PermitRequestStatusHelperModel _permitRequestStatusHelperModel;
 		private ExportPDF _exportPdf;
         private IWebHostEnvironment _webHostEnvironment;
+		private IAttachmentRepository _attachmentRepository;
+		private AttachmentHelperModel _attachmentHelperModel;
 
-		// Controller ********************************************************************************************************************************************************************
-		public NewRequestController(IPermitRequestRepository permitRequestRepository,ICountyRepository countyRepository , IHighwayRepository highwayRepository, 
+        // Controller ********************************************************************************************************************************************************************
+        public NewRequestController(IPermitRequestRepository permitRequestRepository,ICountyRepository countyRepository , IHighwayRepository highwayRepository, 
             IConstructionTypeRepository constructionTypeRepository, IPermitEventRepository permitEventRepository, IAttachmentTypeRepository attachmentTypeRepository,
             UserManager<ApplicationUser> userManager, IdentityServices identityServices, PermitEventHelperModel permitEventHelperModel, 
-			PermitRequestStatusHelperModel permitRequestStatusHelperModel, ExportPDF exportPDF, IWebHostEnvironment webHostEnvironment)
+			PermitRequestStatusHelperModel permitRequestStatusHelperModel, ExportPDF exportPDF, IWebHostEnvironment webHostEnvironment, IAttachmentRepository attachmentRepository)
         {
             _permitRequestRepository = permitRequestRepository;
 			_countyRepository = countyRepository;
@@ -50,6 +52,7 @@ namespace AccessManagementLaredo_App.Controllers
 			_permitRequestStatusHelperModel = permitRequestStatusHelperModel;
 			_exportPdf = exportPDF;
 			_webHostEnvironment = webHostEnvironment;
+			_attachmentRepository = attachmentRepository;
         }
 
 		// Index ********************************************************************************************************************************************************************
@@ -534,5 +537,12 @@ namespace AccessManagementLaredo_App.Controllers
 			// Return an empty string to signify success.
 			return Content("");
 		}
+
+		[HttpPost]
+		public void SaveAttachments([FromBody] List<AttachmentHelperModel> attachments)
+		{
+            _attachmentRepository.UpdateAttachmentIncluded(attachments);
+			_attachmentRepository.DisposeDBObjects();
+        }
     }
 }
