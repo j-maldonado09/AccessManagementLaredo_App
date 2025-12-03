@@ -584,6 +584,10 @@
 		else if (requestTypeName == "Energy") {
 			$("#fourthBlockEnergy").show();
         }
+
+		// Show or hide include in package column based on role
+		if (currentUserRole != "AREAOFFICE")
+			$("#attachmentsTable th:nth-child(4)").hide();
 	});
 
 	// Reads and calls function that displays information for internal reveiew **********************************************************
@@ -803,7 +807,12 @@
 			row += '<td>' + attachments[i - 1].AttachmentTypeName + '</td>';
 			row += '<td>' + anchor + '</td>';
 			row += '<td>' + attachments[i - 1].AttachmentComment + '</td>';
-			row += '<td style="text-align:center;">' + checkbox + '</td>';
+			
+			//show checkobox only for area office
+			if (currentUserRole == "AREAOFFICE"){
+				row += '<td style="text-align:center;">' + checkbox + '</td>';
+			}
+
 			row += '</tr>';
 
 			tableBody.append(row);
