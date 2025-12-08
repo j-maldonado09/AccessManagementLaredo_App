@@ -110,11 +110,14 @@
 		</tbody>
 	</table>
 	<br />
-	<div id="saveAttachmentsButtonDiv" class="text-center" style="display:none">
-		<kendo-button id="saveAttachmentsButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="saveAttachments">
-			&nbsp;&nbsp;&nbsp; Save &nbsp;&nbsp;&nbsp;
-		</kendo-button>
-	</div>
+	@if (currentUserRole == "AREAOFFICE")
+	{
+		<div id="saveAttachmentsButtonDiv" class="text-center" style="display:none">
+			<kendo-button id="saveAttachmentsButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="saveAttachments">
+				&nbsp;&nbsp;&nbsp; Save &nbsp;&nbsp;&nbsp;
+			</kendo-button>
+		</div>
+	}	
 </div>
 
 @* Residential Sketch *********************************************************************************************************************************** *@
