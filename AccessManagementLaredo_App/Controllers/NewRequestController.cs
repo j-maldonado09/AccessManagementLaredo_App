@@ -539,10 +539,21 @@ namespace AccessManagementLaredo_App.Controllers
 		}
 
 		[HttpPost]
-		public void SaveAttachments([FromBody] List<AttachmentHelperModel> attachments)
+		public IActionResult SaveAttachments([FromBody] List<AttachmentHelperModel> attachments)
 		{
-            _attachmentRepository.UpdateAttachmentIncluded(attachments);
-			_attachmentRepository.DisposeDBObjects();
+			try
+			{
+				if (attachments == null || attachments.Count == 0)
+					return Json(new { success = false, message = "No attachments data provided." });
+                _attachmentRepository.UpdateAttachmentIncluded(attachments);
+                _attachmentRepository.DisposeDBObjects();
+				return Json(new { success = true, message = "Saved successfully." });
+            }
+			catch(Exception ex)
+			{
+                _attachmentRepository.DisposeDBObjects();
+                return Json(new { success = false, message = $"Error saving attachments: {ex.Message}" });
+            }            
         }
     }
 }

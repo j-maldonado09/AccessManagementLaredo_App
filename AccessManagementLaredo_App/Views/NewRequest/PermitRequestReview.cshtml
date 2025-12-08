@@ -550,6 +550,10 @@
 @* Partial view for events log ************************************************************************************************************************************* *@
 <partial name="_EventsLog" />
 
+@* Dialog used to display messages (success, error) *@
+<kendo-dialog id="messageDialog" width="400" visible="false">
+	<content></content>
+</kendo-dialog>
 
 @* ********************************************************************************************************************************************************** *@
 @*																Javascript code																				  *@
@@ -942,13 +946,18 @@
 			url: '/NewRequest/SaveAttachments',
 			contentType: 'application/json; charset=utf-8',
 			data: JSON.stringify(attachmentsData),
+			success: function (result) {
+				fnShowMessage(result.message, "Success");
+			},
+			error: function (xhr) {
+				fnShowMessage(xhr.responseText, "Error");
+			},
 		});
 	}
 
 	//Function to get current attachments data from the table
 	function getCurrentAttachments(){
 		var attachmentsData = [];
-
 		$("#attachmentsTable tbody tr").each(function(){
 			var attachmentId = $(this).find("td:eq(0)").text();
 			var attachmentType = $(this).find("td:eq(1)").text();
