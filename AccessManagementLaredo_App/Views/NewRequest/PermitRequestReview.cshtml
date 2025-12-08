@@ -872,7 +872,8 @@
 				FamilyMemberName: $("#reviewFamilyMemberName").text(),
 				OfficialFlag: $("#reviewOfficial").text(),
 				OfficialName: $("#reviewOfficialName").text(),
-				ConstructionFlag: $("#reviewConstructReconstruct").text()
+				ConstructionFlag: $("#reviewConstructReconstruct").text(),
+				Attachments: getCurrentAttachments()
             },
 			PermitRequestInternalReviewHelperModel: {
 				PermitRequestId: parseInt(permitRequestId),
@@ -935,6 +936,17 @@
 
 	//Function to save attachment selections
 	function saveAttachments(e){
+		var attachmentsData = getCurrentAttachments();
+		$.ajax({
+			type: 'POST',
+			url: '/NewRequest/SaveAttachments',
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(attachmentsData),
+		});
+	}
+
+	//Function to get current attachments data from the table
+	function getCurrentAttachments(){
 		var attachmentsData = [];
 
 		$("#attachmentsTable tbody tr").each(function(){
@@ -951,12 +963,7 @@
 				IsIncluded: isIncluded
 			});
 		});
-		$.ajax({
-			type: 'POST',
-			url: '/NewRequest/SaveAttachments',
-			contentType: 'application/json; charset=utf-8',
-			data: JSON.stringify(attachmentsData)			
-		});
+		return attachmentsData;
 	}
 
 </script>
