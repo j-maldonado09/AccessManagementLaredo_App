@@ -97,7 +97,9 @@
 	<table class="table table-borderless pt-3" id="attachmentsTable">
 		<thead style="background-color:#353535; color:white">
 			<tr>
+				<th style="display:none">ID</th>
 				<th style="width:15%">Attachment Type</th>
+				<th style="display:none">Attachment Type ID</th>
 				<th style="width:25%">Attachment File</th>
 				<th style="width:50%">Comment</th>
 				<th style="width:10%">Include in Package</th>
@@ -107,6 +109,15 @@
 			<!-- Rows will be added here dynamically -->
 		</tbody>
 	</table>
+	<br />
+	@if (currentUserRole == "AREAOFFICE")
+	{
+		<div id="saveAttachmentsButtonDiv" class="text-center" style="display:none">
+			<kendo-button id="saveAttachmentsButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="saveAttachments">
+				&nbsp;&nbsp;&nbsp; Save &nbsp;&nbsp;&nbsp;
+			</kendo-button>
+		</div>
+	}	
 </div>
 
 @* Residential Sketch *********************************************************************************************************************************** *@
@@ -542,6 +553,10 @@
 @* Partial view for events log ************************************************************************************************************************************* *@
 <partial name="_EventsLog" />
 
+@* Dialog used to display messages (success, error) *@
+<kendo-dialog id="messageDialog" width="400" visible="false">
+	<content></content>
+</kendo-dialog>
 
 @* ********************************************************************************************************************************************************** *@
 @*																Javascript code																				  *@
@@ -798,13 +813,19 @@
 		var attachmentsFolderUrl = '@Url.Content("~/files/")';
 		const tableBody = $("#attachmentsTable tbody");
 
+		//show save button only if attachments are present
+		if(attachments && attachments.length > 0){
+			$("#saveAttachmentsButtonDiv").show();
+		}
 		for (var i = 1; i <= attachments.length; i++) {
 			var anchor = '<a href="' + attachmentsFolderUrl + attachments[i - 1].AttachmentName + '" target="_blank">' + attachments[i - 1].AttachmentName + '</a>';
-			var checkbox = '<input type="checkbox"' + (attachments[i - 1].IsIncluded ? 'checked' : '') + ' />';
+			var checkbox = '<input type="checkbox"' + (attachments[i - 1].AttachmentIsIncluded ? 'checked' : '') + ' />';
 
 			
 			var row = '<tr>';
+			row += '<td style="display:none;">' + attachments[i-1].AttachmentId + '</td>';
 			row += '<td>' + attachments[i - 1].AttachmentTypeName + '</td>';
+			row += '<td style="display:none;">' + attachments[i-1].AttachmentTypeId + '</td>';
 			row += '<td>' + anchor + '</td>';
 			row += '<td>' + attachments[i - 1].AttachmentComment + '</td>';
 			
@@ -858,7 +879,8 @@
 				FamilyMemberName: $("#reviewFamilyMemberName").text(),
 				OfficialFlag: $("#reviewOfficial").text(),
 				OfficialName: $("#reviewOfficialName").text(),
-				ConstructionFlag: $("#reviewConstructReconstruct").text()
+				ConstructionFlag: $("#reviewConstructReconstruct").text(),
+				Attachments: getCurrentAttachments()
             },
 			PermitRequestInternalReviewHelperModel: {
 				PermitRequestId: parseInt(permitRequestId),
@@ -919,5 +941,41 @@
 		});
 	}
 
+	//Function to save attachment selections
+	function saveAttachments(e){
+		var attachmentsData = getCurrentAttachments();
+		$.ajax({
+			type: 'POST',
+			url: '/NewRequest/SaveAttachments',
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(attachmentsData),
+			success: function (result) {
+				fnShowMessage(result.message, "Success");
+			},
+			error: function (xhr) {
+				fnShowMessage(xhr.responseText, "Error");
+			},
+		});
+	}
+
+	//Function to get current attachments data from the table
+	function getCurrentAttachments(){
+		var attachmentsData = [];
+		$("#attachmentsTable tbody tr").each(function(){
+			var attachmentId = $(this).find("td:eq(0)").text();
+			var attachmentType = $(this).find("td:eq(1)").text();
+			var attachmentTypeId = $(this).find("td:eq(2)").text();
+			var comment = $(this).find("td:eq(4)").text();
+			var isIncluded = $(this).find("input[type='checkbox']").prop("checked") || false;
+			attachmentsData.push({
+				Id: parseInt(attachmentId),
+				Name: attachmentType,
+				AttachmentTypeId: parseInt(attachmentTypeId),
+				Comment: comment,
+				IsIncluded: isIncluded
+			});
+		});
+		return attachmentsData;
+	}
 
 </script>

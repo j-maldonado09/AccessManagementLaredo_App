@@ -727,6 +727,9 @@ namespace AccessManagementLaredo_App.Services
 
             });
 
+            //Get attachment file names
+            var fileNames = GetAttachmentFileNames(helperModel.Attachments, physicalPath);
+
             // Determine the file to be generated based on the review action (which button was clicked)
             if (helperModelInternal.ReviewAction == "finalPackage")
             {
@@ -741,7 +744,7 @@ namespace AccessManagementLaredo_App.Services
                     )
                     .UseOriginalPageNumbers(); // or UseContinuousPageNumbers()
 
-                mergedDocument.GeneratePdf(fileNameFinal);
+                mergedDocument.GeneratePdf(fileNameFinal);                
             }
             else if (helperModelInternal.ReviewAction == "form1058")
             {
@@ -840,6 +843,26 @@ namespace AccessManagementLaredo_App.Services
             });
 
             return document;
+        }
+
+        //Get file names of attachments
+        private List<string> GetAttachmentFileNames(List<AttachmentHelperModel> attachments, string physicalPath)
+        {
+            List<string> fileNames = null;
+            if(attachments != null && attachments.Count > 0)
+            {
+                var attachmentsFolderPath = Path.Combine(physicalPath, "files");
+                fileNames = new List<string>();
+                foreach (var attachment in attachments)
+                {
+                    if (attachment.IsIncluded)
+                    {
+                        string fullPath = Path.Combine(attachmentsFolderPath, attachment.Name);
+                        fileNames.Add(fullPath);
+                    }                        
+                }                
+            }
+            return fileNames;
         }
     }
 }
