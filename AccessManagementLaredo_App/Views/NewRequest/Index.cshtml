@@ -78,39 +78,43 @@
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
 			<label for="firstNameLabel">First Name *</label>
-			<kendo-textbox id="firstNameTextBox" name="firstNameTextBox" on-change="updateAuthorizeTextBox">
+			<kendo-textbox id="firstNameTextBox" name="firstNameTextBox" on-change="updateAuthorizeTextBox"
+						required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
 			<label for="lastNameLabel">Last Name *</label>
-			<kendo-textbox id="lastNameTextBox" name="lastNameTextBox" on-change="updateAuthorizeTextBox">
+			<kendo-textbox id="lastNameTextBox" name="lastNameTextBox" on-change="updateAuthorizeTextBox"
+						   required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
 			<label for="phoneNumberLabel">Phone Number *</label>
-			<kendo-textbox id="phoneNumberTextBox" name="phoneNumberTextBox">
+			<kendo-textbox id="phoneNumberTextBox" name="phoneNumberTextBox" 
+						   required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 	</div>
 	<div class="row pt-3">
 		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
 			<label for="mailingAddressLabel">Mailing Address *</label>
-			<kendo-textbox id="mailingAddressTextBox" name="mailingAddressTextBox">
+			<kendo-textbox id="mailingAddressTextBox" name="mailingAddressTextBox" 
+							required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2">
 			<label for="cityLabel">City *</label>
-			<kendo-textbox id="cityTextBox" name="cityTextBox">
+			<kendo-textbox id="cityTextBox" name="cityTextBox" required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2">
 			<label for="stateLabel">State *</label>
-			<kendo-textbox id="stateTextBox" name="stateTextBox">
+			<kendo-textbox id="stateTextBox" name="stateTextBox" required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2">
 			<label for="zipCodeLabel">Zip Code *</label>
-			<kendo-textbox id="zipCodeTextBox" name="zipCodeTextBox">
+			<kendo-textbox id="zipCodeTextBox" name="zipCodeTextBox" required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 	</div>
@@ -122,17 +126,25 @@
 	<div class="row">
 		<div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
 			<label for="countyLabel">County *</label>
-			<kendo-dropdownlist id="countyDropdown" name="countyDropdown" datatextfield="Name" datavaluefield="Id" data-county-number-field="Number" on-data-bound="fillTextboxes" on-change="fillTextboxes" bind-to=@countyName index=-1 filter="FilterType.StartsWith">
+			<kendo-dropdownlist id="countyDropdown" name="countyDropdown" datatextfield="Name" datavaluefield="Id" data-county-number-field="Number" 
+								on-data-bound="fillTextboxes" on-change="fillTextboxes" bind-to=@countyName index=-1 filter="FilterType.StartsWith"
+								required validationMessage="This field is required">
 			</kendo-dropdownlist>
 		</div>
 		<div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
 			<label for="highwayPrefixLabel">Highway Prefix *</label>
-			<kendo-dropdownlist id="highwayPrefixDropdown" name="highwayPrefixDropdown" cascade-from="countyDropdown" cascade-from-field="CountyId" cascade-from-parent-field="Id" datatextfield="PrefixCode" datavaluefield="PrefixId" bind-to=@prefixesByCounty index=0 filter="FilterType.StartsWith">
+			<kendo-dropdownlist id="highwayPrefixDropdown" name="highwayPrefixDropdown" 
+								cascade-from="countyDropdown" cascade-from-field="CountyId" cascade-from-parent-field="Id" 
+								datatextfield="PrefixCode" datavaluefield="PrefixId" bind-to=@prefixesByCounty index=0 filter="FilterType.StartsWith"
+								required validationMessage="This field is required">
 			</kendo-dropdownlist>
 		</div>
 		<div class="form-group col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
 			<label for="highwayNumberLabel">Highway Number *</label>
-			<kendo-dropdownlist id="highwayNumberDropdown" name="highwayNumberDropdown" cascade-from="highwayPrefixDropdown" cascade-from-field="CountyPrefix" cascade-from-parent-field="CountyPrefix" datatextfield="HighwayNumber" datavaluefield="HighwayId" bind-to=@highways index=-1 filter="FilterType.StartsWith">
+			<kendo-dropdownlist id="highwayNumberDropdown" name="highwayNumberDropdown" 
+								cascade-from="highwayPrefixDropdown" cascade-from-field="CountyPrefix" cascade-from-parent-field="CountyPrefix" 
+								datatextfield="HighwayNumber" datavaluefield="HighwayId" bind-to=@highways index=-1 filter="FilterType.StartsWith"
+								required validationMessage="This field is required">
 			</kendo-dropdownlist>
 		</div>
 	</div>
@@ -168,12 +180,12 @@
 		</div>
 		<div class="row">
 			<div class="form-group col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3">
-				<label for="latitudeLabel">Latitude *</label>
+				<label for="latitudeLabel">Latitude</label>
 				<kendo-textbox id="latitudeTextBox" name="latitudeTextBox">
 				</kendo-textbox>
 			</div>
 			<div class="form-group col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3">
-				<label for="longitudeLabel">Longitude *</label>
+				<label for="longitudeLabel">Longitude</label>
 				<kendo-textbox id="longitudeTextBox" name="longitudeTextBox">
 				</kendo-textbox>
 			</div>
@@ -186,12 +198,13 @@
 	</div>
 	<div class="row pt-3">
 		<div class="form-group col-12 col-sm-12 col-md-8 col-lg-9 col-xl-9">
-			<label for="constructionStartDateLabel">Estimated construction start date: *</label>
+			<label for="constructionStartDateLabel">Estimated construction start date:</label>
 		</div>
 	</div>
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3">
-			<kendo-datepicker id="constructionStartDateDatePicker" name="constructionStartDateDatePicker" format="MMM-dd-yyyy">
+			<kendo-datepicker id="constructionStartDateDatePicker" name="constructionStartDateDatePicker" format="MMM-dd-yyyy"
+							  required validationMessage="This field is required">
 			</kendo-datepicker>
 		</div>
 	</div>
@@ -202,7 +215,7 @@
 	</div>
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<kendo-radiogroup id="litigationRadio" name="litigationRadio" radio-name="radiogroup1" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+			<kendo-radiogroup id="litigationRadio" name="litigationRadio" radio-name="radiogroup1" value="No" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
 				<kendo-radiogroup-items>
 					<kendo-radiogroup-item label="Yes" value="Yes"></kendo-radiogroup-item>
 					<kendo-radiogroup-item label="No" value="No"></kendo-radiogroup-item>
@@ -217,7 +230,7 @@
 	</div>
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<kendo-radiogroup id="familyMemberRadio" name="familyMemberRadio" radio-name="radiogroup3" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+			<kendo-radiogroup id="familyMemberRadio" name="familyMemberRadio" radio-name="radiogroup3" value="No" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
 				<kendo-radiogroup-items>
 					<kendo-radiogroup-item label="Yes" value="Yes"></kendo-radiogroup-item>
 					<kendo-radiogroup-item label="No" value="No"></kendo-radiogroup-item>
@@ -242,7 +255,7 @@
 	</div>
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<kendo-radiogroup id="officialRadio" name="officialRadio" radio-name="radiogroup4" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+			<kendo-radiogroup id="officialRadio" name="officialRadio" radio-name="radiogroup4" value="No" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
 				<kendo-radiogroup-items>
 					<kendo-radiogroup-item label="Yes" value="Yes"></kendo-radiogroup-item>
 					<kendo-radiogroup-item label="No" value="No"></kendo-radiogroup-item>
@@ -267,7 +280,7 @@
 			<p>Will you construct or reconstruct? *</p>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<kendo-radiogroup id="constructRadio" name="constructRadio" radio-name="radiogroup2" value="1" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
+			<kendo-radiogroup id="constructRadio" name="constructRadio" radio-name="radiogroup2" value="construct" layout="RadioGroupLayout.Horizontal" label-position="RadioGroupLabelPosition.After">
 				<kendo-radiogroup-items>
 					<kendo-radiogroup-item label="construct" value="construct"></kendo-radiogroup-item>
 					<kendo-radiogroup-item label="reconstruct" value="reconstruct"></kendo-radiogroup-item>
@@ -276,7 +289,7 @@
 		</div>
 	</div>
 	<div class=" pt-3">
-		<label>Type of construction to construct/resconstruct: *</label>
+		<label>Type of construction to construct/resconstruct:</label>
 	</div>
 	<div class=" pt-3 form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
 		<kendo-dropdownlist id="constructionTypesDropdown" name="constructionTypesDropdown" datatextfield="Name" datavaluefield="Id" bind-to=@constructionType index=0 filter="FilterType.StartsWith">
@@ -900,6 +913,13 @@
 			'max-height': '60px'
 		});
 
+        // Initialize validators
+		$("#secondBlock").kendoValidator({
+			messages: {
+				required: "This field is required"
+			}
+		});
+
 		// Initialize notification and map
 		initNotification();
 		initMap();
@@ -943,29 +963,23 @@
 	// ****************************************************************************************
 	function initNotification() { 
 		$("#notificationSuccess").kendoNotification({
-			templates: [{
-				type: "success",
-				template: '<div class="notification-success"><i class="k-icon k-i-check"></i> #= message #</div>'
-			}],
+			templates: [
+				{
+					type: "success",
+					template: '<div class="notification-success"><i class="k-icon k-i-check"></i> #= message #</div>'
+				},
+				{
+					type: "error",
+					template: '<div class="notification-error"><i class="k-icon k-i-close"></i> #= message #</div>'
+				}
+			],
 			autoHideAfter: 3000, // Automatically hide after 3 seconds
 			position: {
-				pinned: true, // Fix the notification on the viewport
-				top: null,
-				left: null,
-				bottom: null,
-				right: null
+				pinned: true,
+				top: 20,
+				right: 20
 			},
-			stacking: "default", // Prevent overlap of notifications
-			show: function (e) {
-				// Ensure proper absolute centering
-				e.element.parent().css({
-					"position": "absolute", // Required for absolute positioning
-					"top": "50%", // Vertically center
-					"left": "50%", // Horizontally center
-					"transform": "translate(-50%, -50%)", // Offset by half its width and height
-					"margin": "0" // Reset any margin
-				});
-			}
+			stacking: "down",
 		});
 	}
 
@@ -1328,6 +1342,19 @@
 
 	// Calls a function when clicking the "Next" button of the second block (Form 1058) ************************************************************************
 	function firstButtonNext() {
+		// Initialize validator for the current step container
+		var validator = $("#secondBlock").data("kendoValidator");
+
+		// Run validation
+		if (validator && !validator.validate()) {
+			// Validation failed — stop navigation
+			//fnShowMessage("Please fill in all required fields.", "Error");
+			showNotification("Please fill in all required fields.", "error");
+
+			return;
+		}
+
+		// Validation passed — continue based on request type
 		if (requestTypeName == 'Residential') {
 			residentialNextFirst();
 			showCurrentStep('thirdBlockResidential');
@@ -1380,7 +1407,7 @@
 			data: JSON.stringify(combinedObj),
 			success: function (result) {
 				permitRequestId = result.Data[0].PermitRequestId;
-				showNotification();
+				showNotification("Data successfully saved", "success");
 			},
 			error: function (xhr, textStatus, errorThrown) {
 				fnShowMessage(xhr.responseText, "Error");
@@ -1409,7 +1436,7 @@
 			data: JSON.stringify(combinedObj),
 			success: function (result) {
 				permitRequestId = result.Data[0].PermitRequestId;
-				showNotification();
+				showNotification("Data successfully saved", "success");
 			},
 			error: function (xhr, textStatus, errorThrown) {
 				fnShowMessage(xhr.responseText, "Error");
@@ -1428,7 +1455,7 @@
 			contentType: 'application/json; charset=utf-8',
 			data: JSON.stringify(combinedObj),
 			success: function (result) {
-				showNotification();
+				showNotification("Data successfully saved", "success");
 				//fnShowMessage("465465", "Error");
 			},
 			error: function (xhr, textStatus, errorThrown) {
@@ -1451,7 +1478,7 @@
 			contentType: 'application/json; charset=utf-8',
 			data: JSON.stringify(combinedObj),
 			success: function (result) {
-				showNotification();
+				showNotification("Data successfully saved", "success");
 				//fnShowMessage("465465", "Error");
 			},
 			error: function (xhr, textStatus, errorThrown) {
@@ -1464,9 +1491,9 @@
 	}
 
 	// *********************************************
-	function showNotification() {
+	function showNotification(message, type) {
 		var notificationSuccess = $("#notificationSuccess").data("kendoNotification");
-		notificationSuccess.show({ message: "Data successfully saved" }, "success"); // Pass the message as an object
+		notificationSuccess.show({ message: message }, type);
 	}
 
 	// Action performed after the sketch segment to review you information before submitting the request **********************************************************
