@@ -122,67 +122,70 @@
 
 @* Residential Sketch *********************************************************************************************************************************** *@
 <div id="fourthBlockResidential">
-	<br />
-	<hr />
-	<br />
-	<h3>Sketch Measurements</h3>
-	<div class="row pt-4" style="max-width:65%; margin:auto">
-		<img src="~/images/ResidentialSketch.png" />
-	</div>
-	<div class="row pt-3">
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>1. Length of pipe required: </b>
-			<label id="reviewLengthPipe"></label>
+<br />
+<hr />
+<br />
+<h3>Sketch Measurements</h3>
+<h2 id="noSketchHeading" style="display:none;">Sketch was uploaded via attachment.</h2>
+<div id="sketchMeasurementsSection">		
+		<div class="row pt-4" style="max-width:65%; margin:auto">
+			<img src="~/images/ResidentialSketch.png" />
 		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>2. Driveway width: </b>
-			<label id="reviewDrivewayWidth"></label>
+		<div class="row pt-3">
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+				<b>1. Length of pipe required: </b>
+				<label id="reviewLengthPipe"></label>
+			</div>
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+				<b>2. Driveway width: </b>
+				<label id="reviewDrivewayWidth"></label>
+			</div>
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+				<b>3. Distance to center of drainage structure: </b>
+				<label id="reviewDistanceDrainage"></label>
+			</div>
 		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>3. Distance to center of drainage structure: </b>
-			<label id="reviewDistanceDrainage"></label>
+		<div class="row">
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+				<b>4. Distance from edge of pavement to ROW: </b>
+				<label id="reviewDistancePavement"></label>
+			</div>
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+				<b>5. Radius: </b>
+				<label id="reviewRadiusOne"></label>
+			</div>
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+				<b>6. Radius: </b>
+				<label id="reviewRadiusTwo"></label>
+			</div>
 		</div>
-	</div>
-	<div class="row">
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>4. Distance from edge of pavement to ROW: </b>
-			<label id="reviewDistancePavement"></label>
+		<div class="row">
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+				<b>7. Driveway drainage pipe: </b>
+				<label id="reviewDrivewayPipe"></label>
+			</div>
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+				<b>8. Drainage structure: </b>
+				<label id="reviewDrainageStructure"></label>
+			</div>
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+				<b>9. Set back width at gate: </b>
+				<label id="reviewSetBack"></label>
+			</div>
 		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>5. Radius: </b>
-			<label id="reviewRadiusOne"></label>
+		<div class="row">
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+				<b>10. Width starting at ROW: </b>
+				<label id="reviewWidthROW"></label>
+			</div>
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+				<b>11. Throat length: </b>
+				<label id="reviewThroatLength"></label>
+			</div>
+			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			</div>
 		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>6. Radius: </b>
-			<label id="reviewRadiusTwo"></label>
-		</div>
-	</div>
-	<div class="row">
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>7. Driveway drainage pipe: </b>
-			<label id="reviewDrivewayPipe"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>8. Drainage structure: </b>
-			<label id="reviewDrainageStructure"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>9. Set back width at gate: </b>
-			<label id="reviewSetBack"></label>
-		</div>
-	</div>
-	<div class="row">
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>10. Width starting at ROW: </b>
-			<label id="reviewWidthROW"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-			<b>11. Throat length: </b>
-			<label id="reviewThroatLength"></label>
-		</div>
-		<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-		</div>
-	</div>
+	</div>	
 	<br />
 	<br />
 	<hr style="height:5px; background-color:black" />
@@ -782,6 +785,18 @@
 	// Loads values from residential request table into the labels for information review step **************************************************************************
 	// This function gets called from the general request function to complete the fields to fill in depending on the request type
 	function loadReviewPermitDataResidential(jsonResult) {
+
+		//check if all attributes are empty
+		if(jsonResult[0].PipeLength == null && jsonResult[0].DrivewayWidth == null &&
+		   jsonResult[0].DistanceToCenter == null && jsonResult[0].DistanceFromEdge == null &&
+		   jsonResult[0].RadiusOne == null && jsonResult[0].RadiusTwo == null &&
+		   jsonResult[0].DrainagePipe == null && jsonResult[0].DrainageStructure == null &&
+		   jsonResult[0].WidthGate == null && jsonResult[0].WidthROW == null &&
+		   jsonResult[0].ThroatLength == null) {
+			$("#sketchMeasurementsSection").hide();
+			$("#noSketchHeading").show();
+			return;
+		}
 		$("#reviewLengthPipe").text(jsonResult[0].PipeLength + ' ft');
 		$("#reviewDrivewayWidth").text(jsonResult[0].DrivewayWidth + ' ft');
 		$("#reviewDistanceDrainage").text(jsonResult[0].DistanceToCenter + ' ft');
