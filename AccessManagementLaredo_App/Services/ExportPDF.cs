@@ -727,24 +727,32 @@ namespace AccessManagementLaredo_App.Services
 
             });
 
-            //Get attachment file names
-            var fileNames = GetAttachmentFileNames(helperModel.Attachments, physicalPath);
-
             // Determine the file to be generated based on the review action (which button was clicked)
             if (helperModelInternal.ReviewAction == "finalPackage")
             {
-                // Call function that checks if sketch will be included
-                Document sketch = GenerateSketch(helperModel.PermitRequestId, physicalPath);
+                var allDocuments = new List<Document> { document };
 
-                // Merge both docs
+                Document defaultSketch = GenerateSketch(helperModel.PermitRequestId, physicalPath);
+                if (defaultSketch != null)
+                    allDocuments.Add(defaultSketch);
+
+                // Get attachment file names where include in package is checked
+                var fullAttachmentsFilePath = GetIsIncludedAttachmentFileNames(helperModel.Attachments, physicalPath);
+                if(fullAttachmentsFilePath?.Count > 0)
+                {
+
+                    // Generate documents for each attachment
+                    var attachmentDocuments = GenerateDocuments(fullAttachmentsFilePath);
+                    if (attachmentDocuments?.Count > 0)
+                        allDocuments.AddRange(attachmentDocuments);
+                }
+
+                // Merge all documents into one final document and generate the PDF
                 var mergedDocument = Document
-                    .Merge(
-                        document,
-                        sketch
-                    )
-                    .UseOriginalPageNumbers(); // or UseContinuousPageNumbers()
+                            .Merge([.. allDocuments])
+                            .UseOriginalPageNumbers();
+                mergedDocument.GeneratePdf(fileNameFinal);
 
-                mergedDocument.GeneratePdf(fileNameFinal);                
             }
             else if (helperModelInternal.ReviewAction == "form1058")
             {
@@ -758,18 +766,24 @@ namespace AccessManagementLaredo_App.Services
         private Document GenerateSketch(int id, string physicalPath)
         {
             Document defaultSketch = null;
-            string result = _attachmentRepository.ReadByRequestAndTypeIds(id, 1);
-            List<Attachment> attachments = JsonSerializer.Deserialize<List<Attachment>>(result);
-            
-            if (attachments.Count > 0)
+            string result = _permitRequestResidentialRepository.ReadResidentialSketchByPermitRequestId(id);
+            List<PermitRequestResidentialHelperModel> sketches = JsonSerializer.Deserialize<List<PermitRequestResidentialHelperModel>>(result);
+
+            if (sketches?.Count > 0 && 
+                (sketches[0].PipeLength != "" ||
+                 sketches[0].DrivewayWidth != "" ||
+                 sketches[0].DistanceToCenter != "" ||
+                 sketches[0].DistanceFromEdge != "" ||
+                 sketches[0].RadiusOne != "" ||
+                 sketches[0].RadiusTwo != "" ||
+                 sketches[0].DrainagePipe != "" ||
+                 sketches[0].DrainageStructure != "" ||
+                 sketches[0].WidthGate != "" ||
+                 sketches[0].WidthROW != "" ||
+                 sketches[0].ThroatLength != ""))
             {
-                // Merge attachments
-            }
-            else
-            { 
                 defaultSketch = GenerateDefaultSketch(id, physicalPath);
             }
-
             return defaultSketch;
         }
 
@@ -845,8 +859,8 @@ namespace AccessManagementLaredo_App.Services
             return document;
         }
 
-        //Get file names of attachments
-        private List<string> GetAttachmentFileNames(List<AttachmentHelperModel> attachments, string physicalPath)
+        // Get file names of attachments where include in package is checked
+        private List<string> GetIsIncludedAttachmentFileNames(List<AttachmentHelperModel> attachments, string physicalPath)
         {
             List<string> fileNames = null;
             if(attachments != null && attachments.Count > 0)
@@ -863,6 +877,52 @@ namespace AccessManagementLaredo_App.Services
                 }                
             }
             return fileNames;
+        }
+
+        // Generate documents for each file path passed *********************************************************************************
+        private List<Document> GenerateDocuments(List<string> fullFilePaths)
+        {
+            var documents = new List<Document>();
+            if (fullFilePaths?.Count > 0)
+            {
+                foreach (var filePath in fullFilePaths)
+                {
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        string fileExtension = Path.GetExtension(filePath).ToLowerInvariant();
+                        if (fileExtension == ".pdf")
+                        {
+                            var pdfDoc = Document.Create(container =>
+                            {
+                                container.Page(page =>
+                                {
+                                    page.Size(PageSizes.A4);
+                                    page.Content().Column(column =>
+                                    {
+                                        column.Item().Text($"PDF: {Path.GetFileName(filePath)}").FontSize(12);
+                                    });
+                                });
+                            });
+                            documents.Add(pdfDoc);
+                        }
+                        else if (fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".png")
+                        {
+                            var imageDoc = Document.Create(container =>
+                            {
+                                container.Page(page =>
+                                {
+                                    page.Size(PageSizes.A4);
+                                    page.Margin(20);
+                                    page.Content()
+                                        .Image(filePath);
+                                });
+                            });
+                            documents.Add(imageDoc);
+                        }
+                    }
+                }
+            }
+            return documents;
         }
     }
 }
