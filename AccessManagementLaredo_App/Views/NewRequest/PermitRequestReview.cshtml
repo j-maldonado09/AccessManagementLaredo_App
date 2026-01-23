@@ -126,7 +126,7 @@
 <hr />
 <br />
 <h3>Sketch Measurements</h3>
-<h2 id="noSketchHeading" style="display:none;">Sketch was uploaded via attachment.</h2>
+<label id="noSketchHeading" style="display:none;">Sketch was uploaded via attachment.</label>
 <div id="sketchMeasurementsSection">		
 		<div class="row pt-4" style="max-width:65%; margin:auto">
 			<img src="~/images/ResidentialSketch.png" />
@@ -185,11 +185,11 @@
 			<div class="form-group pt-4 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			</div>
 		</div>
-	</div>	
-	<br />
-	<br />
-	<hr style="height:5px; background-color:black" />
-    <br />
+</div>	
+<br />
+<br />
+<hr style="height:5px; background-color:black" />
+<br />
 
 	@* 	<div class="row">
 		<br />
@@ -542,7 +542,7 @@
 				<kendo-button id="pdfForm1058Button" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="form1058"> &nbsp;&nbsp;&nbsp; Form 1058 &nbsp;&nbsp;&nbsp; </kendo-button>
 				&nbsp;
 				@*<kendo-button id="pdfFinalPackageButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="updateResidentialReview" data-param="finalPackage"> &nbsp;&nbsp;&nbsp; Final Package &nbsp;&nbsp;&nbsp; </kendo-button>*@
-				<kendo-button id="pdfFinalPackageButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" > &nbsp;&nbsp;&nbsp; Final Package &nbsp;&nbsp;&nbsp; </kendo-button>
+				<kendo-button id="pdfFinalPackageButton" theme-color="ThemeColor.Primary" size="ComponentSize.Medium" on-click="finalPackageBtnClick" data-param="finalPackage"> &nbsp;&nbsp;&nbsp; Final Package &nbsp;&nbsp;&nbsp; </kendo-button>
 			</div> 
 
 					@* <br />
@@ -685,6 +685,12 @@
 
 	}
 
+	// Generate final package PDF ********************************************************************************************************
+	function finalPackageBtnClick(e){
+		reviewAction = e.sender.element.data('param');
+		createPdf();
+	}
+
 	// Get record information to display for internal review *************************************************************************
 	function loadReviewPermitData(jsonResult) {
         permitRequestNumber = jsonResult[0].PermitRequestNumber;
@@ -787,12 +793,12 @@
 	function loadReviewPermitDataResidential(jsonResult) {
 
 		//check if all attributes are empty
-		if(jsonResult[0].PipeLength == null && jsonResult[0].DrivewayWidth == null &&
-		   jsonResult[0].DistanceToCenter == null && jsonResult[0].DistanceFromEdge == null &&
-		   jsonResult[0].RadiusOne == null && jsonResult[0].RadiusTwo == null &&
-		   jsonResult[0].DrainagePipe == null && jsonResult[0].DrainageStructure == null &&
-		   jsonResult[0].WidthGate == null && jsonResult[0].WidthROW == null &&
-		   jsonResult[0].ThroatLength == null) {
+		if(jsonResult[0].PipeLength == "" && jsonResult[0].DrivewayWidth == "" &&
+		   jsonResult[0].DistanceToCenter == "" && jsonResult[0].DistanceFromEdge == "" &&
+		   jsonResult[0].RadiusOne == "" && jsonResult[0].RadiusTwo == "" &&
+		   jsonResult[0].DrainagePipe == "" && jsonResult[0].DrainageStructure == "" &&
+		   jsonResult[0].WidthGate == "" && jsonResult[0].WidthROW == "" &&
+		   jsonResult[0].ThroatLength == "") {
 			$("#sketchMeasurementsSection").hide();
 			$("#noSketchHeading").show();
 			return;
@@ -978,13 +984,13 @@
 		var attachmentsData = [];
 		$("#attachmentsTable tbody tr").each(function(){
 			var attachmentId = $(this).find("td:eq(0)").text();
-			var attachmentType = $(this).find("td:eq(1)").text();
+			var attachmentFile = $(this).find("td:eq(3)").text();
 			var attachmentTypeId = $(this).find("td:eq(2)").text();
 			var comment = $(this).find("td:eq(4)").text();
 			var isIncluded = $(this).find("input[type='checkbox']").prop("checked") || false;
 			attachmentsData.push({
 				Id: parseInt(attachmentId),
-				Name: attachmentType,
+				Name: attachmentFile,
 				AttachmentTypeId: parseInt(attachmentTypeId),
 				Comment: comment,
 				IsIncluded: isIncluded
