@@ -78,19 +78,19 @@
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
 			<label for="firstNameLabel">First Name *</label>
-			<kendo-textbox id="firstNameTextBox" name="firstNameTextBox" on-change="updateAuthorizeTextBox"
+			<kendo-textbox id="firstNameTextBox" name="firstNameTextBox" on-change="updateAuthorizeTextBox" maxLength="50"
 						required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
 			<label for="lastNameLabel">Last Name *</label>
-			<kendo-textbox id="lastNameTextBox" name="lastNameTextBox" on-change="updateAuthorizeTextBox"
+			<kendo-textbox id="lastNameTextBox" name="lastNameTextBox" on-change="updateAuthorizeTextBox" maxLength="50"
 						   required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
 			<label for="phoneNumberLabel">Phone Number *</label>
-			<kendo-textbox id="phoneNumberTextBox" name="phoneNumberTextBox" 
+			<kendo-textbox id="phoneNumberTextBox" name="phoneNumberTextBox" maxLength="10"
 						   required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
@@ -98,23 +98,23 @@
 	<div class="row pt-3">
 		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
 			<label for="mailingAddressLabel">Mailing Address *</label>
-			<kendo-textbox id="mailingAddressTextBox" name="mailingAddressTextBox" 
+			<kendo-textbox id="mailingAddressTextBox" name="mailingAddressTextBox" maxLength="50"
 							required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2">
 			<label for="cityLabel">City *</label>
-			<kendo-textbox id="cityTextBox" name="cityTextBox" required validationMessage="This field is required">
+			<kendo-textbox id="cityTextBox" name="cityTextBox" maxLength="50" required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2">
 			<label for="stateLabel">State *</label>
-			<kendo-textbox id="stateTextBox" name="stateTextBox" required validationMessage="This field is required">
+			<kendo-textbox id="stateTextBox" name="stateTextBox" maxLength="50" required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2">
 			<label for="zipCodeLabel">Zip Code *</label>
-			<kendo-textbox id="zipCodeTextBox" name="zipCodeTextBox" required validationMessage="This field is required">
+			<kendo-textbox id="zipCodeTextBox" name="zipCodeTextBox" maxLength="50" required validationMessage="This field is required">
 			</kendo-textbox>
 		</div>
 	</div>
@@ -181,12 +181,12 @@
 		<div class="row">
 			<div class="form-group col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3">
 				<label for="latitudeLabel">Latitude</label>
-				<kendo-textbox id="latitudeTextBox" name="latitudeTextBox">
+				<kendo-textbox id="latitudeTextBox" name="latitudeTextBox" maxLength="20">
 				</kendo-textbox>
 			</div>
 			<div class="form-group col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3">
 				<label for="longitudeLabel">Longitude</label>
-				<kendo-textbox id="longitudeTextBox" name="longitudeTextBox">
+				<kendo-textbox id="longitudeTextBox" name="longitudeTextBox" maxLength="20">
 				</kendo-textbox>
 			</div>
 		</div>
@@ -241,7 +241,7 @@
 	<div class="row pt-3">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 			<label for="familyMemberNameLabel">If yes, name of employee or official</label>
-			<kendo-textbox id="familyMemberNameTextBox" name="familyMemberNameTextBox">
+			<kendo-textbox id="familyMemberNameTextBox" name="familyMemberNameTextBox" maxLength="50">
 			</kendo-textbox>
 		</div>
 	</div>
@@ -266,7 +266,7 @@
 	<div class="row pt-3">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 			<label for="officialNameLabel">If yes, name of employee or official</label>
-			<kendo-textbox id="officialNameTextBox" name="officialNameTextBox">
+			<kendo-textbox id="officialNameTextBox" name="officialNameTextBox" maxLength="50">
 			</kendo-textbox>
 		</div>
 	</div>
@@ -413,63 +413,63 @@
 	<div class="row pt-4">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			<label for="lengthPipeLabel">1. Length of pipe required</label>
-			<kendo-textbox id="lengthPipeTextbox" name="lengthPipeTextbox">
+			<kendo-textbox id="lengthPipeTextbox" name="lengthPipeTextbox" maxLength="50">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			<label for="drivewayWidthLabel">2. Driveway width</label>
-			<kendo-textbox id="drivewayWidthTextbox" name="drivewayWidthTextbox">
+			<kendo-textbox id="drivewayWidthTextbox" name="drivewayWidthTextbox" maxLength="50">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			<label for="distanceDrainageLabel">3. Distance to center of drainage structure</label>
-			<kendo-textbox id="distanceDrainageTextbox" name="distanceDrainageTextbox">
+			<kendo-textbox id="distanceDrainageTextbox" name="distanceDrainageTextbox" maxLength="50">
 			</kendo-textbox>
 		</div>
 	</div>
 	<div class="row pt-4">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			<label for="distancePavementLabel">4. Distance from edge of pavement to ROW</label>
-			<kendo-textbox id="distancePavementTextbox" name="distancePavementTextbox">
+			<kendo-textbox id="distancePavementTextbox" name="distancePavementTextbox" maxLength="50">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			<label for="radius1Label">5. Radius</label>
-			<kendo-textbox id="radiusOneTextbox" name="radiusOneTextbox">
+			<kendo-textbox id="radiusOneTextbox" name="radiusOneTextbox" maxLength="50">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			<label for="radius2Label">6. Radius</label>
-			<kendo-textbox id="radiusTwoTextbox" name="radiusTwoTextbox">
+			<kendo-textbox id="radiusTwoTextbox" name="radiusTwoTextbox" maxLength="50">
 			</kendo-textbox>
 		</div>
 	</div>
 	<div class="row pt-4">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			<label for="drivewayPipeLabel">7. Driveway drainage pipe</label>
-			<kendo-textbox id="drivewayPipeTextbox" name="drivewayPipeTextbox">
+			<kendo-textbox id="drivewayPipeTextbox" name="drivewayPipeTextbox" maxLength="50">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			<label for="drainageStructureLabel">8. Drainage structure</label>
-			<kendo-textbox id="drainageStructureTextbox" name="drainageStructureTextbox">
+			<kendo-textbox id="drainageStructureTextbox" name="drainageStructureTextbox" maxLength="50">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			<label for="setBackLabel">9. Set back width at gate</label>
-			<kendo-textbox id="setBackTextbox" name="setBackTextbox">
+			<kendo-textbox id="setBackTextbox" name="setBackTextbox" maxLength="50">
 			</kendo-textbox>
 		</div>
 	</div>
 	<div class="row pt-4">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			<label for="widthROWLabel">10. Width starting at ROW</label>
-			<kendo-textbox id="widthROWTextbox" name="widthROWTextbox">
+			<kendo-textbox id="widthROWTextbox" name="widthROWTextbox" maxLength="50">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
 			<label for="throatLengthLabel">11. Throat length</label>
-			<kendo-textbox id="throatLengthTextbox" name="throatLengthTextbox">
+			<kendo-textbox id="throatLengthTextbox" name="throatLengthTextbox" maxLength="50">
 			</kendo-textbox>
 		</div>
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
@@ -523,7 +523,7 @@
 	</div>
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<kendo-textarea id="purposeTextArea" rows="3">
+			<kendo-textarea id="purposeTextArea" rows="3" max-length="400">
 			</kendo-textarea>
 		</div>
 	</div>
@@ -536,7 +536,7 @@
 	</div>
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<kendo-textarea id="useTextArea" rows="3">
+			<kendo-textarea id="useTextArea" rows="3" max-length="400">
 			</kendo-textarea>
 		</div>
 	</div>
@@ -549,7 +549,7 @@
 	</div>
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<kendo-textarea id="backgroundTextArea" rows="3">
+			<kendo-textarea id="backgroundTextArea" rows="3" max-length="400">
 			</kendo-textarea>
 		</div>
 	</div>
@@ -562,7 +562,7 @@
 	</div>
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<kendo-textarea id="participantsTextArea" rows="3">
+			<kendo-textarea id="participantsTextArea" rows="3" max-length="400">
 			</kendo-textarea>
 		</div>
 	</div>
@@ -574,7 +574,7 @@
 	</div>
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<kendo-textarea id="fundingTextArea" rows="3">
+			<kendo-textarea id="fundingTextArea" rows="3" max-length="400">
 			</kendo-textarea>
 		</div>
 	</div>
@@ -586,7 +586,7 @@
 	</div>
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<kendo-textarea id="environmentalStatusTextArea" rows="3">
+			<kendo-textarea id="environmentalStatusTextArea" rows="3" max-length="400">
 			</kendo-textarea>
 		</div>
 	</div>
@@ -598,7 +598,7 @@
 	</div>
 	<div class="row">
 		<div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-			<kendo-textarea id="rowStatusTextArea" rows="3">
+			<kendo-textarea id="rowStatusTextArea" rows="3" max-length="400">
 			</kendo-textarea>
 		</div>
 	</div>
@@ -756,7 +756,7 @@
 		<br />
 		<br />
 		<h4>Additional comments: </h4>
-		<kendo-textarea id="commentsTextArea" name="commentsTextArea" rows="5">
+		<kendo-textarea id="commentsTextAreaResidential" name="commentsTextAreaResidential" rows="5" max-length="1000">
 		</kendo-textarea>
 		<br />
 	</div>
@@ -801,6 +801,15 @@
 		<br />
 		<label id="reviewROWStatus"></label>
 		<br />
+		<br />
+		<div class="row">
+			<br />
+			<br />
+			<h4>Additional comments: </h4>
+			<kendo-textarea id="commentsTextAreaCommercial" name="commentsTextAreaCommercial" rows="5" max-length="1000">
+			</kendo-textarea>
+			<br />
+		</div>
 		<br />
 		<div class="text-center pt-4">
 			<button type="button" id="secondBackButtonCommercial" class="btn btn-danger" onclick="backButtonGeneral('thirdBlockIndustrial')"> &nbsp;&nbsp;&nbsp; Back &nbsp;&nbsp;&nbsp; </button>
@@ -1275,6 +1284,7 @@
 		$('#right-' + cloneCount).append('<textarea id="comment-' + cloneCount + '" style="height: auto;"></textarea>');
 		$('#comment-' + cloneCount).kendoTextArea({
 			rows: 2,
+			maxLength: 450,
 		});
 	}
 
@@ -1519,8 +1529,17 @@
 	}
 
 	// Action that will be performed when clicking the "Submit" button of the review segment ******************************************************************************
-	function buttonSubmit(){ 
-		var commentTextArea = $("#commentsTextArea").val().toString().length != 0 ? $("#commentsTextArea").val() : null;
+	function buttonSubmit(){
+		// Depending on the request type, the comment will be taken from a different text area
+        var commentsTextArea = '';
+
+		if (requestTypeName === 'Residential'){
+			commentTextArea = $("#commentsTextAreaResidential").val().toString().length != 0 ? $("#commentsTextAreaResidential").val() : '';
+		}
+		else if (requestTypeName === 'Commercial') {
+			commentTextArea = $("#commentsTextAreaCommercial").val().toString().length != 0 ? $("#commentsTextAreaCommercial").val() : '';
+        }
+
 		showCurrentStep('fifthBlock');
 		$.ajax({
 			type: 'POST',
